@@ -49,13 +49,6 @@ if (import.meta.env.VITE_GLITCHTIP_API_KEY) {
   })
 }
 
-// Analytics
-window.plausible =
-  window.plausible ||
-  function () {
-    ;(window.plausible.q = window.plausible.q || []).push(arguments)
-  }
-
 window.addEventListener("beforeinstallprompt", e => {
   // Prevent Chrome 67 and earlier from automatically showing the prompt
   e.preventDefault()
