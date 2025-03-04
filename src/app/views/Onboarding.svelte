@@ -18,7 +18,8 @@
   let keyPairFile: File | null = null;
   let privateKey = writable<string | null>(null);
   let error = writable<string | null>(null);
-  let relays = writable(env.DEFAULT_RELAYS.map(url => ['r', url])); // Default relays
+  // Initialize relays with a more explicit structure: { url: string, read: boolean }
+  let relays = writable(env.DEFAULT_RELAYS.map(url => ({ url, read: true })));
   // Use a Set to ensure uniqueness and then convert back to array
   let follows = writable(Array.from(new Set(env.DEFAULT_FOLLOWS)));
 
@@ -72,8 +73,8 @@
         const pubkey = getPubkey($privateKey);
         addSession({ method: 'nip01', secret: $privateKey, pubkey });
 
-        // Publish relays
-        await setOutboxPolicies(() => get(relays));
+        // Publish relays - map back to the expected array format
+        await setOutboxPolicies(() => get(relays).map(r => ['r', r.url]));
 
         // Publish follows
         const sk = $privateKey
@@ -114,10 +115,10 @@
   <button on:click={generateKeyPair}>Generate KeyPair</button>
 
   <h3>Select Relays</h3>
-  {#each get(relays) as relay, i (relay[1])}
+  {#each get(relays) as relay (relay.url)}
     <label>
-      <input type="checkbox" bind:checked={$relays[i][0]} />
-      {relay[1]}
+      <input type="checkbox" bind:checked={relay.read} />
+      {relay.url}
     </label>
   {/each}
 
