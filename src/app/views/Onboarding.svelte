@@ -19,7 +19,8 @@
   let privateKey = writable<string | null>(null);
   let error = writable<string | null>(null);
   let relays = writable(env.DEFAULT_RELAYS.map(url => ['r', url])); // Default relays
-  let follows = writable(env.DEFAULT_FOLLOWS); // Default follows
+  // Use a Set to ensure uniqueness and then convert back to array
+  let follows = writable(Array.from(new Set(env.DEFAULT_FOLLOWS)));
 
   async function handleKeyPairInput() {
     error.set(null);
