@@ -103,7 +103,7 @@ export const isLike = (e: TrustedEvent) =>
 export const isReply = (e: TrustedEvent) =>
   Boolean([NOTE, COMMENT].includes(e.kind) && getParentIdOrAddr(e))
 
-export const toHex = (data: string): string | null => {
+export const toHex = ( string): string | null => {
   if (data.match(/[a-zA-Z0-9]{64}/)) {
     return data
   }
@@ -169,7 +169,7 @@ export const parseAnything = async entity => {
     const profile = await nip05.queryProfile(entity)
 
     if (profile) {
-      return {type: "npub", data: profile.pubkey}
+      return {type: "npub",  profile.pubkey}
     }
   }
 
@@ -185,7 +185,7 @@ export const parseAnythingSync = entity => {
   }
 
   if (isHex(entity)) {
-    return {type: "npub", data: entity}
+    return {type: "npub",  entity}
   }
 
   try {
@@ -200,4 +200,38 @@ export const parsePubkey = async entity => {
 
   if (result.type === "npub") return result.data
   if (result.type === "nprofile") return result.data.pubkey
+}
+
+export async function extractPrivateKey(input: string): Promise<string | null> {
+  try {
+    // Try decoding as NSEC
+    try {
+      return nsecDecode(input);
+    } catch (e) {
+      // Not a valid NSEC, try next
+    }
+
+    // Try as hex
+    if (isHex(input)) {
+      return input;
+    }
+
+    // Try as JSON
+    try {
+      const json = JSON.parse(input);
+      if (json?.privateKey) {
+        return json.privateKey;
+      }
+      if (json?.sec) {
+        return json.sec;
+      }
+    } catch (e) {
+      // Not a valid JSON, try next
+    }
+
+    return null; // No valid key found
+  } catch (e) {
+    console.error("Error extracting private key:", e);
+    return null;
+  }
 }
