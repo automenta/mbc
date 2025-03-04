@@ -76,14 +76,14 @@
         // Publish relays - map back to the expected array format
         await setOutboxPolicies(() => get(relays).map(r => ['r', r.url]));
 
-        // Publish follows
-        const sk = $privateKey
-        await createAndPublish({
-          kind: FOLLOWS,
-          tags: get(follows).map(tagPubkey),
-          relays: getWriteRelayUrls($userRelaySelections),
-          sk,
-        });
+        // Publish follows -  Do not publish follows during onboarding for now
+        // const sk = $privateKey
+        // await createAndPublish({
+        //   kind: FOLLOWS,
+        //   tags: get(follows).map(tagPubkey),
+        //   relays: getWriteRelayUrls($userRelaySelections),
+        //   sk,
+        // });
 
         // Make sure our profile gets to the right relays
         broadcastUserData(getWriteRelayUrls($userRelaySelections));
@@ -122,13 +122,16 @@
     </label>
   {/each}
 
+  {#if false}
   <h3>Select Initial Follows</h3>
   {#each get(follows) as follow, i (follow)}
     <label>
-      <input type="checkbox" bind:checked={$follows[i]} />
+      <input type="checkbox" bind:checked={$follows[i]} disabled={true} hidden={true} />
       {follow}
     </label>
   {/each}
+  {/if}
+
 
   {#if $error}
     <p class="error">{$error}</p>
