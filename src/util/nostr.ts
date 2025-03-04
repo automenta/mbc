@@ -169,7 +169,7 @@ export const parseAnything = async entity => {
     const profile = await nip05.queryProfile(entity)
 
     if (profile) {
-      return {type: "npub",  profile.pubkey}
+      return {type: "npub", pubkey: profile.pubkey}
     }
   }
 
@@ -185,7 +185,7 @@ export const parseAnythingSync = entity => {
   }
 
   if (isHex(entity)) {
-    return {type: "npub",  entity}
+    return {type: "npub", pubkey: entity}
   }
 
   try {
