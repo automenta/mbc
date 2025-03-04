@@ -73,6 +73,8 @@ CapacitorApp.addListener("backButton", ({canGoBack}) => {
   }
 })
 
+router.at("/onboarding").replace()
+
 export default new App({
   target: document.getElementById("app"),
 })
