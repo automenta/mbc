@@ -6,9 +6,7 @@
   import { router } from 'src/app/util';
   import { env } from 'src/engine';
   import { createAndPublish, setOutboxPolicies } from 'src/engine';
-  import { FOLLOWS } from '@welshman/util';
-  import { setChecked } from 'src/engine';
-  import { broadcastUserData, listenForNotifications } from 'src/engine';
+  import { FOLLOWS, PROFILE } from '@welshman/util';
   import { getWriteRelayUrls } from '@welshman/app';
   import { tagPubkey } from '@welshman/app';
   import Input from 'src/partials/Input.svelte';
@@ -22,6 +20,7 @@
   let relays = writable(env.DEFAULT_RELAYS.map(url => ({ url, read: true })));
   // Use a Set to ensure uniqueness and then convert back to array
   let follows = writable(Array.from(new Set(env.DEFAULT_FOLLOWS)));
+  let profileName = writable(''); // Store profile name
 
   async function handleKeyPairInput() {
     error.set(null);
@@ -76,6 +75,16 @@
         // Publish relays - map back to the expected array format
         await setOutboxPolicies(() => get(relays).map(r => ['r', r.url]));
 
+        // Publish Profile Metadata (Kind 0)
+        if ($profileName) {
+          await createAndPublish({
+            kind: PROFILE,
+            content: JSON.stringify({ name: $profileName }),
+            relays: getWriteRelayUrls($userRelaySelections),
+            sk: $privateKey,
+          });
+        }
+
         // Publish follows -  Do not publish follows during onboarding for now
         // const sk = $privateKey
         // await createAndPublish({
@@ -114,6 +123,12 @@
   <p>Or generate a new KeyPair:</p>
   <button on:click={generateKeyPair}>Generate KeyPair</button>
 
+  {#if $privateKey}
+    <h3>Set Profile Name (Optional)</h3>
+    <Input placeholder="Profile Name" bind:value={$profileName} />
+  {/if}
+
+
   <h3>Select Relays</h3>
   {#each get(relays) as relay (relay.url)}
     <label>
@@ -129,7 +144,7 @@
       <input type="checkbox" bind:checked={$follows[i]} disabled={true} hidden={true} />
       {follow}
     </label>
-  {/each}
+  {/if}
   {/if}
 
 
