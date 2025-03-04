@@ -1,113 +1,136 @@
 <script lang="ts">
-  import {onMount} from "svelte"
-  import {uniq, nth} from "@welshman/lib"
-  import {getPubkeyTagValues, getAddress, Address, getIdFilters} from "@welshman/util"
-  import {session, userRelaySelections, getWriteRelayUrls} from "@welshman/app"
-  import FlexColumn from "src/partials/FlexColumn.svelte"
-  import OnboardingIntro from "src/app/views/OnboardingIntro.svelte"
-  import OnboardingKeys from "src/app/views/OnboardingKeys.svelte"
-  import OnboardingFollows from "src/app/views/OnboardingFollows.svelte"
-  import OnboardingNote from "src/app/views/OnboardingNote.svelte"
-  import {
-    env,
-    load,
-    anonymous,
-    loadPubkeys,
-    requestRelayAccess,
-    listenForNotifications,
-    broadcastUserData,
-  } from "src/engine"
-  import {router} from "src/app/util/router"
-  import {setChecked} from "src/engine"
+  import { writable, get } from 'svelte/store';
+  import { isKeyValid, extractPrivateKey } from 'src/util/nostr';
+  import { addSession, userRelaySelections } from '@welshman/app';
+  import { getPubkey, makeSecret } from '@welshman/signer';
+  import { router } from 'src/app/util';
+  import { env } from 'src/engine';
+  import { createAndPublish, setOutboxPolicies } from 'src/engine';
+  import { FOLLOWS } from '@welshman/util';
+  import { setChecked } from 'src/engine';
+  import { broadcastUserData, listenForNotifications } from 'src/engine';
+  import { getWriteRelayUrls } from '@welshman/app';
+  import { tagPubkey } from '@welshman/app';
+  import Input from 'src/partials/Input.svelte';
+  import Anchor from 'src/partials/Anchor.svelte';
 
-  export let invite = null
+  let keyPairInput = '';
+  let keyPairFile: File | null = null;
+  let privateKey = writable<string | null>(null);
+  let error = writable<string | null>(null);
+  let relays = writable(env.DEFAULT_RELAYS.map(url => ['r', url])); // Default relays
+  let follows = writable(env.DEFAULT_FOLLOWS); // Default follows
 
-  let stage = $session ? "follows" : "intro"
-  let state = {
-    pubkey: "",
-    profile: {
-      name: "",
-      about: "",
-      picture: "",
-    },
-    follows: $session ? [] : $anonymous.follows.map(nth(1)),
-    relays:
-      $anonymous.relays.length === 0
-        ? env.DEFAULT_RELAYS.map(url => ["r", url])
-        : $anonymous.relays,
-    onboardingLists: [],
-  }
+  async function handleKeyPairInput() {
+    error.set(null);
+    const extractedKey = await extractPrivateKey(keyPairInput);
 
-  if (Array.isArray(invite?.people)) {
-    state.follows = [...state.follows, ...invite.people]
-  }
-
-  if (invite?.relays) {
-    state.relays = [...state.relays, ...invite.relays.map(url => ["r", url])]
-  }
-
-  const setStage = s => {
-    stage = s
-  }
-
-  const signup = async () => {
-    router.at("notes").push()
-
-    // Immediately request access to any relays with a claim
-    for (const {url, claim} of invite?.parsedRelays || []) {
-      if (claim) {
-        const pub = await requestRelayAccess(url, claim)
-
-        await pub.result
-      }
+    if (extractedKey && isKeyValid(extractedKey)) {
+      privateKey.set(extractedKey);
+    } else {
+      error.set('Invalid KeyPair format.');
+      privateKey.set(null);
     }
-
-    // Make sure our profile gets to the right relays
-    broadcastUserData(getWriteRelayUrls($userRelaySelections))
-
-    // Start our notifications listener
-    listenForNotifications()
-    setChecked("*")
   }
 
-  onMount(async () => {
-    const listOwners = uniq(env.ONBOARDING_LISTS.map(a => Address.from(a).pubkey))
+  async function handleKeyPairFile(event: Event) {
+    error.set(null);
+    keyPairFile = (event.target as HTMLInputElement).files[0];
 
-    // Prime our database with our default follows and list owners
-    loadPubkeys([...env.DEFAULT_FOLLOWS, ...listOwners])
+    if (keyPairFile) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const fileContent = e.target.result as string;
+        const extractedKey = await extractPrivateKey(fileContent);
 
-    // Load our onboarding lists
-    load({
-      filters: getIdFilters(env.ONBOARDING_LISTS),
-      onEvent: e => {
-        if (!state.onboardingLists.find(l => getAddress(l) === getAddress(e))) {
-          state.onboardingLists = state.onboardingLists.concat(e)
+        if (extractedKey && isKeyValid(extractedKey)) {
+          privateKey.set(extractedKey);
+        } else {
+          error.set('Invalid KeyPair file format.');
+          privateKey.set(null);
         }
+      };
+      reader.readAsText(keyPairFile);
+    }
+  }
 
-        loadPubkeys(getPubkeyTagValues(e.tags))
-      },
-    })
-  })
+  function generateKeyPair() {
+    error.set(null);
+    const newSecret = makeSecret();
+    if (isKeyValid(newSecret)) {
+      privateKey.set(newSecret);
+    } else {
+      error.set('Failed to generate a valid KeyPair.');
+      privateKey.set(null);
+    }
+  }
+
+  async function register() {
+    if ($privateKey) {
+      try {
+        const pubkey = getPubkey($privateKey);
+        addSession({ method: 'nip01', secret: $privateKey, pubkey });
+
+        // Publish relays
+        await setOutboxPolicies(() => get(relays));
+
+        // Publish follows
+        const sk = $privateKey
+        await createAndPublish({
+          kind: FOLLOWS,
+          tags: get(follows).map(tagPubkey),
+          relays: getWriteRelayUrls($userRelaySelections),
+          sk,
+        });
+
+        // Make sure our profile gets to the right relays
+        broadcastUserData(getWriteRelayUrls($userRelaySelections));
+
+        // Start our notifications listener
+        listenForNotifications();
+        setChecked('*');
+
+        router.at('notes').replace(); // Redirect to the main app view
+      } catch (e) {
+        error.set('Error creating session.');
+      }
+    } else {
+      error.set('No valid KeyPair provided.');
+    }
+  }
 </script>
 
-<FlexColumn class="mt-8">
-  {#key stage}
-    {#if stage === "intro"}
-      <OnboardingIntro {setStage} />
-    {:else if stage === "keys"}
-      <OnboardingKeys {setStage} />
-    {:else if stage === "follows"}
-      <OnboardingFollows {setStage} bind:state />
-    {:else if stage === "note"}
-      <OnboardingNote {setStage} {signup} />
-    {/if}
-  {/key}
-  <div class="m-auto flex gap-2">
-    {#each ["intro", "keys", "follows", "note"] as s}
-      <div
-        class="h-2 w-2 rounded-full"
-        class:bg-neutral-300={s === stage}
-        class:bg-neutral-500={s !== stage} />
-    {/each}
-  </div>
-</FlexColumn>
+<div>
+  <h2>Signup/Register</h2>
+
+  <p>Paste your KeyPair (NSEC, hex, or JSON):</p>
+  <textarea bind:value={keyPairInput} onChange={handleKeyPairInput} />
+
+  <p>Or upload a KeyPair file:</p>
+  <input type="file" accept=".txt,.json" onChange={handleKeyPairFile} />
+
+  <p>Or generate a new KeyPair:</p>
+  <button on:click={generateKeyPair}>Generate KeyPair</button>
+
+  <h3>Select Relays</h3>
+  {#each get(relays) as relay, i (relay[1])}
+    <label>
+      <input type="checkbox" bind:checked={$relays[i][0]} />
+      {relay[1]}
+    </label>
+  {/each}
+
+  <h3>Select Initial Follows</h3>
+  {#each get(follows) as follow, i (follow)}
+    <label>
+      <input type="checkbox" bind:checked={$follows[i]} />
+      {follow}
+    </label>
+  {/each}
+
+  {#if $error}
+    <p class="error">{$error}</p>
+  {/if}
+
+  <button on:click={register} disabled={!$privateKey}>Register</button>
+</div>

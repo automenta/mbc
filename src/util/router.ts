@@ -266,7 +266,7 @@ export class Router {
     return modals
   })
   modal = derived(this.nonVirtual, $nonVirtual => $nonVirtual.find((h: HistoryItem) => h.modal))
-  current = derived(this.nonVirtual, history => history[0])
+  current = derived(this.nonVirtual, $nonVirtual => history[0])
 
   init() {
     this.at(window.location.pathname + window.location.search).push()
