@@ -1,7 +1,7 @@
 <script lang="ts">
   import {isMobile} from "src/util/html"
   import {pubkey} from "@welshman/app"
-  import {themeColors, appName} from "src/partials/state"
+  import {appName, themeColors} from "src/partials/state"
   import Anchor from "src/partials/Anchor.svelte"
 
   export let setStage

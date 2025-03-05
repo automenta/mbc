@@ -1,12 +1,12 @@
 <script lang="ts">
   import {last} from "@welshman/lib"
   import {
-    pubkey,
-    signer,
-    getRelayUrls,
-    deriveRelaySelections,
     deriveInboxRelaySelections,
     deriveRelay,
+    deriveRelaySelections,
+    getRelayUrls,
+    pubkey,
+    signer
   } from "@welshman/app"
   import OverflowMenu from "src/partials/OverflowMenu.svelte"
   import {joinRelay, leaveRelay} from "src/engine"

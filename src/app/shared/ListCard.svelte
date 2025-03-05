@@ -1,6 +1,6 @@
 <script lang="ts">
   import {first} from "@welshman/lib"
-  import {getTags, toNostrURI, Address} from "@welshman/util"
+  import {Address, getTags, toNostrURI} from "@welshman/util"
   import {defaultTagFeedMappings} from "@welshman/feeds"
   import {formatTimestamp, repository} from "@welshman/app"
   import {slide} from "src/util/transition"
@@ -10,7 +10,7 @@
   import Anchor from "src/partials/Anchor.svelte"
   import CopyValueSimple from "src/partials/CopyValueSimple.svelte"
   import PersonBadgeSmall from "src/app/shared/PersonBadgeSmall.svelte"
-  import {readUserList, displayUserList, mapListToFeed} from "src/domain"
+  import {displayUserList, mapListToFeed, readUserList} from "src/domain"
   import {router} from "src/app/util"
   import {quantify} from "src/util/misc"
 

@@ -1,33 +1,32 @@
-import {writable, get} from "svelte/store"
+import {get, writable} from "svelte/store"
 import {uniq} from "@welshman/lib"
-import {FEEDS, APP_DATA, getAddressTagValues, getIdFilters, getListTags} from "@welshman/util"
+import {APP_DATA, FEEDS, getAddressTagValues, getIdFilters, getListTags} from "@welshman/util"
 import {
-  pubkey,
-  loadZapper,
-  loadHandle,
-  loadRelaySelections,
-  getRelayUrls,
-  loadProfile,
-  loadFollows,
-  loadMutes,
   getFollows,
+  getRelayUrls,
+  loadFollows,
+  loadHandle,
   loadInboxRelaySelections,
+  loadMutes,
+  loadProfile,
+  loadRelaySelections,
+  loadZapper,
+  pubkey,
 } from "@welshman/app"
 import {appDataKeys} from "src/util/nostr"
 import {router} from "src/app/util/router"
 import {
   env,
+  listenForNotifications,
   load,
-  loadPubkeys,
   loadDeletes,
+  loadFeedsAndLists,
   loadHandlers,
   loadMessages,
   loadNotifications,
-  loadFeedsAndLists,
-  listenForNotifications,
-  userFeedFavorites,
-  getSetting,
+  loadPubkeys,
   setChecked,
+  userFeedFavorites,
 } from "src/engine"
 
 export const drafts = new Map<string, string>()

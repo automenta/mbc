@@ -1,6 +1,6 @@
 <script lang="ts">
   import cx from "classnames"
-  import {stringToHue, hsl} from "src/util/misc"
+  import {hsl, stringToHue} from "src/util/misc"
 
   export let pubkey
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import {ctx} from "@welshman/lib"
   import {getAddress} from "@welshman/util"
-  import {pubkey, signer, displayProfileByPubkey} from "@welshman/app"
+  import {displayProfileByPubkey, pubkey, signer} from "@welshman/app"
   import Field from "src/partials/Field.svelte"
   import {showInfo} from "src/partials/Toast.svelte"
   import Subheading from "src/partials/Subheading.svelte"
@@ -12,8 +12,8 @@
   import FlexColumn from "src/partials/FlexColumn.svelte"
   import Anchor from "src/partials/Anchor.svelte"
   import FeedField from "src/app/shared/FeedField.svelte"
-  import {makeFeed, createFeed, editFeed, displayFeed} from "src/domain"
-  import {deleteEvent, createAndPublish, removeFeedFavorite} from "src/engine"
+  import {createFeed, displayFeed, editFeed, makeFeed} from "src/domain"
+  import {createAndPublish, deleteEvent, removeFeedFavorite} from "src/engine"
 
   export let feed
   export let exit

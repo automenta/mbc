@@ -1,6 +1,6 @@
 <script lang="ts">
   import {getTagValue} from "@welshman/util"
-  import {secondsToDate, getLocale} from "src/util/misc"
+  import {getLocale, secondsToDate} from "src/util/misc"
 
   export let event
 

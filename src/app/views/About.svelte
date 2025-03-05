@@ -6,7 +6,7 @@
   import Card from "src/partials/Card.svelte"
   import Heading from "src/partials/Heading.svelte"
   import {router} from "src/app/util/router"
-  import {loadPubkeys, env} from "src/engine"
+  import {env, loadPubkeys} from "src/engine"
 
   const hash = import.meta.env.VITE_BUILD_HASH
   const hodlbodPubkey = "97c70a44366a6535c145b333f973ea86dfdc2d7a99da618c40c64705ad98e322"

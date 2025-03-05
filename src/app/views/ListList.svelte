@@ -10,7 +10,7 @@
   import ListCard from "src/app/shared/ListCard.svelte"
   import {router} from "src/app/util/router"
   import {EDITABLE_LIST_KINDS} from "src/domain"
-  import {userLists, userFollows, listSearch, load, addSinceToFilter} from "src/engine"
+  import {addSinceToFilter, listSearch, load, userFollows, userLists} from "src/engine"
 
   const createList = () => router.at("lists/create").open()
 

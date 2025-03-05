@@ -1,6 +1,6 @@
 <script lang="ts">
   import {makeListFeed} from "@welshman/feeds"
-  import {repository, displayProfileByPubkey} from "@welshman/app"
+  import {displayProfileByPubkey, repository} from "@welshman/app"
   import Anchor from "src/partials/Anchor.svelte"
   import SearchSelect from "src/partials/SearchSelect.svelte"
   import {listSearch} from "src/engine"

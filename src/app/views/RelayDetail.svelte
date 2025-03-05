@@ -1,6 +1,6 @@
 <script lang="ts">
   import {displayRelayUrl, normalizeRelayUrl} from "@welshman/util"
-  import {makeRelayFeed, feedFromFilter} from "@welshman/feeds"
+  import {feedFromFilter, makeRelayFeed} from "@welshman/feeds"
   import {deriveEvents} from "@welshman/store"
   import {deriveRelay, repository} from "@welshman/app"
   import {getAvgRating} from "src/util/nostr"

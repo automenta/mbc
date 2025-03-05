@@ -1,6 +1,6 @@
 <script lang="ts">
   import {onMount} from "svelte"
-  import {groupBy, ago, int, DAY} from "@welshman/lib"
+  import {ago, DAY, groupBy, int} from "@welshman/lib"
   import {pubkey} from "@welshman/app"
   import FlexColumn from "src/partials/FlexColumn.svelte"
   import NotificationItem from "src/app/shared/NotificationItem.svelte"

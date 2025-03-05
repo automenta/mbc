@@ -1,6 +1,6 @@
 <script lang="ts">
   import {ctx} from "@welshman/lib"
-  import {getReplyTagValues, getIdOrAddress, type TrustedEvent} from "@welshman/util"
+  import {getIdOrAddress, getReplyTagValues, type TrustedEvent} from "@welshman/util"
   import Anchor from "src/partials/Anchor.svelte"
   import {formatTimestamp} from "src/util/misc"
   import PersonCircle from "src/app/shared/PersonCircle.svelte"

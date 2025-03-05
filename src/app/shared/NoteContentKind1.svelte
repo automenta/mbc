@@ -3,23 +3,23 @@
   import {fromNostrURI} from "@welshman/util"
   import type {ParsedLinkValue} from "@welshman/content"
   import {
-    parse,
-    truncate,
-    renderAsHtml,
-    isText,
-    isTopic,
-    isCode,
+    isAddress,
     isCashu,
+    isCode,
+    isEllipsis,
+    isEvent,
+    isImage,
     isInvoice,
     isLink,
-    isImage,
-    isProfile,
-    isEvent,
-    isEllipsis,
-    isAddress,
-    isNewline,
-    reduceLinks,
     isLinkGrid,
+    isNewline,
+    isProfile,
+    isText,
+    isTopic,
+    parse,
+    reduceLinks,
+    renderAsHtml,
+    truncate
   } from "@welshman/content"
   import QRCode from "src/partials/QRCode.svelte"
   import Anchor from "src/partials/Anchor.svelte"

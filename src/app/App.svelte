@@ -4,22 +4,22 @@
 
   import {nip19} from "nostr-tools"
   import {get} from "svelte/store"
-  import {ctx, omit, ago, max, sleep, memoize, isNil} from "@welshman/lib"
   import * as lib from "@welshman/lib"
+  import {ago, ctx, isNil, max, memoize, omit, sleep} from "@welshman/lib"
   import * as util from "@welshman/util"
   import * as content from "@welshman/content"
-  import {getRelayQuality, getPubkeyRelays, trackRelayStats, loadRelay} from "@welshman/app"
+  import * as app from "@welshman/app"
+  import {getPubkeyRelays, getRelayQuality, loadRelay, trackRelayStats} from "@welshman/app"
   import * as signer from "@welshman/signer"
   import * as net from "@welshman/net"
-  import * as app from "@welshman/app"
   import logger from "src/util/logger"
   import * as misc from "src/util/misc"
   import * as nostr from "src/util/nostr"
-  import {ready} from "src/engine"
   import * as engine from "src/engine"
+  import {ready} from "src/engine"
   import * as domain from "src/domain"
-  import {slowConnections, loadUserData} from "src/app/state"
-  import {themeVariables, appName} from "src/partials/state"
+  import {loadUserData, slowConnections} from "src/app/state"
+  import {appName, themeVariables} from "src/partials/state"
   import Toast from "src/partials/Toast.svelte"
   import ChatEnable from "src/app/views/ChatEnable.svelte"
   import Menu from "src/app/Menu.svelte"
@@ -78,17 +78,17 @@
   import Zap from "src/app/views/Zap.svelte"
   import {onMount} from "svelte"
   import {
-    router,
     asChannelId,
-    asPerson,
-    asNaddr,
     asCsv,
+    asEntity,
     asJson,
+    asNaddr,
+    asNote,
+    asPerson,
+    asRelay,
     asString,
     asUrlComponent,
-    asNote,
-    asRelay,
-    asEntity,
+    router
   } from "src/app/util/router"
 
   const {session, pubkey} = app

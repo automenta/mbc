@@ -1,9 +1,9 @@
 <script lang="ts">
   import {
     AUDIO,
-    BADGES,
     BADGE_AWARD,
     BADGE_DEFINITION,
+    BADGES,
     BLOCKED_RELAYS,
     BOOKMARKS,
     CALENDAR,
@@ -45,9 +45,9 @@
     GIT_PATCH,
     GIT_REPLY,
     GIT_REPOSITORY,
-    GROUPS,
     GROUP_ADMINS,
     GROUP_META,
+    GROUPS,
     HANDLER_INFORMATION,
     HANDLER_RECOMMENDATION,
     HIGHLIGHT,
@@ -85,7 +85,7 @@
     TOPICS,
     WIKI,
     ZAP_GOAL,
-    ZAP_RESPONSE,
+    ZAP_RESPONSE
   } from "@welshman/util"
   import {FeedType} from "@welshman/feeds"
   import SearchSelect from "src/partials/SearchSelect.svelte"

@@ -1,13 +1,13 @@
 <script lang="ts">
-  import {signer, pubkey, sessions, displayProfileByPubkey} from "@welshman/app"
-  import {toggleTheme, installPrompt, installAsPWA} from "src/partials/state"
+  import {displayProfileByPubkey, pubkey, sessions, signer} from "@welshman/app"
+  import {installAsPWA, installPrompt, toggleTheme} from "src/partials/state"
   import Anchor from "src/partials/Anchor.svelte"
   import SliderMenu from "src/partials/SliderMenu.svelte"
   import MenuItem from "src/partials/MenuItem.svelte"
   import PersonCircle from "src/app/shared/PersonCircle.svelte"
   import PersonHandle from "src/app/shared/PersonHandle.svelte"
   import MenuMobileItem from "src/app/MenuMobileItem.svelte"
-  import {slowConnections, menuIsOpen} from "src/app/state"
+  import {menuIsOpen, slowConnections} from "src/app/state"
   import {router} from "src/app/util/router"
   import {env, hasNewMessages, hasNewNotifications} from "src/engine"
 

@@ -4,46 +4,34 @@
   import {onMount} from "svelte"
   import {tweened} from "svelte/motion"
   import {derived} from "svelte/store"
-  import {
-    ctx,
-    sum,
-    pluck,
-    spec,
-    nth,
-    nthEq,
-    remove,
-    last,
-    sortBy,
-    uniqBy,
-    prop,
-  } from "@welshman/lib"
+  import {ctx, last, nth, nthEq, pluck, prop, remove, sortBy, spec, sum, uniqBy} from "@welshman/lib"
   import {
     deriveZapper,
     deriveZapperForPubkey,
+    mute,
+    pin,
+    pubkey,
     repository,
     signer,
     tagEventForReaction,
     tagZapSplit,
-    mute,
-    pubkey,
     unmute,
-    pin,
-    unpin,
+    unpin
   } from "@welshman/app"
-  import type {TrustedEvent, SignedEvent} from "@welshman/util"
-  import {deriveEvents} from "@welshman/store"
+  import type {SignedEvent, TrustedEvent} from "@welshman/util"
   import {
-    LOCAL_RELAY_URL,
     asSignedEvent,
-    isSignedEvent,
     createEvent,
     getLnUrl,
-    NOTE,
-    REACTION,
-    ZAP_RESPONSE,
     getReplyFilters,
     isChildOf,
+    isSignedEvent,
+    LOCAL_RELAY_URL,
+    NOTE,
+    REACTION,
+    ZAP_RESPONSE
   } from "@welshman/util"
+  import {deriveEvents} from "@welshman/store"
   import {fly} from "src/util/transition"
   import {isLike, noteKinds} from "src/util/nostr"
   import {formatSats, pluralize} from "src/util/misc"
@@ -58,21 +46,21 @@
   import Modal from "src/partials/Modal.svelte"
   import OverflowMenu from "src/partials/OverflowMenu.svelte"
   import NoteInfo from "src/app/shared/NoteInfo.svelte"
-  import {router, deriveValidZaps} from "src/app/util"
+  import {deriveValidZaps, router} from "src/app/util"
   import {
-    env,
-    publish,
-    deriveHandlersForKind,
-    signAndPublish,
     deleteEvent,
-    getSetting,
-    loadPubkeys,
+    deriveHandlersForKind,
+    env,
     getClientTags,
+    getSetting,
+    load,
+    loadPubkeys,
+    publish,
+    signAndPublish,
+    sortEventsDesc,
     trackerStore,
     userMutes,
-    sortEventsDesc,
-    load,
-    userPins,
+    userPins
   } from "src/engine"
 
   export let event: TrustedEvent

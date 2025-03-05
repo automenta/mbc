@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {uniq, pluck} from "@welshman/lib"
+  import {pluck, uniq} from "@welshman/lib"
   import {getAddress} from "@welshman/util"
   import FlexColumn from "src/partials/FlexColumn.svelte"
   import ImageCircle from "src/partials/ImageCircle.svelte"

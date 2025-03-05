@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {ctx, identity, equals} from "@welshman/lib"
+  import {ctx, equals, identity} from "@welshman/lib"
   import {MUTES} from "@welshman/util"
-  import {topicSearch, tagPubkey} from "@welshman/app"
+  import {tagPubkey, topicSearch} from "@welshman/app"
   import {appName} from "src/partials/state"
   import {showInfo} from "src/partials/Toast.svelte"
   import Input from "src/partials/Input.svelte"
@@ -15,7 +15,7 @@
   import SearchSelect from "src/partials/SearchSelect.svelte"
   import Heading from "src/partials/Heading.svelte"
   import PersonSelect from "src/app/shared/PersonSelect.svelte"
-  import {userSettings, publishSettings, userMutes, createAndPublish} from "src/engine"
+  import {createAndPublish, publishSettings, userMutes, userSettings} from "src/engine"
 
   const values = {...$userSettings}
 

@@ -7,7 +7,7 @@
   import Anchor from "src/partials/Anchor.svelte"
   import PersonLink from "src/app/shared/PersonLink.svelte"
   import PersonCircles from "src/app/shared/PersonCircles.svelte"
-  import {router, deriveValidZaps} from "src/app/util"
+  import {deriveValidZaps, router} from "src/app/util"
 
   export let context: TrustedEvent[]
   export let event: TrustedEvent

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import {onMount, onDestroy} from "svelte"
-  import {identity, sortBy, uniqBy, ctx} from "@welshman/lib"
+  import {onDestroy, onMount} from "svelte"
+  import {ctx, identity, sortBy, uniqBy} from "@welshman/lib"
   import type {TrustedEvent} from "@welshman/util"
   import {getIdAndAddress, getIdFilters, getReplyTagValues} from "@welshman/util"
   import {load} from "@welshman/app"

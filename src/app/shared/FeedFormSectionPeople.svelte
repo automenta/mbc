@@ -1,6 +1,6 @@
 <script lang="ts">
   import {without} from "@welshman/lib"
-  import {Scope, isScopeFeed, isAuthorFeed, makeAuthorFeed, makeScopeFeed} from "@welshman/feeds"
+  import {isAuthorFeed, isScopeFeed, makeAuthorFeed, makeScopeFeed, Scope} from "@welshman/feeds"
   import SelectButton from "src/partials/SelectButton.svelte"
   import PersonSelect from "src/app/shared/PersonSelect.svelte"
   import {toTitle} from "src/util/misc"

@@ -2,23 +2,23 @@
   import {identity, partition} from "@welshman/lib"
   import {
     FeedType,
-    makeIntersectionFeed,
-    hasSubFeeds,
     getFeedArgs,
+    hasSubFeeds,
     isAuthorFeed,
-    isScopeFeed,
-    isTagFeed,
-    isRelayFeed,
-    isListFeed,
     isDVMFeed,
     isGlobalFeed,
-    makeListFeed,
+    isListFeed,
+    isRelayFeed,
+    isScopeFeed,
+    isTagFeed,
     makeDVMFeed,
+    makeGlobalFeed,
+    makeIntersectionFeed,
+    makeListFeed,
+    makeRelayFeed,
     makeScopeFeed,
     makeTagFeed,
-    makeRelayFeed,
-    makeGlobalFeed,
-    Scope,
+    Scope
   } from "@welshman/feeds"
   import {toSpliced} from "src/util/misc"
   import Icon from "src/partials/Icon.svelte"

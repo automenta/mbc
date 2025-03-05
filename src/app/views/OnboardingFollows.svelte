@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {ctx, fromPairs, uniq, without, remove, append, nth, nthNe} from "@welshman/lib"
-  import {getPubkeyTagValues, getAddress, FOLLOWS} from "@welshman/util"
-  import {relaySearch, profileSearch, tagPubkey} from "@welshman/app"
+  import {append, ctx, fromPairs, nth, nthNe, remove, uniq, without} from "@welshman/lib"
+  import {FOLLOWS, getAddress, getPubkeyTagValues} from "@welshman/util"
+  import {profileSearch, relaySearch, tagPubkey} from "@welshman/app"
   import Card from "src/partials/Card.svelte"
   import Input from "src/partials/Input.svelte"
   import Modal from "src/partials/Modal.svelte"
@@ -10,7 +10,7 @@
   import Subheading from "src/partials/Subheading.svelte"
   import PersonSummary from "src/app/shared/PersonSummary.svelte"
   import RelayCard from "src/app/shared/RelayCard.svelte"
-  import {createPeopleLoader, createAndPublish, setOutboxPolicies} from "src/engine"
+  import {createAndPublish, createPeopleLoader, setOutboxPolicies} from "src/engine"
   import {quantify} from "src/util/misc"
 
   export let state

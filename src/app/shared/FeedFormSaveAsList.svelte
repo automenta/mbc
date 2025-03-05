@@ -1,12 +1,12 @@
 <script lang="ts">
-  import {NAMED_PEOPLE, NAMED_RELAYS, NAMED_TOPICS, getAddress} from "@welshman/util"
+  import {getAddress, NAMED_PEOPLE, NAMED_RELAYS, NAMED_TOPICS} from "@welshman/util"
   import {tagPubkey} from "@welshman/app"
   import {isAuthorFeed, isRelayFeed, makeListFeed} from "@welshman/feeds"
   import Card from "src/partials/Card.svelte"
   import Anchor from "src/partials/Anchor.svelte"
   import Popover2 from "src/partials/Popover2.svelte"
   import ListForm from "src/app/shared/ListForm.svelte"
-  import {makeUserList, isTopicFeed, isMentionFeed} from "src/domain"
+  import {isMentionFeed, isTopicFeed, makeUserList} from "src/domain"
 
   export let feed
   export let onChange

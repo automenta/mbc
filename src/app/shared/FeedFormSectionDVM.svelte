@@ -1,11 +1,11 @@
 <script lang="ts">
   import {fromPairs, identity} from "@welshman/lib"
   import {
-    getAddress,
     DVM_REQUEST_DISCOVER_CONTENT,
     DVM_REQUEST_DISCOVER_PEOPLE,
     DVM_REQUEST_SEARCH_CONTENT,
     DVM_REQUEST_SEARCH_PEOPLE,
+    getAddress
   } from "@welshman/util"
   import type {DVMFeed} from "@welshman/feeds"
   import {getFeedArgs, makeDVMFeed} from "@welshman/feeds"

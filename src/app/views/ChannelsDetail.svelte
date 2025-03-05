@@ -1,15 +1,15 @@
 <script lang="ts">
   import {derived} from "svelte/store"
-  import {onMount, onDestroy} from "svelte"
+  import {onDestroy, onMount} from "svelte"
   import {deriveEvents} from "@welshman/store"
   import {DIRECT_MESSAGE, isShareableRelayUrl} from "@welshman/util"
   import {
-    inboxRelaySelectionsByPubkey,
-    session,
-    repository,
     displayProfileByPubkey,
-    loadInboxRelaySelections,
     getRelayUrls,
+    inboxRelaySelectionsByPubkey,
+    loadInboxRelaySelections,
+    repository,
+    session
   } from "@welshman/app"
   import Anchor from "src/partials/Anchor.svelte"
   import Channel from "src/app/shared/Channel.svelte"

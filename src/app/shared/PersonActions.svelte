@@ -1,6 +1,6 @@
 <script lang="ts">
   import {derived} from "svelte/store"
-  import {session, signer, tagPubkey, mute, unmute} from "@welshman/app"
+  import {mute, session, signer, tagPubkey, unmute} from "@welshman/app"
   import Popover from "src/partials/Popover.svelte"
   import Anchor from "src/partials/Anchor.svelte"
   import {loginWithPublicKey, userMutes} from "src/engine"

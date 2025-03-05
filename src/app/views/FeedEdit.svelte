@@ -2,7 +2,7 @@
   import {NAMED_BOOKMARKS} from "@welshman/util"
   import FeedForm from "src/app/shared/FeedForm.svelte"
   import {router} from "src/app/util"
-  import {readFeed, mapListToFeed, readUserList} from "src/domain"
+  import {mapListToFeed, readFeed, readUserList} from "src/domain"
   import {deriveEvent} from "src/engine"
 
   export let address

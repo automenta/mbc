@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {uniq, identity, spec, groupBy, pluck, uniqBy, prop} from "@welshman/lib"
+  import {groupBy, identity, pluck, prop, spec, uniq, uniqBy} from "@welshman/lib"
   import type {TrustedEvent} from "@welshman/util"
-  import {REACTION, ZAP_RESPONSE, getTagValue} from "@welshman/util"
+  import {getTagValue, REACTION, ZAP_RESPONSE} from "@welshman/util"
   import {repostKinds} from "src/util/nostr"
   import Icon from "src/partials/Icon.svelte"
   import PersonLink from "src/app/shared/PersonLink.svelte"

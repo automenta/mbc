@@ -1,36 +1,36 @@
 <script lang="ts">
   import {stripProtocol} from "@welshman/lib"
   import {
-    PINS,
-    REACTION,
-    PROFILE,
-    RELAYS,
-    INBOX_RELAYS,
     FOLLOWS,
-    isShareableRelayUrl,
-    getPubkeyTagValues,
-    getListTags,
     getIdFilters,
+    getListTags,
+    getPubkeyTagValues,
     getTagValues,
+    INBOX_RELAYS,
+    isShareableRelayUrl,
+    PINS,
+    PROFILE,
+    REACTION,
+    RELAYS
   } from "@welshman/util"
   import {feedFromFilter} from "@welshman/feeds"
   import {
-    deriveProfile,
+    deriveFollows,
     deriveHandleForPubkey,
+    deriveProfile,
+    deriveProfileDisplay,
+    deriveRelaySelections,
     deriveZapperForPubkey,
     displayProfileByPubkey,
-    getRelayUrls,
-    deriveRelaySelections,
-    tagZapSplit,
-    deriveProfileDisplay,
-    deriveFollows,
     followersByPubkey,
+    getRelayUrls,
     getUserWotScore,
     maxWot,
+    pinsByPubkey,
+    repository,
     session,
     tagPubkey,
-    repository,
-    pinsByPubkey,
+    tagZapSplit
   } from "@welshman/app"
   import {deriveEvents} from "@welshman/store"
   import {ensureProto, toTitle} from "src/util/misc"
@@ -52,7 +52,7 @@
   import PersonFollowers from "src/app/views/PersonFollowers.svelte"
   import PersonFollows from "src/app/views/PersonFollows.svelte"
   import {makeFeed} from "src/domain"
-  import {load, userMutes, imgproxy, userFollows, follow, unfollow} from "src/engine"
+  import {follow, imgproxy, load, unfollow, userFollows, userMutes} from "src/engine"
   import {router} from "src/app/util"
   import {nip19} from "nostr-tools"
   import {tweened} from "svelte/motion"

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import {displayPubkey, getPubkeyTagValues, getListTags} from "@welshman/util"
+  import {displayPubkey, getListTags, getPubkeyTagValues} from "@welshman/util"
   import {
-    userFollows,
-    deriveUserWotScore,
     deriveHandleForPubkey,
-    displayHandle,
     deriveProfileDisplay,
+    deriveUserWotScore,
+    displayHandle,
+    userFollows
   } from "@welshman/app"
   import WotScore from "src/partials/WotScore.svelte"
   import PersonCircle from "src/app/shared/PersonCircle.svelte"

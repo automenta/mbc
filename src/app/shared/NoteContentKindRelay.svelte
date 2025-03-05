@@ -1,8 +1,14 @@
 <script lang="ts">
-  import {getRelayTagValues, isShareableRelayUrl} from "@welshman/util"
+  import {
+    BLOCKED_RELAYS,
+    getRelayTagValues,
+    INBOX_RELAYS,
+    isShareableRelayUrl,
+    RELAYS,
+    SEARCH_RELAYS
+  } from "@welshman/util"
   import FlexColumn from "src/partials/FlexColumn.svelte"
   import RelayCard from "src/app/shared/RelayCard.svelte"
-  import {RELAYS, BLOCKED_RELAYS, SEARCH_RELAYS, INBOX_RELAYS} from "@welshman/util"
 
   export let note
   export let kind: 10002 | 10006 | 10007 | 10050 = RELAYS

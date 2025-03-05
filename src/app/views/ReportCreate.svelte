@@ -1,9 +1,9 @@
 <script lang="ts">
   import {ctx} from "@welshman/lib"
-  import {asSignedEvent, createEvent} from "@welshman/util"
   import type {SignedEvent} from "@welshman/util"
-  import {Nip59, Nip01Signer} from "@welshman/signer"
-  import {repository, loadRelaySelections} from "@welshman/app"
+  import {asSignedEvent, createEvent} from "@welshman/util"
+  import {Nip01Signer, Nip59} from "@welshman/signer"
+  import {loadRelaySelections, repository} from "@welshman/app"
   import {showInfo} from "src/partials/Toast.svelte"
   import Heading from "src/partials/Heading.svelte"
   import FlexColumn from "src/partials/FlexColumn.svelte"

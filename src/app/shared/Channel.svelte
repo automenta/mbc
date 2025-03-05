@@ -1,13 +1,8 @@
 <script lang="ts">
-  import {sleep, prop, sortBy, max, last, pluck} from "@welshman/lib"
+  import {last, max, pluck, prop, sleep, sortBy} from "@welshman/lib"
   import type {TrustedEvent} from "@welshman/util"
   import {isShareableRelayUrl} from "@welshman/util"
-  import {
-    session,
-    getRelayUrls,
-    displayProfileByPubkey,
-    inboxRelaySelectionsByPubkey,
-  } from "@welshman/app"
+  import {displayProfileByPubkey, getRelayUrls, inboxRelaySelectionsByPubkey, session} from "@welshman/app"
   import {onMount} from "svelte"
   import {derived} from "svelte/store"
   import {fly} from "src/util/transition"

@@ -1,12 +1,10 @@
 import type {PartialSubscribeRequest} from "@welshman/app"
 import {
-  subscribe as baseSubscribe,
   db,
   displayProfileByPubkey,
   ensurePlaintext,
   followsByPubkey,
   freshness,
-  profilesByPubkey,
   getDefaultAppContext,
   getDefaultNetContext,
   getNetwork,
@@ -21,8 +19,9 @@ import {
   makeTrackerStore,
   maxWot,
   mutesByPubkey,
-  plaintext,
   pinsByPubkey,
+  plaintext,
+  profilesByPubkey,
   pubkey,
   publishThunk,
   relay,
@@ -33,85 +32,85 @@ import {
   setPlaintext,
   signer,
   storageAdapters,
+  subscribe as baseSubscribe,
   tracker,
   zappers,
 } from "@welshman/app"
 import {
-  Worker,
+  ago,
+  cached,
   ctx,
   groupBy,
+  HOUR,
   identity,
+  max,
   now,
-  ago,
+  partition,
+  prop,
   pushToMapKey,
   setContext,
   simpleCache,
-  cached,
   sort,
+  sortBy,
   take,
   uniq,
-  partition,
-  prop,
-  sortBy,
-  max,
-  HOUR,
+  Worker,
 } from "@welshman/lib"
 import type {Connection, PublishRequest, Target} from "@welshman/net"
 import {
-  Executor,
   AuthMode,
+  ConnectionEvent,
+  Executor,
   Local,
   Multi,
   Relays,
   SubscriptionEvent,
-  ConnectionEvent,
 } from "@welshman/net"
 import {Nip01Signer, Nip59} from "@welshman/signer"
 import {deriveEvents, deriveEventsMapped, synced, withGetter} from "@welshman/store"
 import type {
   EventTemplate,
+  HashedEvent,
   PublishedList,
   SignedEvent,
   TrustedEvent,
-  HashedEvent,
 } from "@welshman/util"
 import {
   APP_DATA,
+  asDecryptedEvent,
+  createEvent,
   DIRECT_MESSAGE,
   FEED,
   FEEDS,
   FOLLOWS,
-  HANDLER_INFORMATION,
-  HANDLER_RECOMMENDATION,
-  LABEL,
-  LOCAL_RELAY_URL,
-  MUTES,
-  NAMED_BOOKMARKS,
-  WRAP,
-  asDecryptedEvent,
-  createEvent,
   getAddress,
   getAddressTagValues,
   getIdentifier,
   getListTags,
   getPubkeyTagValues,
-  getTagValue,
-  getTagValues,
-  isHashedEvent,
-  makeList,
-  normalizeRelayUrl,
-  readList,
   getReplyTagValues,
   getTag,
+  getTagValue,
+  getTagValues,
+  HANDLER_INFORMATION,
+  HANDLER_RECOMMENDATION,
+  isHashedEvent,
+  LABEL,
+  LOCAL_RELAY_URL,
+  makeList,
+  MUTES,
+  NAMED_BOOKMARKS,
+  normalizeRelayUrl,
+  readList,
+  WRAP,
 } from "@welshman/util"
 import Fuse from "fuse.js"
 import {getPow} from "nostr-tools/nip13"
 import type {PublishedFeed, PublishedListFeed, PublishedUserList} from "src/domain"
 import {
   CollectionSearch,
-  EDITABLE_LIST_KINDS,
-  UserListSearch,
   displayFeed,
+  EDITABLE_LIST_KINDS,
   getHandlerAddress,
   mapListToFeed,
   readCollections,
@@ -119,10 +118,11 @@ import {
   readHandlers,
   readUserList,
   subscriptionNotices,
+  UserListSearch,
 } from "src/domain"
 import type {AnonymousUserState, Channel, SessionWithMeta} from "src/engine/model"
 import logger from "src/util/logger"
-import {SearchHelper, fromCsv, parseJson} from "src/util/misc"
+import {fromCsv, parseJson, SearchHelper} from "src/util/misc"
 import {appDataKeys, metaKinds, noteKinds, reactionKinds, repostKinds} from "src/util/nostr"
 import {derived, get, writable} from "svelte/store"
 

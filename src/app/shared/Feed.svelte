@@ -1,20 +1,14 @@
 <script lang="ts">
   import {onMount} from "svelte"
   import {writable} from "svelte/store"
-  import {WEEK, now, ago, uniqBy, hash} from "@welshman/lib"
+  import {ago, hash, now, uniqBy, WEEK} from "@welshman/lib"
   import type {TrustedEvent} from "@welshman/util"
   import {synced} from "@welshman/store"
-  import type {FeedController, Feed as FeedDefinition} from "@welshman/feeds"
-  import {
-    isRelayFeed,
-    makeKindFeed,
-    makeIntersectionFeed,
-    isKindFeed,
-    walkFeed,
-  } from "@welshman/feeds"
+  import type {Feed as FeedDefinition, FeedController} from "@welshman/feeds"
+  import {isKindFeed, isRelayFeed, makeIntersectionFeed, makeKindFeed, walkFeed} from "@welshman/feeds"
   import {createScroller} from "src/util/misc"
   import {noteKinds} from "src/util/nostr"
-  import {fly, fade} from "src/util/transition"
+  import {fade, fly} from "src/util/transition"
   import Anchor from "src/partials/Anchor.svelte"
   import Card from "src/partials/Card.svelte"
   import Spinner from "src/partials/Spinner.svelte"
@@ -23,7 +17,7 @@
   import FeedControls from "src/app/shared/FeedControls.svelte"
   import {router} from "src/app/util"
   import type {Feed} from "src/domain"
-  import {env, createFeedController, sortEventsDesc} from "src/engine"
+  import {createFeedController, env, sortEventsDesc} from "src/engine"
   import FeedItem from "src/app/shared/FeedItem.svelte"
 
   export let feed: Feed

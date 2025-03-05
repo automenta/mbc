@@ -1,6 +1,6 @@
 <script lang="ts">
   import {ctx, switcher} from "@welshman/lib"
-  import {getTag, displayRelayUrl} from "@welshman/util"
+  import {displayRelayUrl, getTag} from "@welshman/util"
   import {displayProfileByPubkey} from "@welshman/app"
   import Anchor from "src/partials/Anchor.svelte"
   import Rating from "src/partials/Rating.svelte"

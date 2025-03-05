@@ -1,46 +1,45 @@
-import {avg, last, nthEq} from "@welshman/lib"
+import {avg, identity, last, nthEq} from "@welshman/lib"
+import type {TrustedEvent} from "@welshman/util"
 import {
+  Address,
+  BOOKMARKS,
+  CHANNELS,
+  COMMENT,
+  COMMUNITIES,
+  FEED,
+  FOLLOWS,
   fromNostrURI,
   GENERIC_REPOST,
-  HIGHLIGHT,
-  PICTURE_NOTE,
-  LONG_FORM,
-  NOTE,
-  COMMENT,
-  REACTION,
-  REPOST,
-  ZAP_RESPONSE,
-  Address,
-  RELAYS,
-  PROFILE,
-  INBOX_RELAYS,
-  FOLLOWS,
-  MUTES,
+  getParentIdOrAddr,
   getTags,
   getTagValue,
   getTopicTagValues,
   GROUPS,
-  FEED,
-  NAMED_PEOPLE,
-  NAMED_RELAYS,
-  NAMED_CURATIONS,
-  NAMED_WIKI_AUTHORS,
-  NAMED_WIKI_RELAYS,
-  NAMED_EMOJIS,
-  NAMED_TOPICS,
+  HIGHLIGHT,
+  INBOX_RELAYS,
+  LONG_FORM,
+  MUTES,
   NAMED_ARTIFACTS,
   NAMED_COMMUNITIES,
+  NAMED_CURATIONS,
+  NAMED_EMOJIS,
+  NAMED_PEOPLE,
+  NAMED_RELAYS,
+  NAMED_TOPICS,
+  NAMED_WIKI_AUTHORS,
+  NAMED_WIKI_RELAYS,
+  NOTE,
+  PICTURE_NOTE,
   PINS,
-  BOOKMARKS,
-  COMMUNITIES,
-  CHANNELS,
+  PROFILE,
+  REACTION,
+  RELAYS,
+  REPOST,
   TOPICS,
+  ZAP_RESPONSE,
 } from "@welshman/util"
-import {identity} from "@welshman/lib"
-import type {TrustedEvent} from "@welshman/util"
-import {getParentIdOrAddr} from "@welshman/util"
 import {getPubkey} from "@welshman/signer"
-import {hexToBytes, bytesToHex} from "@noble/hashes/utils"
+import {bytesToHex, hexToBytes} from "@noble/hashes/utils"
 import * as nip19 from "nostr-tools/nip19"
 import * as nip05 from "nostr-tools/nip05"
 import {parseJson} from "src/util/misc"
@@ -103,7 +102,7 @@ export const isLike = (e: TrustedEvent) =>
 export const isReply = (e: TrustedEvent) =>
   Boolean([NOTE, COMMENT].includes(e.kind) && getParentIdOrAddr(e))
 
-export const toHex = ( string): string | null => {
+export const toHex = (string): string | null => {
   if (data.match(/[a-zA-Z0-9]{64}/)) {
     return data
   }
@@ -206,32 +205,32 @@ export async function extractPrivateKey(input: string): Promise<string | null> {
   try {
     // Try decoding as NSEC
     try {
-      return nsecDecode(input);
+      return nsecDecode(input)
     } catch (e) {
       // Not a valid NSEC, try next
     }
 
     // Try as hex
     if (isHex(input)) {
-      return input;
+      return input
     }
 
     // Try as JSON
     try {
-      const json = JSON.parse(input);
+      const json = JSON.parse(input)
       if (json?.privateKey) {
-        return json.privateKey;
+        return json.privateKey
       }
       if (json?.sec) {
-        return json.sec;
+        return json.sec
       }
     } catch (e) {
       // Not a valid JSON, try next
     }
 
-    return null; // No valid key found
+    return null // No valid key found
   } catch (e) {
-    console.error("Error extracting private key:", e);
-    return null;
+    console.error("Error extracting private key:", e)
+    return null
   }
 }

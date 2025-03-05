@@ -15,8 +15,8 @@
 </style>
 
 <script lang="ts">
-  import {thunks, abortThunk} from "@welshman/app"
   import type {Thunk} from "@welshman/app"
+  import {abortThunk, thunks} from "@welshman/app"
   import {PublishStatus} from "@welshman/net"
   import {now} from "@welshman/signer"
   import {LOCAL_RELAY_URL, type TrustedEvent} from "@welshman/util"

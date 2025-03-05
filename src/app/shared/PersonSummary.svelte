@@ -9,7 +9,7 @@
   import PersonHandle from "src/app/shared/PersonHandle.svelte"
   import {router} from "src/app/util/router"
   import {derived} from "svelte/store"
-  import {unfollow, userFollows, follow} from "src/engine"
+  import {follow, unfollow, userFollows} from "src/engine"
 
   export let pubkey
   export let inert = false

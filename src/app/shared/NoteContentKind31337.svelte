@@ -1,7 +1,7 @@
 <script lang="ts">
   import {fromPairs} from "@welshman/lib"
   import type {TrustedEvent} from "@welshman/util"
-  import {getTag, getTagValues, getTagValue, tagsFromIMeta} from "@welshman/util"
+  import {getTag, getTagValue, getTagValues, tagsFromIMeta} from "@welshman/util"
   import Chips from "src/partials/Chips.svelte"
   import NoteContentLinks from "src/app/shared/NoteContentLinks.svelte"
 

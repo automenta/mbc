@@ -26,6 +26,7 @@ export default defineConfig(async () => {
   return {
     server: {
       https: false,
+      //allowedHosts: true, // Allows any host to access the server
     },
     build: {
       sourcemap: true,

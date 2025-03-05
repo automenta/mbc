@@ -1,7 +1,6 @@
 import type {Session} from "@welshman/app"
 import {
   follow as baseFollow,
-  unfollow as baseUnfollow,
   getRelayUrls,
   inboxRelaySelectionsByPubkey,
   nip46Perms,
@@ -12,50 +11,51 @@ import {
   signer,
   subscribe,
   tagPubkey,
+  unfollow as baseUnfollow,
   userInboxRelaySelections,
   userRelaySelections,
 } from "@welshman/app"
 import {DVMEvent, type DVMRequestOptions} from "@welshman/dvm"
 import {
-  identity,
   append,
+  assoc,
   cached,
   ctx,
-  groupBy,
-  now,
-  remove,
   Emitter,
-  prop,
-  flatten,
-  nthNe,
-  uniq,
-  assoc,
-  omit,
   fetchJson,
+  flatten,
+  groupBy,
+  identity,
+  now,
+  nthNe,
+  omit,
+  prop,
+  remove,
   sleep,
   tryCatch,
+  uniq,
 } from "@welshman/lib"
 import {SubscriptionEvent} from "@welshman/net"
-import {Nip01Signer, Nip46Broker, Nip59, makeSecret} from "@welshman/signer"
+import {makeSecret, Nip01Signer, Nip46Broker, Nip59} from "@welshman/signer"
 import type {Filter, Profile, TrustedEvent} from "@welshman/util"
 import {
   Address,
-  FEEDS,
-  FOLLOWS,
-  INBOX_RELAYS,
-  PROFILE,
-  RELAYS,
   addToListPublicly,
   createEvent,
   createProfile,
   editProfile,
+  FEEDS,
+  FOLLOWS,
   getAddress,
+  getTagValue,
+  INBOX_RELAYS,
   isPublishedProfile,
   isSignedEvent,
   makeList,
   normalizeRelayUrl,
+  PROFILE,
+  RELAYS,
   removeFromList,
-  getTagValue,
   uniqTags,
 } from "@welshman/util"
 import crypto from "crypto"

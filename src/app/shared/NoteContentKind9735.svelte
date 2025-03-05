@@ -1,7 +1,7 @@
 <script lang="ts">
   import {onMount} from "svelte"
   import {nth} from "@welshman/lib"
-  import {zapFromEvent, getTags, getTagValue} from "@welshman/util"
+  import {getTags, getTagValue, zapFromEvent} from "@welshman/util"
   import {deriveZapperForPubkey, loadZapper} from "@welshman/app"
   import {formatSats} from "src/util/misc"
   import PersonLink from "src/app/shared/PersonLink.svelte"

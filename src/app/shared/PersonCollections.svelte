@@ -2,7 +2,7 @@
   import Chip from "src/partials/Chip.svelte"
   import Subheading from "src/partials/Subheading.svelte"
   import FeedItem from "src/app/shared/FeedItem.svelte"
-  import {loadLabels, deriveCollections} from "src/engine"
+  import {deriveCollections, loadLabels} from "src/engine"
 
   export let pubkey
 

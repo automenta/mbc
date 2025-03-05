@@ -1,23 +1,16 @@
 <script lang="ts">
   import {ctx, remove, spec} from "@welshman/lib"
   import {deriveEvents} from "@welshman/store"
-  import {getIdOrAddress, getReplyFilters, isChildOf} from "@welshman/util"
   import type {TrustedEvent} from "@welshman/util"
-  import {repository} from "@welshman/app"
+  import {getIdOrAddress, getReplyFilters, isChildOf} from "@welshman/util"
   import type {Thunk} from "@welshman/app"
+  import {repository} from "@welshman/app"
   import {onMount, setContext} from "svelte"
   import {derived} from "svelte/store"
   import {noteKinds} from "src/util/nostr"
   import NoteMeta from "src/app/shared/NoteMeta.svelte"
   import Note from "src/app/shared/Note.svelte"
-  import {
-    ensureUnwrapped,
-    getSetting,
-    isEventMuted,
-    loadEvent,
-    sortEventsDesc,
-    userSettings,
-  } from "src/engine"
+  import {ensureUnwrapped, getSetting, isEventMuted, loadEvent, sortEventsDesc, userSettings} from "src/engine"
   import AltColor from "src/partials/AltColor.svelte"
   import Popover from "src/partials/Popover.svelte"
   import Spinner from "src/partials/Spinner.svelte"

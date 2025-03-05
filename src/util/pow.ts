@@ -1,6 +1,6 @@
-import type {OwnedEvent, HashedEvent} from "@welshman/util"
+import type {HashedEvent, OwnedEvent} from "@welshman/util"
 import {createEvent} from "@welshman/util"
-import {makeSecret, own, getPubkey} from "@welshman/signer"
+import {getPubkey, makeSecret, own} from "@welshman/signer"
 import {synced, withGetter} from "@welshman/store"
 import PowWorker from "src/workers/pow?worker"
 import {isMobile} from "src/util/html"

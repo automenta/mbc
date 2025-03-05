@@ -1,14 +1,7 @@
 <script lang="ts">
-  import {sortBy, flatten, batch, uniqBy} from "@welshman/lib"
-  import {
-    FEED,
-    FEEDS,
-    NAMED_BOOKMARKS,
-    getAddress,
-    getAddressTagValues,
-    getIdFilters,
-  } from "@welshman/util"
+  import {batch, flatten, sortBy, uniqBy} from "@welshman/lib"
   import type {TrustedEvent} from "@welshman/util"
+  import {FEED, FEEDS, getAddress, getAddressTagValues, getIdFilters, NAMED_BOOKMARKS} from "@welshman/util"
   import {repository} from "@welshman/app"
   import {onMount} from "svelte"
   import {createScroller} from "src/util/misc"
@@ -20,13 +13,13 @@
   import {router} from "src/app/util/router"
   import {displayFeed} from "src/domain"
   import {
-    load,
-    userFeeds,
-    feedSearch,
-    userListFeeds,
-    userFavoritedFeeds,
-    userFollows,
     addSinceToFilter,
+    feedSearch,
+    load,
+    userFavoritedFeeds,
+    userFeeds,
+    userFollows,
+    userListFeeds
   } from "src/engine"
 
   const createFeed = () => router.at("feeds/create").open()

@@ -1,14 +1,8 @@
 <script lang="ts">
   import cx from "classnames"
   import {ctx, remove} from "@welshman/lib"
-  import {repository, pubkey} from "@welshman/app"
-  import {
-    NAMED_BOOKMARKS,
-    toNostrURI,
-    Address,
-    getListTags,
-    getAddressTagValues,
-  } from "@welshman/util"
+  import {pubkey, repository} from "@welshman/app"
+  import {Address, getAddressTagValues, getListTags, NAMED_BOOKMARKS, toNostrURI} from "@welshman/util"
   import {slide} from "src/util/transition"
   import {boolCtrl} from "src/partials/utils"
   import FlexColumn from "src/partials/FlexColumn.svelte"
@@ -18,13 +12,8 @@
   import PersonCircles from "src/app/shared/PersonCircles.svelte"
   import FeedSummary from "src/app/shared/FeedSummary.svelte"
   import PersonBadgeSmall from "src/app/shared/PersonBadgeSmall.svelte"
-  import {readFeed, readUserList, displayFeed, mapListToFeed} from "src/domain"
-  import {
-    addFeedFavorite,
-    removeFeedFavorite,
-    userFeedFavorites,
-    feedFavoritesByAddress,
-  } from "src/engine"
+  import {displayFeed, mapListToFeed, readFeed, readUserList} from "src/domain"
+  import {addFeedFavorite, feedFavoritesByAddress, removeFeedFavorite, userFeedFavorites} from "src/engine"
   import {router} from "src/app/util"
 
   export let address

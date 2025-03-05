@@ -1,16 +1,12 @@
 <script lang="ts">
-  import { writable, get } from 'svelte/store';
-  import { isKeyValid, extractPrivateKey } from 'src/util/nostr';
-  import { addSession, userRelaySelections } from '@welshman/app';
-  import { getPubkey, makeSecret } from '@welshman/signer';
-  import { router } from 'src/app/util';
-  import { env } from 'src/engine';
-  import { createAndPublish, setOutboxPolicies } from 'src/engine';
-  import { FOLLOWS, PROFILE } from '@welshman/util';
-  import { getWriteRelayUrls } from '@welshman/app';
-  import { tagPubkey } from '@welshman/app';
-  import Input from 'src/partials/Input.svelte';
-  import Anchor from 'src/partials/Anchor.svelte';
+  import {get, writable} from "svelte/store"
+  import {extractPrivateKey, isKeyValid} from "src/util/nostr"
+  import {addSession, getWriteRelayUrls, userRelaySelections} from "@welshman/app"
+  import {getPubkey, makeSecret} from "@welshman/signer"
+  import {router} from "src/app/util"
+  import {createAndPublish, env, setOutboxPolicies} from "src/engine"
+  import {PROFILE} from "@welshman/util"
+  import Input from "src/partials/Input.svelte"
 
   let keyPairInput = '';
   let keyPairFile: File | null = null;

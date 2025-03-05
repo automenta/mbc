@@ -1,7 +1,7 @@
 <script lang="ts">
   import {ctx, identity} from "@welshman/lib"
   import {pubkey, topicSearch} from "@welshman/app"
-  import {showWarning, showInfo} from "src/partials/Toast.svelte"
+  import {showInfo, showWarning} from "src/partials/Toast.svelte"
   import Heading from "src/partials/Heading.svelte"
   import FlexColumn from "src/partials/FlexColumn.svelte"
   import Anchor from "src/partials/Anchor.svelte"
@@ -9,13 +9,7 @@
   import SearchSelect from "src/partials/SearchSelect.svelte"
   import SelectButton from "src/partials/SelectButton.svelte"
   import {router} from "src/app/util/router"
-  import {
-    loadLabels,
-    getClientTags,
-    deriveCollections,
-    collectionSearch,
-    createAndPublish,
-  } from "src/engine"
+  import {collectionSearch, createAndPublish, deriveCollections, getClientTags, loadLabels} from "src/engine"
 
   export let id
 

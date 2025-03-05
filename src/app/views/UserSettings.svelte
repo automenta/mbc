@@ -12,7 +12,7 @@
   import {fuzzy, pluralize} from "src/util/misc"
   import WorkEstimate from "src/partials/WorkEstimate.svelte"
   import SearchSelect from "src/partials/SearchSelect.svelte"
-  import {env, userSettings, publishSettings} from "src/engine"
+  import {env, publishSettings, userSettings} from "src/engine"
   import Select from "src/partials/Select.svelte"
 
   const values = {...$userSettings}

@@ -1,21 +1,21 @@
 <script lang="ts">
   import {onMount} from "svelte"
   import {derived} from "svelte/store"
-  import {nthEq, sortBy, uniq, groupBy, pushToMapKey} from "@welshman/lib"
+  import {groupBy, nthEq, pushToMapKey, sortBy, uniq} from "@welshman/lib"
   import {
+    deriveInboxRelaySelections,
+    deriveRelaySelections,
+    displayProfileByPubkey,
+    getRelayUrls,
+    getWriteRelayUrls,
+    profilesByPubkey,
     pubkey,
+    type Relay,
     relays,
     relaySearch,
-    type Relay,
-    displayProfileByPubkey,
-    profilesByPubkey,
-    getRelayUrls,
-    deriveRelaySelections,
-    deriveInboxRelaySelections,
-    getWriteRelayUrls,
-    relaySelectionsByPubkey,
+    relaySelectionsByPubkey
   } from "@welshman/app"
-  import {isShareableRelayUrl, isRelayUrl, normalizeRelayUrl, profileHasName} from "@welshman/util"
+  import {isRelayUrl, isShareableRelayUrl, normalizeRelayUrl, profileHasName} from "@welshman/util"
   import {createScroller, displayList} from "src/util/misc"
   import {showWarning} from "src/partials/Toast.svelte"
   import Tabs from "src/partials/Tabs.svelte"
@@ -26,7 +26,7 @@
   import Anchor from "src/partials/Anchor.svelte"
   import RelayCard from "src/app/shared/RelayCard.svelte"
   import FeedItem from "src/app/shared/FeedItem.svelte"
-  import {load, userFollows, sortEventsDesc, joinRelay} from "src/engine"
+  import {joinRelay, load, sortEventsDesc, userFollows} from "src/engine"
 
   const tabs = ["search", "reviews"]
 

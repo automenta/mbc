@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {pubkey, profilesByPubkey} from "@welshman/app"
+  import {profilesByPubkey, pubkey} from "@welshman/app"
   import Input from "src/partials/Input.svelte"
   import FlexColumn from "src/partials/FlexColumn.svelte"
   import Card from "src/partials/Card.svelte"

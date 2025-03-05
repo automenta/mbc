@@ -1,9 +1,9 @@
 <script lang="ts">
   import {init, launchPaymentModal, onModalClosed} from "@getalby/bitcoin-connect"
-  import {ctx, sum, nth, now, tryCatch, fetchJson} from "@welshman/lib"
+  import {ctx, fetchJson, now, nth, sum, tryCatch} from "@welshman/lib"
   import {createEvent, ZAP_REQUEST} from "@welshman/util"
   import {Nip01Signer} from "@welshman/signer"
-  import {signer, displayProfileByPubkey, loadZapper, loadProfile} from "@welshman/app"
+  import {displayProfileByPubkey, loadProfile, loadZapper, signer} from "@welshman/app"
   import Anchor from "src/partials/Anchor.svelte"
   import FieldInline from "src/partials/FieldInline.svelte"
   import Toggle from "src/partials/Toggle.svelte"
@@ -11,7 +11,7 @@
   import Textarea from "src/partials/Textarea.svelte"
   import PersonCircles from "src/app/shared/PersonCircles.svelte"
   import {router} from "src/app/util/router"
-  import {env, load, getSetting} from "src/engine"
+  import {env, getSetting, load} from "src/engine"
 
   export let splits
   export let id = null

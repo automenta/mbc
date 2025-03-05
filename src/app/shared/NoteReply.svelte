@@ -1,18 +1,13 @@
 <script lang="ts">
   import {onDestroy} from "svelte"
-  import {ctx, without, uniq, now} from "@welshman/lib"
-  import {NOTE, COMMENT, getPubkeyTagValues, createEvent, uniqTags} from "@welshman/util"
-  import {
-    session,
-    displayProfileByPubkey,
-    tagEventForReply,
-    tagEventForComment,
-  } from "@welshman/app"
+  import {ctx, now, uniq, without} from "@welshman/lib"
+  import {COMMENT, createEvent, getPubkeyTagValues, NOTE, uniqTags} from "@welshman/util"
   import type {Thunk} from "@welshman/app"
-  import {own, hash} from "@welshman/signer"
+  import {displayProfileByPubkey, session, tagEventForComment, tagEventForReply} from "@welshman/app"
+  import {hash, own} from "@welshman/signer"
   import {writable} from "svelte/store"
-  import {makePow} from "src/util/pow"
   import type {ProofOfWork} from "src/util/pow"
+  import {makePow} from "src/util/pow"
   import {slide} from "src/util/transition"
   import {showWarning} from "src/partials/Toast.svelte"
   import AltColor from "src/partials/AltColor.svelte"

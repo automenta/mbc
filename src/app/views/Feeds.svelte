@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {makeRelayFeed, makeScopeFeed, makeAuthorFeed, Scope} from "@welshman/feeds"
+  import {makeAuthorFeed, makeRelayFeed, makeScopeFeed, Scope} from "@welshman/feeds"
   import {pubkey} from "@welshman/app"
   import Anchor from "src/partials/Anchor.svelte"
   import Feed from "src/app/shared/Feed.svelte"

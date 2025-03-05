@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {formatTimestamp, thunks, createSearch, type Thunk} from "@welshman/app"
+  import {createSearch, formatTimestamp, type Thunk, thunks} from "@welshman/app"
   import {ctx} from "@welshman/lib"
   import {type Connection} from "@welshman/net"
   import {get} from "svelte/store"
@@ -7,11 +7,7 @@
   import AltColor from "src/partials/AltColor.svelte"
   import Input from "src/partials/Input.svelte"
   import ThunkNotice from "src/partials/ThunkNotice.svelte"
-  import {
-    messageAndColorFromStatus,
-    subscriptionNotices,
-    type PublishNotice,
-  } from "src/domain/connection"
+  import {messageAndColorFromStatus, type PublishNotice, subscriptionNotices} from "src/domain/connection"
 
   export let search: string = ""
 

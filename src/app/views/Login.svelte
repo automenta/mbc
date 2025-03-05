@@ -1,7 +1,7 @@
 <script lang="ts">
   import {onMount} from "svelte"
   import {Capacitor} from "@capacitor/core"
-  import {getNip07, Nip07Signer, getNip55, Nip55Signer} from "@welshman/signer"
+  import {getNip07, getNip55, Nip07Signer, Nip55Signer} from "@welshman/signer"
   import {appName} from "src/partials/state"
   import Anchor from "src/partials/Anchor.svelte"
   import FlexColumn from "src/partials/FlexColumn.svelte"

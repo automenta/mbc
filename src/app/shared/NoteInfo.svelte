@@ -2,17 +2,10 @@
   import {nip19} from "nostr-tools"
   import {tweened} from "svelte/motion"
   import {derived} from "svelte/store"
-  import {ctx, sum, pluck, spec, nthEq, remove, uniqBy, prop} from "@welshman/lib"
+  import {ctx, nthEq, pluck, prop, remove, spec, sum, uniqBy} from "@welshman/lib"
   import {repository} from "@welshman/app"
-  import type {TrustedEvent, Handler} from "@welshman/util"
-  import {
-    LOCAL_RELAY_URL,
-    isReplaceable,
-    Address,
-    toNostrURI,
-    getPubkeyTagValues,
-    ZAP_RESPONSE,
-  } from "@welshman/util"
+  import type {Handler, TrustedEvent} from "@welshman/util"
+  import {Address, getPubkeyTagValues, isReplaceable, LOCAL_RELAY_URL, toNostrURI, ZAP_RESPONSE} from "@welshman/util"
   import {fly} from "src/util/transition"
   import {copyToClipboard} from "src/util/html"
   import {isLike, noteKinds} from "src/util/nostr"
@@ -26,8 +19,8 @@
   import HandlerCard from "src/app/shared/HandlerCard.svelte"
   import RelayCard from "src/app/shared/RelayCard.svelte"
   import {deriveValidZaps} from "src/app/util"
-  import {env, trackerStore, sortEventsDesc} from "src/engine"
-  import {getHandlerKey, readHandlers, displayHandler} from "src/domain"
+  import {env, sortEventsDesc, trackerStore} from "src/engine"
+  import {displayHandler, getHandlerKey, readHandlers} from "src/domain"
 
   export let event: TrustedEvent
   export let children: TrustedEvent[] = []

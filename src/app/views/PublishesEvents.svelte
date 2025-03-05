@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {thunks, type Thunk} from "@welshman/app"
+  import {type Thunk, thunks} from "@welshman/app"
   import {assoc, DAY, MINUTE, now, omit, remove, sortBy} from "@welshman/lib"
   import {PublishStatus} from "@welshman/net"
   import {LOCAL_RELAY_URL} from "@welshman/util"

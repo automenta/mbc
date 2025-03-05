@@ -23,7 +23,7 @@
   import NoteContentKind32123 from "src/app/shared/NoteContentKind32123.svelte"
   import NoteContentKindList from "src/app/shared/NoteContentKindList.svelte"
   import NoteContentKindRelay from "src/app/shared/NoteContentKindRelay.svelte"
-  import {getSetting, env} from "src/engine"
+  import {env, getSetting} from "src/engine"
   import {CUSTOM_LIST_KINDS} from "src/domain"
 
   export let note

@@ -1,5 +1,5 @@
 import Bowser from "bowser"
-import {derived, writable, get} from "svelte/store"
+import {derived, get, writable} from "svelte/store"
 import {fromPairs} from "@welshman/lib"
 import {synced} from "@welshman/store"
 import {parseHex} from "src/util/html"

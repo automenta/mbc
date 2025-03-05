@@ -1,19 +1,19 @@
 <script lang="ts">
   import {
-    isScopeFeed,
-    isRelayFeed,
-    isListFeed,
-    isLabelFeed,
+    getFeedArgs,
+    hasSubFeeds,
     isAddressFeed,
-    isDVMFeed,
-    isKindFeed,
-    isTagFeed,
-    isIDFeed,
-    isSearchFeed,
     isAuthorFeed,
     isCreatedAtFeed,
-    hasSubFeeds,
-    getFeedArgs,
+    isDVMFeed,
+    isIDFeed,
+    isKindFeed,
+    isLabelFeed,
+    isListFeed,
+    isRelayFeed,
+    isScopeFeed,
+    isSearchFeed,
+    isTagFeed
   } from "@welshman/feeds"
   import {displayRelayUrl} from "@welshman/util"
   import {displayProfileByPubkey} from "@welshman/app"

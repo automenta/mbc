@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {repository, pubkey, profilesByPubkey} from "@welshman/app"
+  import {profilesByPubkey, pubkey, repository} from "@welshman/app"
   import FieldInline from "src/partials/FieldInline.svelte"
   import Toggle from "src/partials/Toggle.svelte"
   import Anchor from "src/partials/Anchor.svelte"

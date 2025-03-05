@@ -1,22 +1,22 @@
 <script lang="ts">
   import {
     getFeedArgs,
-    isGlobalFeed,
-    isCreatedAtFeed,
     isAuthorFeed,
-    isKindFeed,
+    isCreatedAtFeed,
     isDVMFeed,
+    isGlobalFeed,
+    isKindFeed,
+    isListFeed,
     isRelayFeed,
     isSearchFeed,
-    isListFeed,
-    makeTagFeed,
     makeAuthorFeed,
+    makeCreatedAtFeed,
+    makeDVMFeed,
+    makeKindFeed,
+    makeListFeed,
     makeRelayFeed,
     makeSearchFeed,
-    makeKindFeed,
-    makeCreatedAtFeed,
-    makeListFeed,
-    makeDVMFeed,
+    makeTagFeed
   } from "@welshman/feeds"
   import {toSpliced, toTitle} from "src/util/misc"
   import Card from "src/partials/Card.svelte"
@@ -35,7 +35,7 @@
   import FeedFormSectionList from "src/app/shared/FeedFormSectionList.svelte"
   import FeedFormSectionDVM from "src/app/shared/FeedFormSectionDVM.svelte"
   import FeedFormSaveAsList from "src/app/shared/FeedFormSaveAsList.svelte"
-  import {isTopicFeed, isPeopleFeed, isMentionFeed} from "src/domain"
+  import {isMentionFeed, isPeopleFeed, isTopicFeed} from "src/domain"
 
   export let feed
   export let onChange

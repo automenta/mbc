@@ -1,6 +1,6 @@
 <script lang="ts">
   import {displayRelayUrl} from "@welshman/util"
-  import {stringToHue, hsl} from "src/util/misc"
+  import {hsl, stringToHue} from "src/util/misc"
   import Rating from "src/partials/Rating.svelte"
   import Anchor from "src/partials/Anchor.svelte"
   import RelayStatus from "src/app/shared/RelayStatus.svelte"

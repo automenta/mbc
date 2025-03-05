@@ -2,13 +2,13 @@
   import cx from "classnames"
   import {displayRelayUrl} from "@welshman/util"
   import {
-    signer,
     deriveRelay,
+    getReadRelayUrls,
     getRelayUrls,
     getWriteRelayUrls,
-    getReadRelayUrls,
-    userRelaySelections,
+    signer,
     userInboxRelaySelections,
+    userRelaySelections
   } from "@welshman/app"
   import {derived} from "svelte/store"
   import {displayUrl, quantify} from "src/util/misc"

@@ -1,7 +1,7 @@
 <script lang="ts">
   import {nip19} from "nostr-tools"
   import {ctx} from "@welshman/lib"
-  import {deriveProfile, deriveHandleForPubkey, displayHandle} from "@welshman/app"
+  import {deriveHandleForPubkey, deriveProfile, displayHandle} from "@welshman/app"
   import CopyValue from "src/partials/CopyValue.svelte"
   import RelayCard from "src/app/shared/RelayCard.svelte"
 

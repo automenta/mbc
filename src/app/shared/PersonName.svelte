@@ -16,7 +16,7 @@
   import cx from "classnames"
   import {nip19} from "nostr-tools"
   import {displayPubkey} from "@welshman/util"
-  import {session, deriveProfileDisplay} from "@welshman/app"
+  import {deriveProfileDisplay, session} from "@welshman/app"
   import PersonHandle from "src/app/shared/PersonHandle.svelte"
   import CopyValueSimple from "src/partials/CopyValueSimple.svelte"
   import WotPopover from "./WotPopover.svelte"

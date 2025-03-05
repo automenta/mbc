@@ -1,14 +1,7 @@
 <script lang="ts">
-  import {
-    RELAYS,
-    FOLLOWS,
-    PROFILE,
-    LOCAL_RELAY_URL,
-    normalizeRelayUrl,
-    isRelayUrl,
-  } from "@welshman/util"
+  import {FOLLOWS, isRelayUrl, LOCAL_RELAY_URL, normalizeRelayUrl, PROFILE, RELAYS} from "@welshman/util"
   import {deriveEvents} from "@welshman/store"
-  import {session, repository} from "@welshman/app"
+  import {repository, session} from "@welshman/app"
   import {showWarning} from "src/partials/Toast.svelte"
   import Modal from "src/partials/Modal.svelte"
   import Field from "src/partials/Field.svelte"

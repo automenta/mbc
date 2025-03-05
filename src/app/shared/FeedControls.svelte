@@ -1,9 +1,9 @@
 <script lang="ts">
   import {debounce} from "throttle-debounce"
-  import {sortBy, not, equals, uniqBy} from "@welshman/lib"
+  import {equals, not, sortBy, uniqBy} from "@welshman/lib"
   import {getAddress} from "@welshman/util"
   import {synced} from "@welshman/store"
-  import {isSearchFeed, makeScopeFeed, Scope, makeSearchFeed, getFeedArgs} from "@welshman/feeds"
+  import {getFeedArgs, isSearchFeed, makeScopeFeed, makeSearchFeed, Scope} from "@welshman/feeds"
   import {signer} from "@welshman/app"
   import {toSpliced} from "src/util/misc"
   import {slideAndFade} from "src/util/transition"
@@ -15,8 +15,8 @@
   import Anchor from "src/partials/Anchor.svelte"
   import FeedForm from "src/app/shared/FeedForm.svelte"
   import {router} from "src/app/util"
-  import {normalizeFeedDefinition, makeFeed, readFeed, displayFeed} from "src/domain"
-  import {userListFeeds, deleteEvent, userFeeds, userFavoritedFeeds} from "src/engine"
+  import {displayFeed, makeFeed, normalizeFeedDefinition, readFeed} from "src/domain"
+  import {deleteEvent, userFavoritedFeeds, userFeeds, userListFeeds} from "src/engine"
 
   export let feed
   export let updateFeed

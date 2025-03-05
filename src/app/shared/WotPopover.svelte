@@ -1,13 +1,13 @@
 <script lang="ts">
   import {
+    deriveHandleForPubkey,
     deriveProfile,
+    deriveProfileDisplay,
     getUserWotScore,
     maxWot,
-    session,
-    deriveProfileDisplay,
-    tagZapSplit,
-    deriveHandleForPubkey,
     profilesByPubkey,
+    session,
+    tagZapSplit
   } from "@welshman/app"
   import {userFollows} from "src/engine"
   import Anchor from "src/partials/Anchor.svelte"
