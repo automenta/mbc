@@ -20,17 +20,9 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@capacitor/android": "^6.1.2",
-    "@capacitor/app": "^6.0.1",
-    "@capacitor/assets": "^3.0.5",
-    "@capacitor/cli": "^6.1.2",
-    "@capacitor/core": "^6.1.2",
-    "@capacitor/ios": "^6.1.2",
     "@fortawesome/fontawesome-free": "^6.6.0",
     "@getalby/bitcoin-connect": "^3.6.3",
     "@scure/base": "^1.1.9",
-    "@sentry/browser": "^8.35.0",
-    "@sentry/cli": "^2.38.1",
     "@tsconfig/svelte": "^5.0.4",
     "@types/throttle-debounce": "^5.0.2",
     "@vite-pwa/assets-generator": "^0.2.6",
@@ -47,7 +39,6 @@
     "autoprefixer": "^10.4.20",
     "classnames": "^2.5.1",
     "compressorjs": "^1.2.1",
-    "cypress": "^13.15.0",
     "date-picker-svelte": "^2.13.0",
     "dotenv": "^16.4.5",
     "favicons": "^7.2.0",
@@ -61,7 +52,6 @@
     "normalize-url": "^8.0.1",
     "nostr-signer-capacitor-plugin": "^0.0.3",
     "nostr-tools": "^2.8.1",
-    "npm-run-all": "^4.1.5",
     "postcss": "^8.4.47",
     "qr-scanner": "^1.4.2",
     "qrcode": "^1.5.4",
@@ -85,15 +75,23 @@
     "vitest": "^3.0.7"
   },
   "devDependencies": {
-    "eslint": "^9.12.0",
+    "cypress": "^14.1.0",
+    "npm-run-all": "^4.1.5",
+    "eslint": "^9.21.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-svelte": "^2.45.1",
-    "esbuild": "^0.24.0",
-    "typescript": "~5.5.4",
-    "typescript-eslint": "^8.10.0",
-    "prettier": "^3.3.3",
+    "esbuild": "^0.25.0",
+    "typescript": "~5.8.2",
+    "typescript-eslint": "^8.26.0",
+    "prettier": "^3.5.3",
     "prettier-plugin-svelte": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "bowser": "^2.11.0"
+    "bowser": "^2.11.0",
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/app": "^6.0.1",
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/ios": "^6.1.2"
   }
 }

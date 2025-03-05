@@ -58,14 +58,14 @@
     <DateInput format="yyyy-MM-dd" bind:value={date} />
   </button>
   <div class="absolute left-0 top-0 flex gap-2 px-4 pt-3 text-black opacity-75">
-    <i class="fa fa-calendar-days" />
+    <i class="fa fa-calendar-days"></i>
   </div>
   {#if value}
     <button
       type="button"
       class="absolute right-0 top-0 m-px flex cursor-pointer gap-2 rounded-full px-4 pt-3 text-black opacity-75"
       on:click={clear}>
-      <i class="fa fa-times" />
+      <i class="fa fa-times"></i>
     </button>
   {/if}
 </div>
