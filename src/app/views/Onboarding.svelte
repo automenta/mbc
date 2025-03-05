@@ -138,13 +138,13 @@
   {/each}
 
   {#if false}
-  <h3>Select Initial Follows</h3>
-  {#each get(follows) as follow, i (follow)}
-    <label>
-      <input type="checkbox" bind:checked={$follows[i]} disabled={true} hidden={true} />
-      {follow}
-    </label>
-  {/if}
+    <h3>Select Initial Follows</h3>
+    {#each get(follows) as follow, i (follow)}
+      <label>
+        <input type="checkbox" bind:checked={$follows[i]} disabled={true} hidden={true} />
+        {follow}
+      </label>
+    {/each}
   {/if}
 
 

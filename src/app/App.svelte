@@ -77,7 +77,6 @@
   import UserSettings from "src/app/views/UserSettings.svelte"
   import Zap from "src/app/views/Zap.svelte"
   import {onMount} from "svelte"
-  import {logUsage} from "src/app/state"
   import {
     router,
     asChannelId,
@@ -370,18 +369,11 @@
   onMount(() => {
     const unsubPage = router.page.subscribe(
       memoize($page => {
-        if ($page) {
-          logUsage($page.path)
-        }
-
         window.scrollTo(0, 0)
       }),
     )
 
     const unsubModal = router.modal.subscribe($modal => {
-      if ($modal) {
-        logUsage($modal.path)
-      }
     })
 
     const unsubRouter = router.listen()

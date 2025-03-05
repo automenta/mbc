@@ -36,15 +36,6 @@ export const menuIsOpen = writable(false)
 
 export const searchTerm = writable("")
 
-export const logUsage = async (path: string) => {
-  if (getSetting("report_analytics")) {
-    const {location, plausible} = window as any
-    const pathname = path.replace(/(npub|nprofile|note|nevent|naddr)1[^\/]+/g, (_, m) => `<${m}>`)
-
-    plausible("pageview", {u: location.origin + pathname})
-  }
-}
-
 export const slowConnections = writable([])
 
 // Synchronization from events to state
