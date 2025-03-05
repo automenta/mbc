@@ -75,16 +75,6 @@
 </script>
 
 <div class="fixed bottom-0 left-0 top-0 z-sidebar w-72 bg-tinted-700 transition-colors">
-  <Anchor
-    external
-    class="mb-4 mt-4 flex items-center gap-2 px-6"
-    href="https://info.coracle.social">
-    <img
-      alt="App Logo"
-      src={$theme === "dark"
-        ? import.meta.env.VITE_APP_WORDMARK_DARK
-        : import.meta.env.VITE_APP_WORDMARK_LIGHT} />
-  </Anchor>
   <MenuDesktopItem path="/notes" isActive={isFeedPage || isListPage}>Feeds</MenuDesktopItem>
   {#if env.PLATFORM_RELAYS.length === 0}
     <MenuDesktopItem

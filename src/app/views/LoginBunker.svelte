@@ -51,7 +51,7 @@
     url = await broker.makeNostrconnectUrl({
       url: env.APP_URL,
       name: env.APP_NAME,
-      image: env.APP_URL + env.APP_LOGO,
+      //image: env.APP_URL + env.APP_LOGO,
       perms: nip46Perms,
     })
 

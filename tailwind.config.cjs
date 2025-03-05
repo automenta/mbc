@@ -66,20 +66,21 @@ module.exports = {
     "col-span-2",
     "col-span-3",
     "col-span-4",
-    "col-span-5",
+    "col-span-5"
   ],
   theme: {
-    extend: {},
-    zIndex: {
-      none: 0,
-      feature: 1,
-      nav: 2,
-      chat: 3,
-      popover: 4,
-      modal: 5,
-      sidebar: 6,
-      overlay: 7,
-      toast: 8,
+    extend: {
+      zIndex: {
+        none: 0,
+        feature: 1,
+        nav: 2,
+        chat: 3,
+        popover: 4,
+        modal: 5,
+        sidebar: 6,
+        overlay: 7,
+        toast: 8,
+      },
     },
     screens: {
       xs: "400px",

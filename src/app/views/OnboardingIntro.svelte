@@ -37,8 +37,7 @@
     class="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl p-8 text-center sm:w-1/2"
     on:click={() => openMedia("https://coracle.us-southeast-1.linodeobjects.com/coracle-30s.mp4")}>
     <div
-      class="absolute inset-0 opacity-75 transition-opacity hover:opacity-100"
-      style="background: url('/images/jakob-owens-8tyCOqTqdqg-unsplash.png'" />
+      class="absolute inset-0 opacity-75 transition-opacity hover:opacity-100" />
     <p class="staatliches relative text-5xl text-white">Nostr in 30 seconds</p>
   </Anchor>
   <Anchor
@@ -47,7 +46,7 @@
       openMedia("https://coracle.us-southeast-1.linodeobjects.com/coracle-deep-dive.mp4")}>
     <div
       class="absolute inset-0 opacity-75 transition-opacity hover:opacity-100"
-      style="background: url('/images/sean-105m46GatAg-unsplash.png'" />
+      />
     <p class="staatliches relative text-5xl text-white">{appName} deep dive</p>
   </Anchor>
 </div>

@@ -7,8 +7,9 @@
   export let setActiveTab
 </script>
 
-<div class={cx($$props, "relative flex items-center justify-between overflow-auto pb-px pt-1")}>
-  <div class="absolute bottom-px left-0 right-0 h-px w-full bg-neutral-700" />
+<!--<div class={cx($$props, "relative flex items-center justify-between overflow-auto pb-px pt-1")}>-->
+<div class="relative flex items-center justify-between overflow-auto pb-px pt-1">
+  <div class="absolute bottom-px left-0 right-0 h-px w-full bg-neutral-700"></div>
   <div class="flex w-full">
     {#each tabs as tab}
       <button

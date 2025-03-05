@@ -5,6 +5,6 @@ dotenv.config({path: '.env.local'})
 dotenv.config({path: '.env'})
 
 export default defineConfig({
-  preset,
-  images: ['public' + process.env.VITE_APP_LOGO],
+  preset
+  //images: ['public' + process.env.VITE_APP_LOGO],
 })

@@ -15,13 +15,13 @@ dotenv.config({path: ".env"})
 const accentColor = process.env.VITE_LIGHT_THEME.match(/accent:(#\w+)/)[1]
 
 export default defineConfig(async () => {
-  const icons = await favicons("public" + process.env.VITE_APP_LOGO)
+  /*const icons = await favicons("public" + process.env.VITE_APP_LOGO)
 
   if (!fs.existsSync("public/icons")) fs.mkdirSync("public/icons")
 
   for (const {name, contents} of icons.images) {
     fs.writeFileSync(`public/icons/${name}`, contents, "binary")
-  }
+  }*/
 
   return {
     server: {
@@ -48,11 +48,11 @@ export default defineConfig(async () => {
           {name: "og:title", content: process.env.VITE_APP_NAME},
           {name: "og:type", content: "website"},
           {name: "og:description", content: process.env.VITE_APP_DESCRIPTION},
-          {name: "og:image", content: "/images/banner.png"},
+          //{name: "og:image", content: "/images/banner.png"},
           {name: "twitter:card", content: "summary_large_image"},
           {name: "twitter:title", content: process.env.VITE_APP_NAME},
           {name: "twitter:description", content: process.env.VITE_APP_DESCRIPTION},
-          {name: "twitter:image", content: "/images/banner.png"},
+          //{name: "twitter:image", content: "/images/banner.png"},
           {property: "og:url", content: process.env.VITE_APP_URL},
           {name: "msapplication-TileColor", content: accentColor},
           {name: "msapplication-TileImage", content: "/icons/mstile-144x144.png"},
@@ -122,7 +122,7 @@ export default defineConfig(async () => {
         registerType: "autoUpdate",
         injectRegister: "auto",
         workbox: {
-          maximumFileSizeToCacheInBytes: 5 * 1024 ** 2, // 5 MB or set to something else
+          maximumFileSizeToCacheInBytes: 15 * 1024 ** 2, // 5 MB or set to something else
         },
         manifest: {
           name: process.env.VITE_APP_NAME,

@@ -75,10 +75,14 @@
         <div slot="tooltip">Mark all as read</div>
       </Popover>
     </Tabs>
-  </div>
-  {#each tabChannels.slice(0, limit) as channel (channel.id)}
-    <ChannelsListItem {channel} />
-  {:else}
+  {#if tabChannels}
+    {#each tabChannels.slice(0, limit) as channel (channel.id)}
+      <ChannelsListItem {channel}></ChannelsListItem>
+    {/each}
+  {/if}
+  {#if !tabChannels}
     <Content size="lg" class="text-center">No messages found.</Content>
-  {/each}
+  {/if}
+  </div>
+
 </FlexColumn>

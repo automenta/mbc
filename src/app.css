@@ -33,62 +33,10 @@
   }
 }
 
-@font-face {
-  font-family: "Satoshis";
-  font-style: normal;
-  font-weight: 400;
-  src:
-    local(""),
-    url("/fonts/Satoshi Symbol.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Lato";
-  font-style: normal;
-  font-weight: 400;
-  src:
-    local(""),
-    url("/fonts/Lato-Regular.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Lato";
-  font-style: bold;
-  font-weight: 600;
-  src:
-    local(""),
-    url("/fonts/Lato-Bold.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Lato";
-  font-style: italic;
-  font-weight: 400;
-  src:
-    local(""),
-    url("/fonts/Italic.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Staatliches";
-  font-style: normal;
-  font-weight: 400;
-  src:
-    local(""),
-    url("/fonts/Staatliches Regular 400.ttf") format("truetype");
-}
-
-.montserrat {
-  font-family: Lato;
-  font-weight: 400;
-}
-
 .staatliches {
-  font-family: Staatliches;
 }
 
 :root {
-  font-family: Lato;
   --bc-color-brand: var(--accent);
 }
 
@@ -160,14 +108,12 @@ body,
 /* Long form content */
 
 .long-form-content h1 {
-  font-family: Staatliches;
   font-size: 2em;
   line-height: 1.4em;
   margin-top: 1em;
 }
 
 .long-form-content h2 {
-  font-family: Staatliches;
   font-size: 1.5em;
   line-height: 1em;
   margin-top: 0.7rem;
@@ -200,7 +146,7 @@ body,
 }
 
 .long-form-content em {
-  font-family: sans-serif;
+
 }
 
 .long-form-content code {
