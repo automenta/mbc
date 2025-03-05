@@ -68,6 +68,5 @@ CapacitorApp.addListener("backButton", ({canGoBack}) => {
 
 router.at("/onboarding").replace()
 
-export default new App({
-  target: document.getElementById("app"),
-})
+import { mount } from 'svelte';
+mount(App, { target: document.getElementById('app') });

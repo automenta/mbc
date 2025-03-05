@@ -1,7 +1,6 @@
 <script lang="ts">
-  import Switch from "svelte-switch"
-  import {createEventDispatcher} from "svelte"
-  import {themeColors} from "src/partials/state"
+  import { createEventDispatcher } from "svelte"
+  import { themeColors } from "src/partials/state"
 
   export let value
   export let disabled = false
@@ -9,24 +8,43 @@
 
   const dispatch = createEventDispatcher()
 
-  const onChange = e => {
-    value = e.detail.checked
+  const onChange = (e) => {
+    value = e.target.checked
     dispatch("change", value)
   }
 </script>
 
-<Switch
+<input
+  type="checkbox"
   {disabled}
   checked={value}
-  on:change={onChange}
-  onColor={$themeColors.accent}
-  offColor={$themeColors["tinted-800"]}
-  handleDiameter={Math.round(20 * scale)}
-  unCheckedIcon={false}
-  boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
-  activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
-  height={Math.round(20 * scale)}
-  width={Math.round(36 * scale)}>
-  <span slot="checkedIcon" />
-  <span slot="unCheckedIcon" />
-</Switch>
+  onchange={onChange}
+  style:height="{20 * scale}px"
+  style:width="{36 * scale}px"
+  style:background-color={value ? $themeColors.accent : $themeColors["tinted-800"]}
+  style:transform="scale({scale})"
+/>
+
+<style>
+  input[type="checkbox"] {
+    appearance: none;
+    margin: 0;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    position: relative;
+    transition: background-color 0.2s;
+  }
+
+  input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+  }
+
+  input[type="checkbox"]:disabled {
+    opacity: 0.6;
+  }
+</style>

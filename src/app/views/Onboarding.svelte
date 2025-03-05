@@ -121,7 +121,7 @@
   <input type="file" accept=".txt,.json" onChange={handleKeyPairFile} />
 
   <p>Or generate a new KeyPair:</p>
-  <button on:click={generateKeyPair}>Generate KeyPair</button>
+  <button onclick={generateKeyPair}>Generate KeyPair</button>
 
   {#if $privateKey}
     <h3>Set Profile Name (Optional)</h3>
@@ -152,5 +152,5 @@
     <p class="error">{$error}</p>
   {/if}
 
-  <button on:click={register} disabled={!$privateKey}>Register</button>
+  <button onclick={register} disabled={!$privateKey}>Register</button>
 </div>

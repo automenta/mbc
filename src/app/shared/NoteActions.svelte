@@ -278,7 +278,7 @@
   })
 </script>
 
-<button
+<div
   tabindex="-1"
   type="button"
   class="flex w-full justify-between text-neutral-100"
@@ -370,7 +370,7 @@
     {/if}
     <OverflowMenu {actions} />
   </div>
-</button>
+</div>
 
 {#if view}
   <Modal onEscape={() => setView(null)}>
