@@ -111,15 +111,12 @@
       {/if}
     </div>
   </MenuDesktopItem>
-  <MenuDesktopItem modal path="/groups" disabled={!$signer}>Groups</MenuDesktopItem>
   <FlexColumn small class="absolute bottom-0 w-72">
     <Anchor
       class="staatliches px-8 text-tinted-400 hover:text-tinted-100"
       on:click={() => setSubMenu("settings")}>Settings</Anchor>
     <div class="staatliches flex h-8 gap-2 px-8 text-tinted-500">
-      <Anchor class="hover:text-tinted-100" href="/about">About</Anchor> /
-      <Anchor external class="hover:text-tinted-100" href="/terms.html">Terms</Anchor> /
-      <Anchor external class="hover:text-tinted-100" href="/privacy.html">Privacy</Anchor>
+      <Anchor class="hover:text-tinted-100" href="/about">About</Anchor>
     </div>
     {#if subMenu === "settings"}
       <MenuDesktopSecondary onEscape={closeSubMenu}>

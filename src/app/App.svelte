@@ -36,7 +36,6 @@
   import FeedCreate from "src/app/views/FeedCreate.svelte"
   import FeedEdit from "src/app/views/FeedEdit.svelte"
   import FeedList from "src/app/views/FeedList.svelte"
-  import GroupList from "src/app/views/GroupList.svelte"
   import Help from "src/app/views/Help.svelte"
   import Home from "src/app/views/Home.svelte"
   import InviteAccept from "src/app/views/InviteAccept.svelte"
@@ -116,8 +115,6 @@
       channelId: asChannelId,
     },
   })
-
-  router.register("/groups", GroupList)
 
   router.register("/help/:topic", Help)
 

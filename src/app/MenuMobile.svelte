@@ -104,9 +104,7 @@
       </MenuMobileItem>
     </div>
     <div class="staatliches mt-8 block flex h-8 justify-center gap-2 px-8 text-tinted-400">
-      <Anchor class="hover:text-tinted-200" href="/about">About</Anchor> /
-      <Anchor external class="hover:text-tinted-200" href="/terms.html">Terms</Anchor> /
-      <Anchor external class="hover:text-tinted-200" href="/privacy.html">Privacy</Anchor>
+      <Anchor class="hover:text-tinted-200" href="/about">About</Anchor>
     </div>
   </SliderMenu>
 {/if}
