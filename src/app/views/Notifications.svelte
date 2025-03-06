@@ -1,12 +1,12 @@
 <script lang="ts">
-  import {onMount} from "svelte"
+  import {onMount, onDestroy} from "svelte"
   import {createScroller} from "src/util/misc"
   import Tabs from "src/partials/Tabs.svelte"
   import OnboardingTasks from "src/app/shared/OnboardingTasks.svelte"
   import NotificationSectionMain from "src/app/views/NotificationSectionMain.svelte"
   import NotificationSectionReactions from "src/app/views/NotificationSectionReactions.svelte"
   import {router} from "src/app/util/router"
-  import {loadNotifications, sessionWithMeta, unreadMainNotifications, unreadReactionNotifications} from "src/engine"
+  import {listenForNotifications, sessionWithMeta, unreadMainNotifications, unreadReactionNotifications} from "src/engine"
 
   const allTabs = ["Mentions & Replies", "Reactions"]
 
@@ -21,16 +21,18 @@
   let limit = 2
   let innerWidth = 0
   let element = null
+  let notificationSubscription; // Variable to hold the subscription
 
   document.title = "Notifications"
 
   onMount(() => {
-    loadNotifications()
+    notificationSubscription = listenForNotifications(); // Use listenForNotifications and assign to subscription
 
     const scroller = createScroller(loadMore, {element})
 
     return () => {
       scroller.stop()
+      notificationSubscription?.unsub(); // Unsubscribe on unmount
     }
   })
 </script>
