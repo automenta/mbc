@@ -27,7 +27,7 @@
   const {page} = router
 
   $: recent = (Object.values($thunks) as Thunk[]).filter(
-    t => t.event.created_at > now() - 5 * MINUTE && t.event.pubkey === $pubkey,
+    t => t.event.pubkey === $pubkey && t.event.created_at > now() - 5 * MINUTE,
   )
 
   $: hud = derived(
@@ -67,7 +67,7 @@
     )
   }
 
-  let subMenu
+  let subMenu;
 
   $: isFeedPage = Boolean($page?.path.match(/^\/(notes)?$/))
   $: isListPage = Boolean($page?.path.match(/^\/(lists)?$/))
@@ -75,14 +75,14 @@
 </script>
 
 <div class="fixed bottom-0 left-0 top-0 z-sidebar w-72 bg-tinted-700 transition-colors">
-  <MenuDesktopItem path="/notes" isActive={isFeedPage || isListPage}>Feeds</MenuDesktopItem>
+  <MenuDesktopItem path="/notes" isActive={isFeedPage || isListPage}>News</MenuDesktopItem>
   {#if env.PLATFORM_RELAYS.length === 0}
     <MenuDesktopItem
       path="/settings/relays"
       disabled={!$signer}
       isActive={$page?.path.startsWith("/settings/relays")}>
       <div class="relative inline-block">
-        Relays
+        Net
         {#if $slowConnections.length > 0}
           <div class="absolute -right-2.5 top-1 h-1.5 w-1.5 rounded bg-accent" />
         {/if}
@@ -94,7 +94,7 @@
     disabled={!$signer}
     isActive={$page?.path.startsWith("/notifications")}>
     <div class="relative inline-block">
-      Notifications
+      Notes
       {#if $hasNewNotifications}
         <div class="absolute -right-2.5 top-1 h-1.5 w-1.5 rounded bg-accent" />
       {/if}
