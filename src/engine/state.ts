@@ -638,17 +638,26 @@ export const collectionSearch = derived(
 
 // Network
 
+const executorCache = new Map<string, Executor>(); // Cache for Executors
+
 export const getExecutor = (urls: string[]) => {
-  const [localUrls, remoteUrls] = partition(url => LOCAL_RELAY_URL === url, urls)
+    const sortedUrlsKey = [...urls].sort().join(','); // Create a consistent key
+    if (executorCache.has(sortedUrlsKey)) {
+        console.trace(`getExecutor cache hit for: ${sortedUrlsKey}`);
+        return executorCache.get(sortedUrlsKey)!; // Return cached Executor
+    }
 
-  let target: Target = new Relays(remoteUrls.map(url => ctx.net.pool.get(url)))
+    console.trace(`getExecutor cache miss, creating new Executor for: ${sortedUrlsKey}`);
+    const [localUrls, remoteUrls] = partition(url => LOCAL_RELAY_URL === url, urls);
+    let target: Target = new Relays(remoteUrls.map(url => ctx.net.pool.get(url)));
+    if (localUrls.length > 0) {
+        target = new Multi([target, new Local(relay)]);
+    }
+    const executor = new Executor(target);
+    executorCache.set(sortedUrlsKey, executor); // Store in cache
+    return executor;
+};
 
-  if (localUrls.length > 0) {
-    target = new Multi([target, new Local(relay)])
-  }
-
-  return new Executor(target)
-}
 
 export type MySubscribeRequest = PartialSubscribeRequest & {
   skipCache?: boolean
@@ -766,7 +775,7 @@ export const addClientTags = <T extends Partial<EventTemplate>>({tags = [], ...e
 
 let ready: Promise<any> = Promise.resolve()
 
-const migrateFreshness = (data: {key: string; value: number}[]) => {
+const migrateFreshness = ( {key: string; value: number}[]) => {
   const cutoff = now() - HOUR
 
   return data.filter(({value}) => value > cutoff)
