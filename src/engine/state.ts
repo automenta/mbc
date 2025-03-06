@@ -766,7 +766,7 @@ export const addClientTags = <T extends Partial<EventTemplate>>({tags = [], ...e
 
 let ready: Promise<any> = Promise.resolve()
 
-const migrateFreshness = (data: {key: string; value: number}[]) => {
+const migrateFreshness = ( {key: string; value: number}[]) => {
   const cutoff = now() - HOUR
 
   return data.filter(({value}) => value > cutoff)
@@ -887,7 +887,7 @@ if (!db) {
       migrate: migrateFreshness,
     }),
     plaintext: storageAdapters.fromObjectStore(plaintext, {throttle: 3000}),
-    repository: storageAdapters.fromRepository(repository, {throttle: 300, migrate: migrateEvents}),
+    repository: storageAdapters.fromRepository(repository, {throttle: 3000, migrate: migrateEvents}),
   }).then(() => Promise.all(initialRelays.map(loadRelay)))
 }
 
