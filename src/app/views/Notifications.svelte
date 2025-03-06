@@ -32,7 +32,9 @@
 
     return () => {
       scroller.stop()
-      notificationSubscription?.unsub(); // Unsubscribe on unmount
+      if (notificationSubscription && typeof notificationSubscription.unsub === 'function') {
+        notificationSubscription.unsub(); // Unsubscribe on unmount
+      }
     }
   })
 </script>
