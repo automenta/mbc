@@ -2,13 +2,11 @@ import type {PartialSubscribeRequest} from "@welshman/app"
 import {
   db,
   displayProfileByPubkey,
-  ensurePlaintext,
   followsByPubkey,
   freshness,
   getDefaultAppContext,
   getDefaultNetContext,
   getNetwork,
-  getPlaintext,
   getSession,
   getSigner,
   getUserWotScore,
@@ -807,7 +805,7 @@ export const addClientTags = <T extends Partial<EventTemplate>>({tags = [], ...e
 
 let ready: Promise<any> = Promise.resolve()
 
-const migrateFreshness = ( data:{key: string, value: number}[]) => {
+const migrateFreshness = ( {key: string, value: number}[]) => {
   const cutoff = now() - HOUR;
   return data.filter(({value}) => value > cutoff);
 }
