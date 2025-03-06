@@ -98,39 +98,61 @@ type ScrollerOpts = {
   element?: Element
 }
 
+const defaultScrollerOpts = {delay: 1000, threshold: 2000, reverse: false}
+
 export const createScroller = (
   loadMore: () => Promise<void>,
-  {delay = 1000, threshold = 2000, reverse = false, element}: ScrollerOpts = {},
+  options: ScrollerOpts = {},
 ) => {
-  element = element.closest(".modal-content") || element
-
+  const opts = {...defaultScrollerOpts, ...options}
+  let observer: IntersectionObserver | null = null
   let done = false
-  const check = async () => {
-    // While we have empty space, fill it
-    const {scrollY, innerHeight} = window
-    const {scrollHeight, scrollTop} = element
-    const offset = Math.abs(scrollTop || scrollY)
-    const shouldLoad = offset + innerHeight + threshold > scrollHeight
 
-    // Only trigger loading the first time we reach the threshold
-    if (shouldLoad) {
-      await loadMore()
-    }
-
-    // No need to check all that often
-    await sleep(delay)
-
-    if (!done) {
-      requestAnimationFrame(check)
-    }
+  const startObserver = (targetElement: Element) => {
+    observer = new IntersectionObserver(
+      async (entries, observer) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            observer.unobserve(entry.target) // Stop observing once loaded
+            await loadMore()
+            if (!done) {
+              // Re-observe to load more when the new content's trigger is visible
+              observeTrigger()
+            }
+          }
+        }
+      },
+      {
+        root: opts.element?.closest(".modal-content") || opts.element || null, // Use modal content or document as root
+        rootMargin: `0px 0px ${opts.threshold}px 0px`, // Trigger load before reaching bottom
+      },
+    )
+    observer.observe(targetElement)
   }
 
-  requestAnimationFrame(check)
+  const observeTrigger = () => {
+    // Find or create a trigger element at the end of the scrollable content
+    let triggerElement = document.querySelector("#scroll-trigger")
+    if (!triggerElement) {
+      triggerElement = document.createElement("div")
+      triggerElement.id = "scroll-trigger"
+      // Append trigger to the element or document body if no element is specified
+      const parentElement = opts.element || document.body
+      parentElement.appendChild(triggerElement)
+    }
+    startObserver(triggerElement)
+  }
+
+  observeTrigger() // Initial observation
 
   return {
-    check,
+    check: observeTrigger, // You can call check to re-initiate observation if needed
     stop: () => {
       done = true
+      if (observer) {
+        observer.disconnect()
+        observer = null
+      }
     },
   }
 }
@@ -277,7 +299,7 @@ export const getStringWidth = (text: string) => {
   return width
 }
 
-export const fuzzy = <T>(data: T[], opts = {}): ((q: string) => any[]) => {
+export const fuzzy = <T>( T[], opts = {}): ((q: string) => any[]) => {
   const fuse = new Fuse(data, opts) as any
 
   // Slice pattern because the docs warn that it"ll crash if too long
