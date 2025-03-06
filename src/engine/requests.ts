@@ -248,11 +248,16 @@ export const createFeedController = ({forcePlatform = true, ...options}: FeedCon
 
 // Notifications
 
+let notificationSubscription;
+
 export const getNotificationKinds = () =>
   without(env.ENABLE_ZAPS ? [] : [9735], [...noteKinds, ...reactionKinds])
 
 export const loadNotifications = () => {
   const filter = {kinds: getNotificationKinds(), "#p": [pubkey.get()]}
+  if (notificationSubscription) {
+    notificationSubscription.close();
+  }
 
   return pullConservatively({
     relays: ctx.app.router.ForUser().getUrls(),
@@ -262,12 +267,18 @@ export const loadNotifications = () => {
 
 export const listenForNotifications = () => {
   const filter = {kinds: getNotificationKinds(), "#p": [pubkey.get()]}
+  if (notificationSubscription) {
+    notificationSubscription.close();
+  }
 
-  return subscribe({
+  notificationSubscription = subscribe({
     skipCache: true,
     relays: ctx.app.router.ForUser().getUrls(),
     filters: [addSinceToFilter(filter)],
   })
+
+  return notificationSubscription;
+
 }
 
 // Other user data
@@ -310,10 +321,16 @@ export const loadMessages = () =>
     ],
   })
 
+let messageSubscription;
+
 export const listenForMessages = (pubkeys: string[]) => {
   const allPubkeys = uniq(pubkeys.concat(pubkey.get()))
 
-  return subscribe({
+  if (messageSubscription) {
+    messageSubscription.close();
+  }
+
+  messageSubscription = subscribe({
     skipCache: true,
     forcePlatform: false,
     // TODO, stop using non-inbox relays
@@ -329,6 +346,8 @@ export const listenForMessages = (pubkeys: string[]) => {
       {kinds: [WRAP], "#p": [pubkey.get()]},
     ],
   })
+
+  return messageSubscription;
 }
 
 export const loadHandlers = () =>
