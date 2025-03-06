@@ -263,7 +263,7 @@ export const loadNotifications = () => {
 export const listenForNotifications = () => {
   const filter = {kinds: getNotificationKinds(), "#p": [pubkey.get()]}
 
-  subscribe({
+  return subscribe({
     skipCache: true,
     relays: ctx.app.router.ForUser().getUrls(),
     filters: [addSinceToFilter(filter)],
