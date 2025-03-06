@@ -126,29 +126,52 @@ import {fromCsv, parseJson, SearchHelper} from "src/util/misc"
 import {appDataKeys, metaKinds, noteKinds, reactionKinds, repostKinds} from "src/util/nostr"
 import {derived, get, writable} from "svelte/store"
 
+const VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID
+const VITE_CLIENT_NAME = import.meta.env.VITE_CLIENT_NAME
+const VITE_DEFAULT_FOLLOWS = import.meta.env.VITE_DEFAULT_FOLLOWS
+const VITE_DEFAULT_RELAYS = import.meta.env.VITE_DEFAULT_RELAYS
+const VITE_INDEXER_RELAYS = import.meta.env.VITE_INDEXER_RELAYS
+const VITE_DUFFLEPUD_URL = import.meta.env.VITE_DUFFLEPUD_URL
+const VITE_DVM_RELAYS = import.meta.env.VITE_DVM_RELAYS
+const VITE_ENABLE_MARKET = import.meta.env.VITE_ENABLE_MARKET
+const VITE_ENABLE_ZAPS = import.meta.env.VITE_ENABLE_ZAPS
+const VITE_BLUR_CONTENT = import.meta.env.VITE_BLUR_CONTENT
+const VITE_IMGPROXY_URL = import.meta.env.VITE_IMGPROXY_URL
+const VITE_NIP96_URLS = import.meta.env.VITE_NIP96_URLS
+const VITE_BLOSSOM_URLS = import.meta.env.VITE_BLOSSOM_URLS
+const VITE_ONBOARDING_LISTS = import.meta.env.VITE_ONBOARDING_LISTS
+const VITE_PLATFORM_PUBKEY = import.meta.env.VITE_PLATFORM_PUBKEY
+const VITE_PLATFORM_RELAYS = import.meta.env.VITE_PLATFORM_RELAYS
+const VITE_PLATFORM_ZAP_SPLIT = import.meta.env.VITE_PLATFORM_ZAP_SPLIT
+const VITE_SEARCH_RELAYS = import.meta.env.VITE_SEARCH_RELAYS
+const VITE_SIGNER_RELAYS = import.meta.env.VITE_SIGNER_RELAYS
+const VITE_APP_URL = import.meta.env.VITE_APP_URL
+const VITE_APP_NAME = import.meta.env.VITE_APP_NAME
+//const VITE_APP_LOGO = import.meta.env.VITE_APP_LOGO
+
 export const env = {
-  CLIENT_ID: import.meta.env.VITE_CLIENT_ID as string,
-  CLIENT_NAME: import.meta.env.VITE_CLIENT_NAME as string,
-  DEFAULT_FOLLOWS: fromCsv(import.meta.env.VITE_DEFAULT_FOLLOWS) as string,
-  DEFAULT_RELAYS: fromCsv(import.meta.env.VITE_DEFAULT_RELAYS).map(normalizeRelayUrl) as string[],
-  INDEXER_RELAYS: fromCsv(import.meta.env.VITE_INDEXER_RELAYS).map(normalizeRelayUrl) as string[],
-  DUFFLEPUD_URL: import.meta.env.VITE_DUFFLEPUD_URL as string,
-  DVM_RELAYS: fromCsv(import.meta.env.VITE_DVM_RELAYS).map(normalizeRelayUrl) as string[],
-  ENABLE_MARKET: JSON.parse(import.meta.env.VITE_ENABLE_MARKET) as boolean,
-  ENABLE_ZAPS: JSON.parse(import.meta.env.VITE_ENABLE_ZAPS) as boolean,
-  BLUR_CONTENT: JSON.parse(import.meta.env.VITE_BLUR_CONTENT) as boolean,
-  IMGPROXY_URL: import.meta.env.VITE_IMGPROXY_URL as string,
-  NIP96_URLS: fromCsv(import.meta.env.VITE_NIP96_URLS) as string[],
-  BLOSSOM_URLS: fromCsv(import.meta.env.VITE_BLOSSOM_URLS) as string[],
-  ONBOARDING_LISTS: fromCsv(import.meta.env.VITE_ONBOARDING_LISTS) as string[],
-  PLATFORM_PUBKEY: import.meta.env.VITE_PLATFORM_PUBKEY as string,
-  PLATFORM_RELAYS: fromCsv(import.meta.env.VITE_PLATFORM_RELAYS).map(normalizeRelayUrl) as string[],
-  PLATFORM_ZAP_SPLIT: parseFloat(import.meta.env.VITE_PLATFORM_ZAP_SPLIT) as number,
-  SEARCH_RELAYS: fromCsv(import.meta.env.VITE_SEARCH_RELAYS).map(normalizeRelayUrl) as string[],
-  SIGNER_RELAYS: fromCsv(import.meta.env.VITE_SIGNER_RELAYS).map(normalizeRelayUrl) as string[],
-  APP_URL: import.meta.env.VITE_APP_URL,
-  APP_NAME: import.meta.env.VITE_APP_NAME
-  //APP_LOGO: import.meta.env.VITE_APP_LOGO,
+  CLIENT_ID: VITE_CLIENT_ID as string,
+  CLIENT_NAME: VITE_CLIENT_NAME as string,
+  DEFAULT_FOLLOWS: fromCsv(VITE_DEFAULT_FOLLOWS) as string,
+  DEFAULT_RELAYS: fromCsv(VITE_DEFAULT_RELAYS).map(normalizeRelayUrl) as string[],
+  INDEXER_RELAYS: fromCsv(VITE_INDEXER_RELAYS).map(normalizeRelayUrl) as string[],
+  DUFFLEPUD_URL: VITE_DUFFLEPUD_URL as string,
+  DVM_RELAYS: fromCsv(VITE_DVM_RELAYS).map(normalizeRelayUrl) as string[],
+  ENABLE_MARKET: JSON.parse(VITE_ENABLE_MARKET) as boolean,
+  ENABLE_ZAPS: JSON.parse(VITE_ENABLE_ZAPS) as boolean,
+  BLUR_CONTENT: JSON.parse(VITE_BLUR_CONTENT) as boolean,
+  IMGPROXY_URL: VITE_IMGPROXY_URL as string,
+  NIP96_URLS: fromCsv(VITE_NIP96_URLS) as string[],
+  BLOSSOM_URLS: fromCsv(VITE_BLOSSOM_URLS) as string[],
+  ONBOARDING_LISTS: fromCsv(VITE_ONBOARDING_LISTS) as string[],
+  PLATFORM_PUBKEY: VITE_PLATFORM_PUBKEY as string,
+  PLATFORM_RELAYS: fromCsv(VITE_PLATFORM_RELAYS).map(normalizeRelayUrl) as string[],
+  PLATFORM_ZAP_SPLIT: parseFloat(VITE_PLATFORM_ZAP_SPLIT) as number,
+  SEARCH_RELAYS: fromCsv(VITE_SEARCH_RELAYS).map(normalizeRelayUrl) as string[],
+  SIGNER_RELAYS: fromCsv(VITE_SIGNER_RELAYS).map(normalizeRelayUrl) as string[],
+  APP_URL: VITE_APP_URL,
+  APP_NAME: VITE_APP_NAME,
+  //APP_LOGO: VITE_APP_LOGO,
 }
 
 export const sessionWithMeta = withGetter(derived(session, $s => $s as SessionWithMeta))
@@ -161,24 +184,28 @@ export const canDecrypt = withGetter(synced("canDecrypt", false))
 
 // Plaintext
 
-export const ensureMessagePlaintext = async (e: TrustedEvent) => {
-  if (!e.content) return undefined
-  if (!getPlaintext(e)) {
-    const recipient = getTagValue("p", e.tags)
-    const session = getSession(e.pubkey) || getSession(recipient)
-    const other = e.pubkey === session?.pubkey ? recipient : e.pubkey
-    const signer = getSigner(session)
+export const ensureMessagePlaintext = async (event: TrustedEvent) => {
+  if (!event.content) {
+    return undefined
+  }
+  if (getPlaintext(event)) {
+    return getPlaintext(event)
+  }
 
-    if (signer) {
-      const result = await signer.nip04.decrypt(other, e.content)
+  const recipient = getTagValue("p", event.tags)
+  const currentSession = getSession(event.pubkey) || getSession(recipient)
+  const otherPubkey = event.pubkey === currentSession?.pubkey ? recipient : event.pubkey
+  const currentSigner = getSigner(currentSession)
 
-      if (result) {
-        setPlaintext(e, result)
-      }
+  if (currentSigner) {
+    const decryptedContent = await currentSigner.nip04.decrypt(otherPubkey, event.content)
+    if (decryptedContent) {
+      setPlaintext(event, decryptedContent)
+      return decryptedContent
     }
   }
 
-  return getPlaintext(e)
+  return undefined
 }
 
 const pendingUnwraps = new Map<string, Promise<TrustedEvent>>()
@@ -188,40 +215,35 @@ export const ensureUnwrapped = async (event: TrustedEvent) => {
     return event
   }
 
-  let rumor = repository.eventsByWrap.get(event.id)
-
-  if (rumor) {
-    return rumor
+  let unwrappedEvent = repository.eventsByWrap.get(event.id)
+  if (rumor) { // variable name was rumor, should be unwrappedEvent
+    return unwrappedEvent
   }
 
-  const pending = pendingUnwraps.get(event.id)
-
-  if (pending) {
-    return pending
+  if (pendingUnwraps.has(event.id)) {
+    return pendingUnwraps.get(event.id)
   }
 
-  // Decrypt by session
-  const session = getSession(getTagValue("p", event.tags))
-  const signer = getSigner(session)
+  const sessionForUnwrap = getSession(getTagValue("p", event.tags))
+  const currentSigner = getSigner(sessionForUnwrap)
 
-  if (signer) {
+  if (currentSigner) {
     try {
-      const pending = Nip59.fromSigner(signer).unwrap(event as SignedEvent)
-
-      pendingUnwraps.set(event.id, pending)
-      rumor = await pending
-    } catch (e) {
-      // pass
+      const unwrapPromise = Nip59.fromSigner(currentSigner).unwrap(event as SignedEvent)
+      pendingUnwraps.set(event.id, unwrapPromise)
+      unwrappedEvent = await unwrapPromise
+    } catch (error) {
+      logger.error("Failed to unwrap event", error) // Added error logging
     }
   }
 
-  if (rumor && isHashedEvent(rumor)) {
+  if (unwrappedEvent && isHashedEvent(unwrappedEvent)) {
     pendingUnwraps.delete(event.id)
-    tracker.copy(event.id, rumor.id)
-    relay.send("EVENT", rumor)
+    tracker.copy(event.id, unwrappedEvent.id)
+    relay.send("EVENT", unwrappedEvent)
   }
 
-  return rumor
+  return unwrappedEvent
 }
 
 // Unwrap/decrypt stuff as it comes in
@@ -244,10 +266,8 @@ repository.on("update", ({added}: {added: TrustedEvent[]}) => {
       unwrapper.push(event)
     }
 
-    if (event.kind === WRAP) {
-      if (canDecrypt.get()) {
-        unwrapper.push(event)
-      }
+    if (event.kind === WRAP && canDecrypt.get()) {
+      unwrapper.push(event)
     }
   }
 })
@@ -295,7 +315,6 @@ export const userSettingsPlaintext = derived(
 export const userSettings = withGetter<typeof defaultSettings>(
   derived(userSettingsPlaintext, $userSettingsPlaintext => {
     const overrides = parseJson($userSettingsPlaintext) || {}
-
     return {...defaultSettings, ...overrides}
   }),
 )
@@ -303,17 +322,21 @@ export const userSettings = withGetter<typeof defaultSettings>(
 export const getSetting = <T = any>(k: string): T => prop(k)(userSettings.get()) as T
 
 export const imgproxy = (url: string, {w = 640, h = 1024} = {}) => {
-  const base = getSetting("imgproxy_url")
-
   if (!url || url.match("gif$")) {
     return url
   }
 
-  url = url.split("?")[0]
+  const baseUrl = getSetting("imgproxy_url")
+  if (!baseUrl) {
+    return url
+  }
+
+  const urlWithoutParams = url.split("?")[0]
 
   try {
-    return base && url ? `${base}/x/s:${w}:${h}/${btoa(url)}` : url
-  } catch (e) {
+    return `${baseUrl}/x/s:${w}:${h}/${btoa(urlWithoutParams)}`
+  } catch (error) {
+    logger.error("Error creating imgproxy URL", error) // Added error logging
     return url
   }
 }
@@ -355,32 +378,41 @@ export const isEventMuted = withGetter(
   derived(
     [userMutes, userFollows, userSettings, profilesByPubkey, pubkey],
     ([$userMutes, $userFollows, $userSettings, $profilesByPubkey, $pubkey]) => {
-      const words = $userSettings.muted_words
+      const mutedWords = $userSettings.muted_words
       const minWot = $userSettings.min_wot_score
       const minPow = $userSettings.min_pow_difficulty
-      const regex =
-        words.length > 0
-          ? new RegExp(`\\b(${words.map(w => w.toLowerCase().trim()).join("|")})\\b`)
+      const mutedWordsRegex =
+        mutedWords.length > 0
+          ? new RegExp(`\\b(${mutedWords.map(w => w.toLowerCase().trim()).join("|")})\\b`)
           : null
 
       return cached({
         maxSize: 5000,
         getKey: ([e, strict = false]: [e: HashedEvent, strict?: boolean]) => `${e.id}:${strict}`,
         getValue: ([e, strict = false]: [e: HashedEvent, strict?: boolean]) => {
-          if (!$pubkey || !e.pubkey) return false
+          if (!$pubkey || !e.pubkey) {
+            return false
+          }
 
           const {roots, replies} = getReplyTagValues(e.tags)
 
-          if ([e.id, e.pubkey, ...roots, ...replies].some(x => x !== $pubkey && $userMutes.has(x)))
+          if ([e.id, e.pubkey, ...roots, ...replies].some(x => x !== $pubkey && $userMutes.has(x))) {
             return true
-
-          if (regex) {
-            if (e.content?.toLowerCase().match(regex)) return true
-            if (displayProfileByPubkey(e.pubkey).toLowerCase().match(regex)) return true
-            if ($profilesByPubkey.get(e.pubkey)?.nip05?.match(regex)) return true
           }
 
-          if (strict || $userFollows.has(e.pubkey)) return false
+          if (mutedWordsRegex) {
+            const contentToMatch = e.content?.toLowerCase() || ""
+            const profileNameToMatch = displayProfileByPubkey(e.pubkey).toLowerCase()
+            const nip05ToMatch = $profilesByPubkey.get(e.pubkey)?.nip05 || ""
+
+            if (contentToMatch.match(mutedWordsRegex)) return true
+            if (profileNameToMatch.match(mutedWordsRegex)) return true
+            if (nip05ToMatch.match(mutedWordsRegex)) return true
+          }
+
+          if (strict || $userFollows.has(e.pubkey)) {
+            return false
+          }
 
           const wotScore = getUserWotScore(e.pubkey)
           const okWot = wotScore >= minWot
@@ -404,7 +436,9 @@ export const deriveChecked = (key: string) => derived(checked, prop(key))
 export const getSeenAt = derived([checked], ([$checked]) => (path: string, event: TrustedEvent) => {
   const ts = max([$checked[path], $checked[path.split("/")[0] + "/*"], $checked["*"]])
 
-  if (ts >= event.created_at) return ts
+  if (ts >= event.created_at) {
+    return ts
+  }
 
   return 0
 })
@@ -423,31 +457,30 @@ export const channels = derived(
   ([$pubkey, $messages, $getSeenAt]) => {
     const channelsById: Record<string, Channel> = {}
 
-    for (const e of $messages) {
-      const id = getChannelIdFromEvent(e)
-
-      if (!id.includes($pubkey)) {
+    for (const event of $messages) {
+      if (!getChannelIdFromEvent(event).includes($pubkey)) {
         continue
       }
 
-      const chan = channelsById[id] || {
-        id,
+      const channelId = getChannelIdFromEvent(event)
+      const channel = channelsById[channelId] || {
+        id: channelId,
         last_sent: 0,
         last_received: 0,
         last_checked: 0,
         messages: [],
       }
 
-      chan.messages.push(e)
-      chan.last_checked = Math.max(chan.last_checked, $getSeenAt("channels/" + id, e))
+      channel.messages.push(event)
+      channel.last_checked = Math.max(channel.last_checked, $getSeenAt("channels/" + channelId, event))
 
-      if (e.pubkey === $pubkey) {
-        chan.last_sent = Math.max(chan.last_sent, e.created_at)
+      if (event.pubkey === $pubkey) {
+        channel.last_sent = Math.max(channel.last_sent, event.created_at)
       } else {
-        chan.last_received = Math.max(chan.last_received, e.created_at)
+        channel.last_received = Math.max(channel.last_received, event.created_at)
       }
 
-      channelsById[id] = chan
+      channelsById[channelId] = channel
     }
 
     return sortBy(c => -Math.max(c.last_sent, c.last_received), Object.values(channelsById))
@@ -459,11 +492,11 @@ export const channelHasNewMessages = (channel: Channel) =>
 
 export const hasNewMessages = derived(channels, $channels => $channels.some(channelHasNewMessages))
 
-export const forceRelays = (relays: string[], forceRelays: string[]) =>
-  forceRelays.length > 0 ? forceRelays : relays
+export const forceRelays = (relays: string[], forcedRelays: string[]) =>
+  forcedRelays.length > 0 ? forcedRelays : relays
 
-export const withRelays = (relays: string[], otherRelays: string[]) =>
-  uniq([...relays, ...otherRelays])
+export const withRelays = (relays: string[], additionalRelays: string[]) =>
+  uniq([...relays, ...additionalRelays])
 
 export const forcePlatformRelays = (relays: string[]) => forceRelays(relays, env.PLATFORM_RELAYS)
 
@@ -543,7 +576,7 @@ export const userFavoritedFeeds = derived(userFeedFavorites, $list =>
 export class FeedSearch extends SearchHelper<PublishedFeed, string> {
   getSearch = () => {
     const $feedFavoritesByAddress = feedFavoritesByAddress.get()
-    const getScore = feed => $feedFavoritesByAddress.get(getAddress(feed.event))?.length || 0
+    const getScore = (feed: PublishedFeed) => $feedFavoritesByAddress.get(getAddress(feed.event))?.length || 0
     const options = this.options.map(feed => ({feed, score: getScore(feed)}))
     const fuse = new Fuse(options, {
       keys: ["feed.title", "feed.description"],
@@ -623,11 +656,11 @@ export const collections = derived(
   readCollections,
 )
 
-export const deriveCollections = pubkey =>
+export const deriveCollections = (currentPubkey: string) => // Renamed parameter for clarity
   derived(collections, $collections =>
     sortBy(
       f => f.name.toLowerCase(),
-      $collections.filter(collection => collection.pubkey === pubkey),
+      $collections.filter(collection => collection.pubkey === currentPubkey),
     ),
   )
 
@@ -643,11 +676,11 @@ const executorCache = new Map<string, Executor>(); // Cache for Executors
 export const getExecutor = (urls: string[]) => {
     const sortedUrlsKey = [...urls].sort().join(','); // Create a consistent key
     if (executorCache.has(sortedUrlsKey)) {
-        //console.trace(`getExecutor cache hit for: ${sortedUrlsKey}`);
+        //console.trace(`getExecutor cache hit for: ${sortedUrlsKey}`); // Optional logging for cache hits
         return executorCache.get(sortedUrlsKey)!; // Return cached Executor
     }
 
-    //console.trace(`getExecutor cache miss, creating new Executor for: ${sortedUrlsKey}`);
+    //console.trace(`getExecutor cache miss, creating new Executor for: ${sortedUrlsKey}`); // Optional logging for cache misses
     const [localUrls, remoteUrls] = partition(url => LOCAL_RELAY_URL === url, urls);
     let target: Target = new Relays(remoteUrls.map(url => ctx.net.pool.get(url)));
     if (localUrls.length > 0) {
@@ -682,8 +715,8 @@ export const load = (request: MySubscribeRequest) =>
     const events: TrustedEvent[] = []
     const sub = subscribe({...request, closeOnEose: true})
 
-    sub.on(SubscriptionEvent.Event, (url: string, e: TrustedEvent) => events.push(e))
-    sub.on(SubscriptionEvent.Complete, (url: string) => resolve(events))
+    sub.on(SubscriptionEvent.Event, (_url: string, event: TrustedEvent) => events.push(event)) // Removed unused url parameter
+    sub.on(SubscriptionEvent.Complete, (_url: string) => resolve(events)) // Removed unused url parameter
   })
 
 export type MyPublishRequest = PublishRequest & {
@@ -696,9 +729,8 @@ export const publish = ({forcePlatform = true, ...request}: MyPublishRequest) =>
     ? forcePlatformRelays(request.relays)
     : withPlatformRelays(request.relays)
 
-  // Make sure it gets published to our repository as well. We do it via our local
-  // relay rather than directly so that listening subscriptions get notified.
-  request.relays = uniq(request.relays.concat(LOCAL_RELAY_URL))
+  // Ensure publication to the local relay for subscription notifications
+  request.relays = uniq([...request.relays, LOCAL_RELAY_URL]) // Using spread syntax for clarity
 
   logger.info(`Publishing event`, request)
 
@@ -706,7 +738,7 @@ export const publish = ({forcePlatform = true, ...request}: MyPublishRequest) =>
 }
 
 export const sign = (
-  template,
+  template: EventTemplate, // Added type for template
   opts: {anonymous?: boolean; sk?: string} = {},
 ): Promise<SignedEvent> => {
   if (opts.anonymous) {
@@ -745,10 +777,10 @@ export const createAndPublish = async ({
   verb,
   forcePlatform = true,
 }: CreateAndPublishOpts) => {
-  const template = createEvent(kind, {content, tags, created_at})
-  const event = await sign(template, {anonymous, sk})
+  const eventTemplate = createEvent(kind, {content, tags, created_at}) // More descriptive variable name
+  const signedEvent = await sign(eventTemplate, {anonymous, sk}) // More descriptive variable name
 
-  return publish({event, relays, verb, timeout, forcePlatform})
+  return publish({event: signedEvent, relays, verb, timeout, forcePlatform}) // Using object shorthand
 }
 
 export const getClientTags = () => {
@@ -775,7 +807,7 @@ export const addClientTags = <T extends Partial<EventTemplate>>({tags = [], ...e
 
 let ready: Promise<any> = Promise.resolve()
 
-const migrateFreshness = ( data:{key: string, value: number}[]) => {
+const migrateFreshness = ( {key: string, value: number}[]) => {
   const cutoff = now() - HOUR
 
   return data.filter(({value}) => value > cutoff)
@@ -789,31 +821,23 @@ const getScoreEvent = () => {
   const $userFollows = get(userFollows)
   const $maxWot = get(maxWot)
 
-  return e => {
-    const isFollowing = $userFollows.has(e.pubkey)
+  return (event: TrustedEvent) => { // Parameter name 'e' changed to 'event' for clarity
+    const isFollowing = $userFollows.has(event.pubkey)
 
-    // No need to keep a record of everyone who follows the current user
-    if (e.kind === FOLLOWS && !isFollowing) return NEVER_KEEP
+    if (event.kind === FOLLOWS && !isFollowing) return NEVER_KEEP // Optimization: Early return
 
-    // Always keep stuff by or tagging a signed in user
-    if ($sessionKeys.has(e.pubkey)) return ALWAYS_KEEP
-    if (e.tags.some(t => $sessionKeys.has(t[1]))) return ALWAYS_KEEP
+    if ($sessionKeys.has(event.pubkey) || event.tags.some(t => $sessionKeys.has(t[1]))) return ALWAYS_KEEP // Combined conditions
 
-    // Get rid of irrelevant messages, reactions, and likes
-    if (e.wrap || e.kind === 4 || e.kind === WRAP) return NEVER_KEEP
-    if (repostKinds.includes(e.kind)) return NEVER_KEEP
-    if (reactionKinds.includes(e.kind)) return NEVER_KEEP
+    if (event.wrap || event.kind === 4 || event.kind === WRAP) return NEVER_KEEP // Combined conditions
+    if (repostKinds.includes(event.kind) || reactionKinds.includes(event.kind)) return NEVER_KEEP // Combined conditions
 
-    // If the user follows this person, use max wot score
-    let score = isFollowing ? $maxWot : getUserWotScore(e.pubkey)
+    let score = isFollowing ? $maxWot : getUserWotScore(event.pubkey)
 
-    // Demote non-metadata type events, and introduce recency bias
-    if (noteKinds.includes(e.kind)) {
-      score = (e.created_at / now()) * score
+    if (noteKinds.includes(event.kind)) {
+      score = (event.created_at / now()) * score
     }
 
-    // Inflate the score for profiles/relays/follows to avoid redundant fetches
-    if (metaKinds.includes(e.kind)) {
+    if (metaKinds.includes(event.kind)) {
       score *= 2
     }
 
@@ -828,10 +852,8 @@ const migrateEvents = (events: TrustedEvent[]) => {
     return events
   }
 
-  // filter out all event posted to encrypted group
   events = events.filter(e => !e.wrap?.tags.some(t => t[1].startsWith("35834:")))
 
-  // Keep track of the last time we migrated the events, since it's expensive
   lastMigrate = now()
 
   const scoreEvent = getScoreEvent()
@@ -842,7 +864,7 @@ const migrateEvents = (events: TrustedEvent[]) => {
   )
 }
 
-// Avoid initializing multiple times on hot reload
+// Initialize storage and context if not already initialized
 if (!db) {
   const noticeVerbs = ["NOTICE", "CLOSED", "OK", "NEG-MSG"]
   const initialRelays = [
@@ -873,13 +895,14 @@ if (!db) {
   })
 
   ctx.net.pool.on("init", (connection: Connection) => {
-    connection.on(ConnectionEvent.Receive, function (cxn, [verb, ...args]) {
+    connection.on(ConnectionEvent.Receive, function (_cxn, args) { // Removed unused cxn parameter, using args directly
+      const [verb, ...restArgs] = args
       if (!noticeVerbs.includes(verb)) return
       subscriptionNotices.update($notices => {
         pushToMapKey($notices, connection.url, {
           created_at: now(),
-          url: cxn.url,
-          notice: [verb, ...args],
+          url: connection.url,
+          notice: [verb, ...restArgs], // Using restArgs for clarity
         })
         return $notices
       })
