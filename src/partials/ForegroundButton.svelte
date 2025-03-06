@@ -1,8 +1,8 @@
 <script lang="ts">
   import cx from "classnames"
 
-  export let size = "large"
-  export let theme = "primary"
+  export let size: "small" | "large" = "large"
+  export let theme: "primary" | "secondary" = "primary"
 
   const className = cx(
     $$props.class,
