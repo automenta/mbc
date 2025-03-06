@@ -643,11 +643,11 @@ const executorCache = new Map<string, Executor>(); // Cache for Executors
 export const getExecutor = (urls: string[]) => {
     const sortedUrlsKey = [...urls].sort().join(','); // Create a consistent key
     if (executorCache.has(sortedUrlsKey)) {
-        console.trace(`getExecutor cache hit for: ${sortedUrlsKey}`);
+        //console.trace(`getExecutor cache hit for: ${sortedUrlsKey}`);
         return executorCache.get(sortedUrlsKey)!; // Return cached Executor
     }
 
-    console.trace(`getExecutor cache miss, creating new Executor for: ${sortedUrlsKey}`);
+    //console.trace(`getExecutor cache miss, creating new Executor for: ${sortedUrlsKey}`);
     const [localUrls, remoteUrls] = partition(url => LOCAL_RELAY_URL === url, urls);
     let target: Target = new Relays(remoteUrls.map(url => ctx.net.pool.get(url)));
     if (localUrls.length > 0) {
@@ -775,7 +775,7 @@ export const addClientTags = <T extends Partial<EventTemplate>>({tags = [], ...e
 
 let ready: Promise<any> = Promise.resolve()
 
-const migrateFreshness = ( {key: string; value: number}[]) => {
+const migrateFreshness = ( data:{key: string, value: number}[]) => {
   const cutoff = now() - HOUR
 
   return data.filter(({value}) => value > cutoff)
