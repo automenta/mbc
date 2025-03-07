@@ -1,4 +1,4 @@
-import {first, fromPairs} from "@welshman/lib"
+import {fromPairs} from "@welshman/lib"
 import type {TrustedEvent} from "@welshman/util"
 import {getAddress, getTags, getTagValues} from "@welshman/util"
 import {parseJson, SearchHelper} from "src/util/misc"

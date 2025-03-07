@@ -15,7 +15,7 @@
 
 <div class="flex flex-col gap-2 overflow-hidden text-ellipsis">
   <div class="flex justify-between">
-    <h3 class="staatliches text-2xl">{title || subject}</h3>
+    <h3 class=" text-2xl">{title || subject}</h3>
     <Chips items={categories}>
       <div slot="item" let:item>
         <i class="fa fa-tag" />

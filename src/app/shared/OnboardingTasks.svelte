@@ -5,7 +5,7 @@
 </script>
 
 <OnboardingTaskComponent task={OnboardingTask.BackupKey}>
-  <p class="staatliches flex items-center gap-4 text-xl">
+  <p class=" flex items-center gap-4 text-xl">
     <i class="fa fa-key" /> Back up your key
   </p>
   <p>
@@ -28,7 +28,7 @@
 
 {#if env.ENABLE_ZAPS}
   <OnboardingTaskComponent task={OnboardingTask.SetupWallet}>
-    <p class="staatliches flex items-center gap-4 text-xl">
+    <p class=" flex items-center gap-4 text-xl">
       <i class="fa fa-bolt" /> Get paid
     </p>
     <p>

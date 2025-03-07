@@ -24,7 +24,7 @@
   }
 </script>
 
-<span class="staatliches text-lg">What time range would you like to consider?</span>
+<span class=" text-lg">What time range would you like to consider?</span>
 <div class="grid grid-cols-2 gap-2">
   <DateInput
     placeholder="Since"

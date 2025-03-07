@@ -1,5 +1,4 @@
 <script lang="ts">
-  import cx from "classnames"
   import {toTitle} from "src/util/misc"
 
   export let tabs: string[]

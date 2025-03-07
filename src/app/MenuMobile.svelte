@@ -60,7 +60,7 @@
         </div>
       {/if}
     </div>
-    <div class="staatliches m-auto grid grid-cols-2 gap-3">
+    <div class=" m-auto grid grid-cols-2 gap-3">
       <MenuMobileItem stopPropagation on:click={openSettings}>
         <i class="fa fa-cog" /> Settings
       </MenuMobileItem>
@@ -103,7 +103,7 @@
         <i class="fa fa-rss" /> Feeds
       </MenuMobileItem>
     </div>
-    <div class="staatliches mt-8 block flex h-8 justify-center gap-2 px-8 text-tinted-400">
+    <div class=" mt-8 block flex h-8 justify-center gap-2 px-8 text-tinted-400">
       <Anchor class="hover:text-tinted-200" href="/about">About</Anchor>
     </div>
   </SliderMenu>
@@ -111,8 +111,8 @@
 
 {#if subMenu === "settings"}
   <SliderMenu onEscape={closeSubMenu}>
-    <p class="staatliches mb-8 text-center text-3xl">Settings</p>
-    <div class="staatliches m-auto grid grid-cols-2 gap-3">
+    <p class=" mb-8 text-center text-3xl">Settings</p>
+    <div class=" m-auto grid grid-cols-2 gap-3">
       {#if $installPrompt}
         <MenuMobileItem on:click={installAsPWA} on:click={closeMenu}>
           <i class="fa fa-rocket" /> Install
@@ -136,8 +136,8 @@
 
 {#if subMenu === "account"}
   <SliderMenu onEscape={closeSubMenu}>
-    <p class="staatliches mb-8 text-center text-3xl">Account</p>
-    <div class="staatliches m-auto mb-8 grid grid-cols-2 gap-3">
+    <p class=" mb-8 text-center text-3xl">Account</p>
+    <div class=" m-auto mb-8 grid grid-cols-2 gap-3">
       <MenuMobileItem href="/settings/keys" on:click={closeMenu}>
         <i class="fa fa-key" /> Keys
       </MenuMobileItem>
@@ -150,7 +150,7 @@
         <i class="fa fa-paper-plane" /> Create Invite
       </MenuMobileItem>
     </div>
-    <div class="staatliches block flex h-8 justify-center gap-2 px-8 text-tinted-400">
+    <div class=" block flex h-8 justify-center gap-2 px-8 text-tinted-400">
       <Anchor class="hover:text-tinted-200" href="/logout" on:click={closeMenu}>Logout</Anchor> /
       <Anchor class="hover:text-tinted-200" stopPropagation on:click={() => setSubMenu("accounts")}>
         Switch Accounts
@@ -171,7 +171,7 @@
         </MenuItem>
       {/if}
     {/each}
-    <MenuItem class="staatliches py-4 text-center" on:click={() => router.at("login").open()}>
+    <MenuItem class=" py-4 text-center" on:click={() => router.at("login").open()}>
       <i class="fa fa-plus" /> Add Account
     </MenuItem>
   </SliderMenu>

@@ -18,7 +18,7 @@
   <FlexColumn>
     <div class="flex items-center gap-2">
       <i class="fa fa-key fa-lg" />
-      <h2 class="staatliches text-2xl">Your keys</h2>
+      <h2 class=" text-2xl">Your keys</h2>
     </div>
     <p>
       Your account is identified across the network using a public/private <Anchor

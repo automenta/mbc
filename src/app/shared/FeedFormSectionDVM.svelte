@@ -62,7 +62,7 @@
       .find(identity) || ""
 </script>
 
-<span class="staatliches text-lg">Which DVMs would you like to request notes from?</span>
+<span class=" text-lg">Which DVMs would you like to request notes from?</span>
 <SearchSelect
   multiple
   value={addresses}

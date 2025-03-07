@@ -10,7 +10,7 @@
   export let onChange
 </script>
 
-<span class="staatliches text-lg">Which mentions would you like to see?</span>
+<span class=" text-lg">Which mentions would you like to see?</span>
 <SearchSelect
   multiple
   value={feed.slice(2)}

@@ -343,14 +343,14 @@
   <div class="flex scale-90 items-center gap-2">
     {#if event.wrap}
       <div
-        class="staatliches flex h-6 items-center gap-1 rounded bg-neutral-800 px-2 text-neutral-100 transition-colors dark:bg-neutral-600 dark:hover:bg-neutral-500">
+        class=" flex h-6 items-center gap-1 rounded bg-neutral-800 px-2 text-neutral-100 transition-colors dark:bg-neutral-600 dark:hover:bg-neutral-500">
         <i class="fa fa-lock text-xs sm:text-accent" />
         <span class="hidden sm:inline">Encrypted</span>
       </div>
     {/if}
     {#if $seenOn?.length > 0 && (env.PLATFORM_RELAYS.length === 0 || env.PLATFORM_RELAYS.length > 1)}
       <div
-        class="staatliches hidden cursor-pointer rounded bg-neutral-800 px-2 text-neutral-100 transition-colors hover:bg-neutral-700 dark:bg-neutral-600 dark:hover:bg-neutral-500 sm:block"
+        class=" hidden cursor-pointer rounded bg-neutral-800 px-2 text-neutral-100 transition-colors hover:bg-neutral-700 dark:bg-neutral-600 dark:hover:bg-neutral-500 sm:block"
         on:click={() => setView("info")}>
         <span class="text-accent">{$seenOn.length}</span>
         {pluralize($seenOn.length, "relay")}

@@ -193,7 +193,7 @@
   ])
 </script>
 
-<span class="staatliches text-lg">What kind of content do you want to see?</span>
+<span class=" text-lg">What kind of content do you want to see?</span>
 <SearchSelect
   multiple
   search={helper.searchValues}

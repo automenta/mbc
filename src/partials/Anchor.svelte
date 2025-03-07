@@ -38,7 +38,7 @@
     "text-base bg-tinted-700 text-tinted-200 hover:bg-tinted-600": button && low,
     "bg-accent text-white hover:bg-accent": button && accent,
     "text-danger border border-solid !border-danger": button && danger,
-    "text-xl staatliches rounded whitespace-nowrap flex justify-center items-center gap-2 px-6":
+    "text-xl  rounded whitespace-nowrap flex justify-center items-center gap-2 px-6":
       button,
     "aspect-square flex justify-center items-center rounded-full !p-0": circle,
     "aspect-square flex justify-center items-center": square,

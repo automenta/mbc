@@ -39,7 +39,7 @@
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
       <i class="fa fa-list fa-lg" />
-      <h2 class="staatliches text-2xl">Your lists</h2>
+      <h2 class=" text-2xl">Your lists</h2>
     </div>
     <Anchor button accent on:click={createList}>
       <i class="fa fa-plus" /> List
@@ -62,7 +62,7 @@
   {/if}
   <div class="flex items-center gap-2">
     <i class="fa fa-circle-nodes fa-lg" />
-    <h2 class="staatliches text-2xl">Other lists</h2>
+    <h2 class=" text-2xl">Other lists</h2>
   </div>
   <p>Below are lists created by people in your network.</p>
   <Input bind:value={q} placeholder="Search lists">

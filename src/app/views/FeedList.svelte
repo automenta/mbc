@@ -76,7 +76,7 @@
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
       <i class="fa fa-rss fa-lg" />
-      <h2 class="staatliches text-2xl">Your feeds</h2>
+      <h2 class=" text-2xl">Your feeds</h2>
     </div>
     <Anchor button accent on:click={createFeed}>
       <i class="fa fa-plus" /> Feed
@@ -111,7 +111,7 @@
   {/if}
   <div class="flex items-center gap-2">
     <i class="fa fa-circle-nodes fa-lg" />
-    <h2 class="staatliches text-2xl">Other feeds</h2>
+    <h2 class=" text-2xl">Other feeds</h2>
   </div>
   <p>Below are feeds created by people in your network.</p>
   <Input bind:value={q} placeholder="Search feeds">

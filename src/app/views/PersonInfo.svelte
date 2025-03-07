@@ -14,7 +14,7 @@
   $: lightningAddress = $profile?.lud16 || $profile?.lud06
 </script>
 
-<h1 class="staatliches text-2xl">Details</h1>
+<h1 class=" text-2xl">Details</h1>
 <CopyValue label="Link" value={nip19.nprofileEncode({pubkey, relays})} />
 <CopyValue label="Public Key" encode={nip19.npubEncode} value={pubkey} />
 {#if $handle}

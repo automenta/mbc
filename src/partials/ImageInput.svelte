@@ -79,7 +79,7 @@
     {#if loading}
       <Spinner delay={0}>Uploading files using: {displayList(urls)}</Spinner>
     {:else}
-      <h1 class="staatliches text-2xl">Upload a File</h1>
+      <h1 class=" text-2xl">Upload a File</h1>
       <div class="flex flex-col gap-2">
         <p>Click below to select a file to upload.</p>
         <p class="text-gray-3 text-sm">

@@ -1,5 +1,5 @@
 import {debounce} from "throttle-debounce"
-import {derived, get, writable} from "svelte/store"
+import {derived, writable} from "svelte/store"
 import type {Feed, RequestOpts} from "@welshman/feeds"
 import {FeedController} from "@welshman/feeds"
 import {
@@ -58,6 +58,9 @@ import {env, load, type MySubscribeRequest, subscribe} from "src/engine/state"
 
 // Utils
 
+let notificationSubscription
+let messageSubscription
+
 const DEFAULT_EVENT_OVERLAP = int(HOUR)
 const CONSERVATIVE_PULL_LIMIT = 100
 const PROFILE_LOAD_CHUNK_SIZE = 50
@@ -94,22 +97,22 @@ export const pullConservatively = ({relays, filters}: AppSyncOpts) => {
   return Promise.all(promises)
 }
 
-export const loadAll = (feed, {onEvent}: {onEvent: (e: TrustedEvent) => void}) => {
-  const loading = writable(true)
-  const onExhausted = () => loading.set(false)
-
-  const promise = new Promise<void>(async resolve => {
-    const ctrl = createFeedController({feed, onEvent, onExhausted})
-
-    while (get(loading)) {
-      await ctrl.load(100)
-    }
-
-    resolve()
-  })
-
-  return {promise, loading, stop: onExhausted}
-}
+// export const loadAll = (feed, {onEvent}: {onEvent: (e: TrustedEvent) => void}) => {
+//   const loading = writable(true)
+//   const onExhausted = () => loading.set(false)
+//
+//   const promise = new Promise<void>(async resolve => {
+//     const ctrl = createFeedController({feed, onEvent, onExhausted})
+//
+//     while (get(loading)) {
+//       await ctrl.load(100)
+//     }
+//
+//     resolve()
+//   })
+//
+//   return {promise, loading, stop: onExhausted}
+// }
 
 export const loadEvent = async (eventIdOrAddress: string, request: Partial<MySubscribeRequest> = {}) =>
   first(
@@ -238,7 +241,6 @@ export const createFeedController = ({forcePlatform = true, ...options}: FeedCon
   })
 }
 
-let notificationSubscription
 
 export const getNotificationKinds = () =>
   without(env.ENABLE_ZAPS ? [] : [9735], [...noteKinds, ...reactionKinds])
@@ -266,17 +268,14 @@ export const loadNotifications = () => {
 }
 
 export const listenForNotifications = () => {
-  if (notificationSubscription) {
+  if (notificationSubscription)
     notificationSubscription.close()
-  }
 
-  notificationSubscription = subscribe({
+  return notificationSubscription = subscribe({
     skipCache: true,
     relays: ctx.app.router.ForUser().getUrls(),
     filters: liveNotificationFilters(),
   })
-
-  return notificationSubscription
 }
 
 export const loadLabels = (authors: string[]) =>
@@ -316,7 +315,6 @@ export const loadMessages = () =>
     ],
   })
 
-let messageSubscription
 
 export const listenForMessages = (pubkeys: string[]) => {
   const allPubkeys = uniq([pubkey.get(), ...pubkeys])

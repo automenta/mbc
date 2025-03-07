@@ -24,7 +24,7 @@
         <PersonBadge pubkey={p} />
       {/if}
       <div class="flex items-center justify-between gap-2">
-        <p class="staatliches text-2xl">{title}</p>
+        <p class=" text-2xl">{title}</p>
         <Chip class="text-sm">
           <i class="fa fa-sm fa-tower-broadcast" />
           {status}

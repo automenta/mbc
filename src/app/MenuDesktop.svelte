@@ -12,7 +12,7 @@
     type Thunk,
     thunks
   } from "@welshman/app"
-  import {theme, toggleTheme} from "src/partials/state"
+  import {toggleTheme} from "src/partials/state"
   import MenuItem from "src/partials/MenuItem.svelte"
   import FlexColumn from "src/partials/FlexColumn.svelte"
   import Anchor from "src/partials/Anchor.svelte"
@@ -113,30 +113,30 @@
   </MenuDesktopItem>
   <FlexColumn small class="absolute bottom-0 w-72">
     <Anchor
-      class="staatliches px-8 text-tinted-400 hover:text-tinted-100"
+      class=" px-8 text-tinted-400 hover:text-tinted-100"
       on:click={() => setSubMenu("settings")}>Settings</Anchor>
-    <div class="staatliches flex h-8 gap-2 px-8 text-tinted-500">
+    <div class=" flex h-8 gap-2 px-8 text-tinted-500">
       <Anchor class="hover:text-tinted-100" href="/about">About</Anchor>
     </div>
     {#if subMenu === "settings"}
       <MenuDesktopSecondary onEscape={closeSubMenu}>
-        <MenuItem class="staatliches flex items-center gap-4 py-4 pl-8" on:click={toggleTheme}>
+        <MenuItem class=" flex items-center gap-4 py-4 pl-8" on:click={toggleTheme}>
           <i class="fa fa-palette" /> Toggle Theme
         </MenuItem>
         <MenuItem
-          class="staatliches flex items-center gap-4 py-4 pl-8"
+          class=" flex items-center gap-4 py-4 pl-8"
           href="/settings/data"
           disabled={!$signer}>
           <i class="fa fa-database" /> Database
         </MenuItem>
         <MenuItem
-          class="staatliches flex items-center gap-4 py-4 pl-8"
+          class=" flex items-center gap-4 py-4 pl-8"
           href="/settings"
           disabled={!$signer}>
           <i class="fa fa-cog" /> App Settings
         </MenuItem>
         <MenuItem
-          class="staatliches flex items-center gap-4 py-4 pl-8"
+          class=" flex items-center gap-4 py-4 pl-8"
           href="/settings/content"
           disabled={!$signer}>
           <i class="fa fa-volume-xmark" /> Content Settings
@@ -145,24 +145,24 @@
     {:else if subMenu === "account"}
       <MenuDesktopSecondary onEscape={closeSubMenu}>
         <MenuItem
-          class="staatliches flex items-center gap-4 py-4 pl-8"
+          class=" flex items-center gap-4 py-4 pl-8"
           href={router.at("people").of($pubkey).toString()}>
           <i class="fa fa-user-circle" /> Profile
         </MenuItem>
-        <MenuItem class="staatliches flex items-center gap-4 py-4 pl-8" href="/settings/keys">
+        <MenuItem class=" flex items-center gap-4 py-4 pl-8" href="/settings/keys">
           <i class="fa fa-key" /> Keys
         </MenuItem>
         <MenuItem
-          class="staatliches flex items-center gap-4 py-4 pl-8"
+          class=" flex items-center gap-4 py-4 pl-8"
           href={router.at("invite/create").qp({initialPubkey: $pubkey}).toString()}>
           <i class="fa fa-paper-plane" /> Create Invite
         </MenuItem>
         <MenuItem
-          class="staatliches flex items-center gap-4 py-4 pl-8"
+          class=" flex items-center gap-4 py-4 pl-8"
           on:click={() => setSubMenu("accounts")}>
           <i class="fa fa-right-left" /> Switch Account
         </MenuItem>
-        <MenuItem class="staatliches flex items-center gap-4 py-4 pl-8" href="/logout">
+        <MenuItem class=" flex items-center gap-4 py-4 pl-8" href="/logout">
           <i class="fa fa-right-to-bracket" /> Log Out
         </MenuItem>
       </MenuDesktopSecondary>
@@ -181,7 +181,7 @@
           {/if}
         {/each}
         <MenuItem
-          class="staatliches flex items-center gap-4 py-4"
+          class=" flex items-center gap-4 py-4"
           on:click={() => router.at("login").open()}>
           <i class="fa fa-plus" /> Add Account
         </MenuItem>

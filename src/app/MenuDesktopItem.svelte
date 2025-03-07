@@ -9,7 +9,7 @@
   export let small = false
   export let short = innerHeight < 650
 
-  $: className = cx("relative staatliches block transition-all", $$props.class, {
+  $: className = cx("relative  block transition-all", $$props.class, {
     "h-10": !small && short,
     "h-12": !small && !short,
     "h-10 text-lg": small,

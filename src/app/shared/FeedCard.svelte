@@ -41,7 +41,7 @@
   <div class="flex flex-col justify-between sm:flex-row">
     <span class="flex items-start gap-3">
       <div>
-        <Anchor on:click={loadFeed} class="staatliches text-xl">
+        <Anchor on:click={loadFeed} class=" text-xl">
           <span class:text-neutral-400={!feed.title} class:line-through={deleted}>
             {displayFeed(feed)}
           </span>

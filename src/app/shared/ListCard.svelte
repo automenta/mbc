@@ -45,7 +45,7 @@
       <span class="flex items-center gap-3">
         <div>
           <span
-            class="staatliches text-xl"
+            class=" text-xl"
             class:text-neutral-400={!list.title}
             class:line-through={deleted}>
             {displayUserList(list)}

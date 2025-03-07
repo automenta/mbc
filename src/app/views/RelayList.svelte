@@ -142,7 +142,7 @@
   <div class="flex justify-between">
     <div class="flex items-center gap-2">
       <i class="fa fa-server fa-lg" />
-      <h2 class="staatliches text-2xl">Your relays</h2>
+      <h2 class=" text-2xl">Your relays</h2>
     </div>
     <Anchor button accent on:click={addCustomRelay}>
       <i class="fa-solid fa-compass" /> Add Relay
@@ -165,7 +165,7 @@
   </div>
   <div class="flex items-center gap-2">
     <i class="fa fa-circle-nodes fa-lg" />
-    <h2 class="staatliches text-2xl">Other relays</h2>
+    <h2 class=" text-2xl">Other relays</h2>
   </div>
   <p>
     Below are relays used by people in your network. Adding these may improve your ability to load

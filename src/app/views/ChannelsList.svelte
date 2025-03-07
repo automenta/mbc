@@ -51,7 +51,7 @@
   <div class="flex justify-between">
     <div class="flex items-center gap-2">
       <i class="fa fa-comments fa-lg" />
-      <h2 class="staatliches text-2xl">Your conversations</h2>
+      <h2 class=" text-2xl">Your conversations</h2>
     </div>
     <Anchor modal button accent href="/channels/create" disabled={!$signer}>
       <i class="fa-solid fa-plus" /> Create

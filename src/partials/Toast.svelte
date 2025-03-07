@@ -41,13 +41,11 @@
 </script>
 
 <script lang="ts">
-  import type {Thunk} from "@welshman/app"
   import {onDestroy} from "svelte"
   import cx from "classnames"
   import {fly} from "src/util/transition"
   import Anchor from "src/partials/Anchor.svelte"
   import ThunkStatus from "src/partials/ThunkStatus.svelte"
-  import {randomId} from "@welshman/lib"
 
   let touchStart = 0
   let startOffset = 0

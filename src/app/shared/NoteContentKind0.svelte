@@ -32,7 +32,7 @@
       {#if picture}
         <ImageCircle class="h-10 w-10" src={picture} />
       {/if}
-      <h3 class="staatliches text-2xl">{name}</h3>
+      <h3 class=" text-2xl">{name}</h3>
     </div>
     {#if about}
       <p>{about}</p>

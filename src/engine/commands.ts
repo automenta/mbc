@@ -40,7 +40,7 @@ import {
 } from "@welshman/lib"
 import {SubscriptionEvent} from "@welshman/net"
 import {makeSecret, Nip01Signer, Nip46Broker, Nip59} from "@welshman/signer"
-import type {EventTemplate, Filter, Profile, StampedEvent, TrustedEvent} from "@welshman/util"
+import type {Filter, Profile, StampedEvent, TrustedEvent} from "@welshman/util"
 import {
   Address,
   addToListPublicly,
@@ -110,8 +110,6 @@ export const updateStore = <T extends Record<string, any>>(
 
 export const nip44EncryptToSelf = async (payload: string) =>
   signer.get().nip44.encrypt(pubkey.get(), payload)
-
-// Files
 
 const AUTH_REQUIRED_EVENT_KIND = 27235
 
@@ -239,25 +237,29 @@ const WEBP_MIME_TYPE_REGEX = /image\/(webp|gif)/
 export const compressFiles = (files: File[], opts: any) =>
   Promise.all(
     files.map(async file => {
-      if (file.type.match(WEBP_MIME_TYPE_REGEX)) {
-        return file
-      }
-      return blobToFile(await stripExifData(file, opts))
+      return file.type.match(WEBP_MIME_TYPE_REGEX)
+        ? file
+        : blobToFile(await stripExifData(file, opts))
     }),
   )
 
 export const eventsToMeta = (events: TrustedEvent[]) => {
-  const tagsByHash = groupBy(
-    metaEvent => getTagValue("ox", metaEvent),
-    events.map(e => e.tags),
+  return uniqTags(
+    Array.from(
+      groupBy(
+        metaEvent => getTagValue("ox", metaEvent),
+        events.map(e => e.tags),
+      ).values(),
+    )
+      .flatMap(identity)
+      .flatMap(identity),
   )
-  return uniqTags(Array.from(tagsByHash.values()).flatMap(identity).flatMap(identity))
 }
 
 export const uploadFiles = async (urls: string[], files: File[], compressorOpts = {}) => {
-  const compressedFiles = await compressFiles(files, compressorOpts)
-  const nip94Events = await uploadFilesToHosts(urls, compressedFiles)
-  return eventsToMeta(nip94Events as TrustedEvent[])
+  return eventsToMeta(
+    (await uploadFilesToHosts(urls, await compressFiles(files, compressorOpts))) as TrustedEvent[],
+  )
 }
 
 // Key state management
@@ -280,7 +282,7 @@ export const publishDeletion = ({kind, address = null, id = null}) => {
   return createAndPublish({
     tags,
     kind: 5,
-    relays: ctx.app.router.FromUser().getUrls(),
+    relays: routerUserURLs(),
     forcePlatform: false,
   })
 }
@@ -294,7 +296,7 @@ export const deleteEventByAddress = (address: string) =>
 // Profile
 
 export const publishProfile = (profile: Profile, {forcePlatform = false} = {}) => {
-  const relays = withIndexers(ctx.app.router.FromUser().getUrls())
+  const relays = withIndexers(routerUserURLs())
   const template = isPublishedProfile(profile) ? editProfile(profile) : createProfile(profile)
 
   return createAndPublish({...addClientTags(template), relays, forcePlatform})
@@ -314,18 +316,26 @@ export const follow = async (tag: string[]) =>
 
 // Feed favorites
 
+function favoriteList() {
+  return get(userFeedFavorites) || makeList({kind: FEEDS})
+}
+
 export const removeFeedFavorite = async (address: string) => {
-  const list = get(userFeedFavorites) || makeList({kind: FEEDS})
+  const list = favoriteList()
   const template = await removeFromList(list, address).reconcile(nip44EncryptToSelf)
 
-  return createAndPublish({...template, relays: ctx.app.router.FromUser().getUrls()})
+  return createAndPublish({...template, relays: routerUserURLs()})
+}
+
+function routerUserURLs() {
+  return ctx.app.router.FromUser().getUrls()
 }
 
 export const addFeedFavorite = async (address: string) => {
-  const list = get(userFeedFavorites) || makeList({kind: FEEDS})
+  const list = favoriteList()
   const template = await addToListPublicly(list, ["a", address]).reconcile(nip44EncryptToSelf)
 
-  return createAndPublish({...template, relays: ctx.app.router.FromUser().getUrls()})
+  return createAndPublish({...template, relays: routerUserURLs()})
 }
 
 // Relays
@@ -343,12 +353,11 @@ type ModifyTagsFn = (tags: string[][]) => string[][]
 export const setOutboxPolicies = async (modifyTags: ModifyTagsFn) => {
   if (signer.get()) {
     const list = get(userRelaySelections) || makeList({kind: RELAYS})
-
     createAndPublish({
       kind: list.kind,
       content: list.event?.content || "",
       tags: modifyTags(list.publicTags),
-      relays: withIndexers(ctx.app.router.FromUser().getUrls()),
+      relays: withIndexers(routerUserURLs()),
     })
   } else {
     anonymous.update($anon => ({...$anon, relays: modifyTags($anon.relays)}))
@@ -362,7 +371,7 @@ export const setInboxPolicies = async (modifyTags: ModifyTagsFn) => {
     kind: list.kind,
     content: list.event?.content || "",
     tags: modifyTags(list.publicTags),
-    relays: withIndexers(ctx.app.router.FromUser().getUrls()),
+    relays: withIndexers(routerUserURLs()),
   })
 }
 
@@ -382,37 +391,34 @@ export const setInboxPolicy = (url: string, enabled: boolean) => {
 export const setOutboxPolicy = (url: string, read: boolean, write: boolean) => {
   setOutboxPolicies($tags => {
     let filteredTags = $tags.filter(t => normalizeRelayUrl(t[1]) !== url)
-    if (read && write) {
-      filteredTags = filteredTags.concat([["r", url]])
-    } else if (read) {
-      filteredTags = filteredTags.concat([["r", url, "read"]])
-    } else if (write) {
-      filteredTags = filteredTags.concat([["r", url, "write"]])
-    }
-    return filteredTags
+    if (read && write)
+      return filteredTags.concat([["r", url]])
+    else if (read)
+      return filteredTags.concat([["r", url, "read"]])
+    else if (write)
+      return filteredTags.concat([["r", url, "write"]])
+    else
+      return filteredTags
   })
 }
 
 export const leaveRelay = async (url: string) => {
   await Promise.all([setInboxPolicy(url, false), setOutboxPolicy(url, false, false)])
-
-  if (pubkey.get()) {
+  if (pubkey.get())
     broadcastUserData([url])
-  }
 }
 
 export const joinRelay = async (url: string, claim?: string) => {
   url = normalizeRelayUrl(url)
 
-  if (claim && signer.get()) {
+  if (claim && signer.get())
     await requestRelayAccess(url, claim)
-  }
 
-  await setOutboxPolicy(url, true, true)
+  setOutboxPolicy(url, true, true)
 
-  if (pubkey.get()) {
+  if (pubkey.get())
     broadcastUserData([url])
-  }
+
 }
 
 const DIRECT_MESSAGE_KIND = 14
@@ -476,20 +482,17 @@ export const loginWithNip46 = async ({
   if (!["ack", connectSecret].includes(result)) return false
 
   const publicKey = await broker.getPublicKey()
-
-  if (!publicKey) return false
-
-  const handler = {relays, pubkey: signerPubkey}
-
-  addSession({method: "nip46", pubkey: publicKey, secret: clientSecret, handler})
-
-  return true
+  if (publicKey) {
+    const handler = {relays, pubkey: signerPubkey}
+    addSession({method: "nip46", pubkey: publicKey, secret: clientSecret, handler})
+    return true
+  } else
+    return false
 }
 
 export const logoutPubkey = (publicKey: string) => {
-  if (session.get().pubkey === publicKey) {
+  if (session.get().pubkey === publicKey)
     throw new Error("Cannot destroy the current session, use logout instead")
-  }
 
   sessions.update(allSessions => omit([publicKey], allSessions))
 }
@@ -505,7 +508,7 @@ export const setAppData = async <T = any>(dataKey: string, data: T) => {
       kind: 30078,
       tags: [["d", dataKey]],
       content: await signer.get().nip04.encrypt(session.get().pubkey, JSON.stringify(data)),
-      relays: ctx.app.router.FromUser().getUrls(),
+      relays: routerUserURLs(),
       forcePlatform: false,
     })
   }

@@ -65,7 +65,7 @@
 </script>
 
 {#if $zaps.length > 0}
-  <h1 class="staatliches text-2xl">Zapped By</h1>
+  <h1 class=" text-2xl">Zapped By</h1>
   <div class="grid grid-cols-2 gap-2">
     {#each $zaps as zap}
       <div class="flex flex-col gap-1">
@@ -77,7 +77,7 @@
   </div>
 {/if}
 {#if likes.length > 0}
-  <h1 class="staatliches text-2xl">Liked By</h1>
+  <h1 class=" text-2xl">Liked By</h1>
   <div class="grid grid-cols-2 gap-2">
     {#each likes as like}
       <PersonBadge pubkey={like.pubkey} />
@@ -85,7 +85,7 @@
   </div>
 {/if}
 {#if $seenOn?.length > 0 && (env.PLATFORM_RELAYS.length === 0 || env.PLATFORM_RELAYS.length > 1)}
-  <h1 class="staatliches text-2xl">Relays</h1>
+  <h1 class=" text-2xl">Relays</h1>
   <p>This note was found on {quantify($seenOn.length, "relay")} below.</p>
   <div class="flex flex-col gap-2">
     {#each $seenOn as url}
@@ -94,7 +94,7 @@
   </div>
 {/if}
 {#if mentions.length > 0}
-  <h1 class="staatliches text-2xl">In this conversation</h1>
+  <h1 class=" text-2xl">In this conversation</h1>
   <p>{quantify(mentions.length, "person is", "people are")} tagged in this note.</p>
   <div class="grid grid-cols-2 gap-2">
     {#each mentions as pubkey}
@@ -103,7 +103,7 @@
   </div>
 {/if}
 {#if handlers.length > 0 || handlerEvent}
-  <h1 class="staatliches text-2xl">Apps</h1>
+  <h1 class=" text-2xl">Apps</h1>
   {#if handlerEvent}
     {@const [handler] = readHandlers(handlerEvent)}
     {#if handler}
@@ -133,7 +133,7 @@
     {/if}
   {/if}
 {/if}
-<h1 class="staatliches text-2xl">Details</h1>
+<h1 class=" text-2xl">Details</h1>
 {#if isReplaceable(event)}
   <CopyValue label="Link" value={toNostrURI(naddr)} />
 {:else}

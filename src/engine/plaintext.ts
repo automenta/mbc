@@ -2,7 +2,6 @@ import {
   getSession,
   getSigner,
   getPlaintext, // moved getPlaintext import here
-  plaintext,
   repository,
   setPlaintext,
   tracker,

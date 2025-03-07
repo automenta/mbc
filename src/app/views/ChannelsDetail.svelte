@@ -21,6 +21,7 @@
 
   export let pubkeys
   export let channelId
+  let isAccepted:boolean;
 
   const messages = derived(
     deriveEvents(repository, {filters: [{kinds: [4, DIRECT_MESSAGE]}]}),
@@ -33,7 +34,6 @@
     ),
   )
 
-  let isAccepted
 
   const showPerson = pubkey => router.at("people").of(pubkey).open()
 
@@ -43,13 +43,10 @@
     isAccepted = $messages.some(m => m.pubkey === $session.pubkey)
     setChecked("channels/" + channelId)
 
-    for (const pubkey of pubkeys) {
+    for (const pubkey of pubkeys)
       loadInboxRelaySelections(pubkey)
-    }
 
-    return () => {
-      sub.close()
-    }
+    return () => sub.close()
   })
 
   onDestroy(() => {

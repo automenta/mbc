@@ -36,7 +36,7 @@
 
 <Card>
   <FlexColumn>
-    <span class="staatliches text-lg">Enter your custom feed below</span>
+    <span class=" text-lg">Enter your custom feed below</span>
     <Textarea
       class="h-72 whitespace-pre-wrap"
       value={json}

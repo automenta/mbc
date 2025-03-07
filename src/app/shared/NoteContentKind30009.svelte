@@ -11,7 +11,7 @@
 
 <div class="flex flex-col gap-2 overflow-hidden text-ellipsis">
   <p>Created a badge:</p>
-  <h3 class="staatliches text-2xl">{name}</h3>
+  <h3 class=" text-2xl">{name}</h3>
   {#if description}
     <p>{description}</p>
   {/if}

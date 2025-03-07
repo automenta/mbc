@@ -15,7 +15,7 @@
 </script>
 
 {#if title}
-  <h1 class="staatliches text-2xl">{title}</h1>
+  <h1 class=" text-2xl">{title}</h1>
 {/if}
 {#if urls.length > 0}
   <NoteContentLinks {urls} {showMedia} />

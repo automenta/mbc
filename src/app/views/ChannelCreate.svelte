@@ -27,7 +27,7 @@
 
 <form on:submit|preventDefault={submit} class="flex justify-center py-12">
   <FlexColumn class="pb-56">
-    <h2 class="staatliches text-center text-6xl">Start a conversation</h2>
+    <h2 class=" text-center text-6xl">Start a conversation</h2>
     <Field label="Who do you want to talk to?">
       <PersonSelect multiple autofocus bind:value />
     </Field>

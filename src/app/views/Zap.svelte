@@ -106,7 +106,7 @@
   init({appName: import.meta.env.VITE_APP_NAME})
 </script>
 
-<h1 class="staatliches text-2xl">Send a zap</h1>
+<h1 class=" text-2xl">Send a zap</h1>
 <Textarea bind:value={message} placeholder="Send a message with your zap (optional)" />
 <Input bind:value={amount}>
   <i slot="before" class="fa fa-bolt" />

@@ -13,7 +13,7 @@
 </script>
 
 <div class={cx($$props.class, "-mb-2 inline-block")}>
-  <SelectList {...$$props} bind:value optionClass="staatliches inline-block">
+  <SelectList {...$$props} bind:value optionClass=" inline-block">
     <div slot="item" let:i let:active let:option class={getClassName(active)}>
       <slot name="item" {option} {active}>
         {displayOption(option)}

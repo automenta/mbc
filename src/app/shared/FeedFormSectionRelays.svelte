@@ -9,7 +9,7 @@
   export let onChange
 </script>
 
-<span class="staatliches text-lg">Which relays would you like to use?</span>
+<span class=" text-lg">Which relays would you like to use?</span>
 <SearchSelect
   multiple
   value={feed.slice(1)}

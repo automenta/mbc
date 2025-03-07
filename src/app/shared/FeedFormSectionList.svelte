@@ -22,7 +22,7 @@
   $: addresses = feed.slice(1).flatMap(it => it.addresses)
 </script>
 
-<span class="staatliches text-lg">Which lists would you like to use?</span>
+<span class=" text-lg">Which lists would you like to use?</span>
 <SearchSelect
   multiple
   value={addresses}

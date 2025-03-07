@@ -38,7 +38,7 @@
     on:click={() => openMedia("https://coracle.us-southeast-1.linodeobjects.com/coracle-30s.mp4")}>
     <div
       class="absolute inset-0 opacity-75 transition-opacity hover:opacity-100" />
-    <p class="staatliches relative text-5xl text-white">Nostr in 30 seconds</p>
+    <p class=" relative text-5xl text-white">Nostr in 30 seconds</p>
   </Anchor>
   <Anchor
     class="relative hidden aspect-[4/3] items-center justify-center overflow-hidden rounded-xl p-8 text-center sm:flex sm:w-1/2"
@@ -47,7 +47,7 @@
     <div
       class="absolute inset-0 opacity-75 transition-opacity hover:opacity-100"
       />
-    <p class="staatliches relative text-5xl text-white">{appName} deep dive</p>
+    <p class=" relative text-5xl text-white">{appName} deep dive</p>
   </Anchor>
 </div>
 <p>

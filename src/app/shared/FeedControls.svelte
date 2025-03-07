@@ -119,7 +119,7 @@
     <div transition:slideAndFade class="pt-4">
       <Card class="flex flex-col gap-2">
         <div class="flex items-center justify-between">
-          <p class="staatliches text-2xl">Your Feeds</p>
+          <p class=" text-2xl">Your Feeds</p>
           <Anchor on:click={toggleExpanded}>
             <i class="fa fa-lg fa-times transition-all duration-700" class:rotate-180={$expanded} />
           </Anchor>

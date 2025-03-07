@@ -86,7 +86,7 @@
           Published to {success}/{total} relays
         </span>
         <Anchor
-          class="staatliches z-feature rounded-r-md bg-tinted-100-d px-4 py-1 uppercase text-tinted-700-d"
+          class=" z-feature rounded-r-md bg-tinted-100-d px-4 py-1 uppercase text-tinted-700-d"
           modal
           href="/publishes">
           <span class="sm:hidden"> Details </span>

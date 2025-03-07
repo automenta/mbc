@@ -1,6 +1,6 @@
 import {describe, expect, it} from "vitest"
 import type {TrustedEvent} from "@welshman/util"
-import {sortEventsAsc, sortEventsDesc} from "../../../../src/engine/utils"
+import {sortEventsDesc} from "../../../../src/engine/utils"
 import {getTestTrustedEvent} from "../../../utils/fake"
 
 describe("engine events utils", () => {
