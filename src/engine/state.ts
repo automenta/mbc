@@ -741,7 +741,7 @@ const EVENT_LIMIT = 30_000
 const LARGE_EVENT_COUNT = 50_000
 const MIGRATION_COOLDOWN = 60
 
-const migrateFresh = ( { key: string; value: number }[]) =>
+const migrateFresh = ( data:{ key: string; value: number }[]) =>
   data.filter(({value}) => value > CUTOFF_TIME)
 
 

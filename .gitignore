@@ -40,3 +40,5 @@ android/app/release/*
 icons/*
 .aider*
 bun.lockb
+.env
+.env

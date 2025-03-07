@@ -299,7 +299,7 @@ export const getStringWidth = (text: string) => {
   return width
 }
 
-export const fuzzy = <T>( T[], opts = {}): ((q: string) => any[]) => {
+export const fuzzy = <T>( data: T[], opts = {}): ((q: string) => any[]) => {
   const fuse = new Fuse(data, opts) as any
 
   // Slice pattern because the docs warn that it"ll crash if too long
