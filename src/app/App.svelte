@@ -97,23 +97,18 @@
   router.register("/about", About)
   router.register("/search", Search)
 
-  router.register("/channels", ChannelsList, {
-    requireSigner: true,
-  })
-  router.register("/channels/enable", ChatEnable, {
-    requireSigner: true,
-  })
-  router.register("/channels/create", ChannelCreate, {
-    requireSigner: true,
-  })
-  router.register("/channels/requests", ChannelsList, {
-    requireSigner: true,
-  })
+  const requireSigner = {
+    requireSigner: true
+  }
+  router.register("/channels", ChannelsList, requireSigner)
+  router.register("/channels/enable", ChatEnable, requireSigner)
+  router.register("/channels/create", ChannelCreate, requireSigner)
+  router.register("/channels/requests", ChannelsList, requireSigner)
   router.register("/channels/:channelId", ChannelsDetail, {
     requireSigner: true,
     serializers: {
-      channelId: asChannelId,
-    },
+      channelId: asChannelId
+    }
   })
 
   router.register("/help/:topic", Help)
@@ -122,54 +117,48 @@
     serializers: {
       people: asCsv("people"),
       relays: asCsv("relays"),
-      groups: asCsv("groups"),
-    },
+      groups: asCsv("groups")
+    }
   })
   router.register("/invite/create", InviteCreate, {
     serializers: {
       initialPubkey: asUrlComponent("initialPubkey"),
-      initialGroupAddress: asUrlComponent("initialGroupAddress"),
-    },
+      initialGroupAddress: asUrlComponent("initialGroupAddress")
+    }
   })
 
   router.register("/feeds", FeedList)
   router.register("/feeds/create", FeedCreate)
-  router.register("/feeds/:address", FeedEdit, {
+  const addrSerializer = {
     serializers: {
-      address: asNaddr("address"),
-    },
-  })
+      address: asNaddr("address")
+    }
+  }
+  router.register("/feeds/:address", FeedEdit, addrSerializer)
 
   router.register("/lists", ListList)
   router.register("/lists/create", ListCreate)
-  router.register("/lists/:address", ListDetail, {
-    serializers: {
-      address: asNaddr("address"),
-    },
-  })
-  router.register("/lists/:address/edit", ListEdit, {
-    serializers: {
-      address: asNaddr("address"),
-    },
-  })
+  router.register("/lists/:address", ListDetail, addrSerializer)
+  router.register("/lists/:address/edit", ListEdit, addrSerializer)
   router.register("/lists/select", ListSelect, {
     serializers: {
       type: asString("type"),
-      value: asString("value"),
-    },
+      value: asString("value")
+    }
   })
 
   router.register("/login", Login)
   router.register("/login/bunker", LoginBunker)
-  router.register("/login/connect", LoginConnect, {
-    requireUser: true,
-  })
+  const requireUser = {
+    requireUser: true
+  }
+  router.register("/login/connect", LoginConnect, requireUser)
   router.register("/logout", Logout)
 
   router.register("/media/:url", MediaDetail, {
     serializers: {
-      url: asUrlComponent("url"),
-    },
+      url: asUrlComponent("url")
+    }
   })
 
   router.register("/", Home)
@@ -178,115 +167,70 @@
     requireSigner: true,
     serializers: {
       pubkey: asPerson,
-      type: asString("type"),
-    },
+      type: asString("type")
+    }
   })
-  router.register("/notes/:entity", NoteDetail, {
+  const noteSerializer = {
     serializers: {
-      entity: asNote,
-    },
-  })
-  router.register("/notes/:entity/label", LabelCreate, {
-    serializers: {
-      entity: asNote,
-    },
-  })
-  router.register("/notes/:entity/report", ReportCreate, {
-    serializers: {
-      entity: asNote,
-    },
-  })
-  router.register("/notes/:entity/thread", ThreadDetail, {
-    serializers: {
-      entity: asNote,
-    },
-  })
+      entity: asNote
+    }
+  }
+  router.register("/notes/:entity", NoteDetail, noteSerializer)
+  router.register("/notes/:entity/label", LabelCreate, noteSerializer)
+  router.register("/notes/:entity/report", ReportCreate, noteSerializer)
+  router.register("/notes/:entity/thread", ThreadDetail, noteSerializer)
   router.register("/notes/:entity/delete", NoteDelete, {
     serializers: {
       entity: asNote,
-      kind: asString("kind"),
-    },
+      kind: asString("kind")
+    }
   })
 
-  router.register("/notifications", Notifications, {
-    requireUser: true,
-  })
-  router.register("/notifications/:activeTab", Notifications, {
-    requireUser: true,
-  })
+  router.register("/notifications", Notifications, requireUser)
+  router.register("/notifications/:activeTab", Notifications, requireUser)
 
   router.register("/signup", Onboarding)
 
   router.register("/people/list", PersonList, {
     serializers: {
-      pubkeys: asCsv("pubkeys"),
-    },
+      pubkeys: asCsv("pubkeys")
+    }
   })
-  router.register("/people/:entity", PersonDetail, {
+
+  const serializersRequireUserRequireSignerRequiredDefaultIsDefaultRoute = {
     required: ["pubkey"],
     serializers: {
-      entity: asPerson,
-    },
-  })
-  router.register("/people/:entity/followers", PersonFollowers, {
-    required: ["pubkey"],
-    serializers: {
-      entity: asPerson,
-    },
-  })
-  router.register("/people/:entity/follows", PersonFollows, {
-    required: ["pubkey"],
-    serializers: {
-      entity: asPerson,
-    },
-  })
-  router.register("/people/:entity/info", PersonInfo, {
-    required: ["pubkey"],
-    serializers: {
-      entity: asPerson,
-    },
-  })
+      entity: asPerson
+    }
+  }
+  router.register("/people/:entity", PersonDetail, serializersRequireUserRequireSignerRequiredDefaultIsDefaultRoute)
+  router.register("/people/:entity/followers", PersonFollowers, serializersRequireUserRequireSignerRequiredDefaultIsDefaultRoute)
+  router.register("/people/:entity/follows", PersonFollows, serializersRequireUserRequireSignerRequiredDefaultIsDefaultRoute)
+  router.register("/people/:entity/info", PersonInfo, serializersRequireUserRequireSignerRequiredDefaultIsDefaultRoute)
 
   router.register("/qrcode/:code", QRCode, {
     serializers: {
-      code: asUrlComponent("code"),
-    },
+      code: asUrlComponent("code")
+    }
   })
 
   router.register("/publishes", Publishes)
 
-  router.register("/relays/:entity", RelayDetail, {
+  let relaySerializer = {
     serializers: {
-      entity: asRelay,
-    },
-  })
-  router.register("/relays/:entity/review", RelayReview, {
-    serializers: {
-      entity: asRelay,
-    },
-  })
+      entity: asRelay
+    }
+  }
+  router.register("/relays/:entity", RelayDetail, relaySerializer)
+  router.register("/relays/:entity/review", RelayReview, relaySerializer)
 
-  router.register("/settings", UserSettings, {
-    requireUser: true,
-  })
-  router.register("/settings/content", UserContent, {
-    requireUser: true,
-  })
-  router.register("/settings/data", UserData, {
-    requireUser: true,
-  })
-  router.register("/settings/data/export", DataExport, {
-    requireUser: true,
-  })
-  router.register("/settings/data/import", DataImport, {
-    requireUser: true,
-  })
-  router.register("/settings/keys", UserKeys, {
-    requireUser: true,
-  })
-  router.register("/settings/profile", UserProfile, {
-    requireUser: true,
-  })
+  router.register("/settings", UserSettings, requireUser)
+  router.register("/settings/content", UserContent, requireUser)
+  router.register("/settings/data", UserData, requireUser)
+  router.register("/settings/data/export", DataExport, requireUser)
+  router.register("/settings/data/import", DataImport, requireUser)
+  router.register("/settings/keys", UserKeys, requireUser)
+  router.register("/settings/profile", UserProfile, requireUser)
   router.register("/settings/relays", RelayList)
 
   router.register("/zap", Zap, {
@@ -295,8 +239,8 @@
       id: asNote,
       amount: asJson("amount"),
       splits: asJson("splits"),
-      anonymous: asJson("anonymous"),
-    },
+      anonymous: asJson("anonymous")
+    }
   })
 
   router.register("/:entity", Bech32Entity, {
@@ -327,7 +271,7 @@
     ...net,
     ...app,
     ...domain,
-    ...engine,
+    ...engine
   })
 
   // Theme
@@ -365,13 +309,10 @@
 
   onMount(() => {
     const unsubPage = router.page.subscribe(
-      memoize($page => {
-        window.scrollTo(0, 0)
-      }),
+      memoize($page => window.scrollTo(0, 0))
     )
 
-    const unsubModal = router.modal.subscribe($modal => {
-    })
+    const unsubModal = router.modal.subscribe($modal => { })
 
     const unsubRouter = router.listen()
 
@@ -389,7 +330,7 @@
     const handler = navigator.registerProtocolHandler as (
       scheme: string,
       handler: string,
-      name: string,
+      name: string
     ) => void
 
     handler?.("web+nostr", `${location.origin}/%s`, appName)
@@ -403,38 +344,35 @@
     trackRelayStats(connection)
   })
 
-  // App data boostrap and relay meta fetching
+
 
   ready.then(async () => {
     // Our stores are throttled by 300, so wait until they're populated
     // before loading app data
-    await sleep(350)
+    await sleep(350) //HACK sloppy
 
-    if ($session) {
+    if ($session)
       loadUserData()
-    }
 
     const interval1 = setInterval(() => {
       slowConnections.set(getPubkeyRelays($pubkey).filter(url => getRelayQuality(url) < 0.5))
 
       // Prune connections we haven't used in a while
       for (const connection of ctx.net.pool.data.values()) {
+        const cs = connection.stats
         const lastActivity = max([
-          connection.stats.lastOpen,
-          connection.stats.lastPublish,
-          connection.stats.lastRequest,
-          connection.stats.lastEvent,
+          cs.lastOpen,
+          cs.lastPublish,
+          cs.lastRequest,
+          cs.lastEvent
         ])
-
-        if (lastActivity && lastActivity < ago(30)) {
+        if (lastActivity && lastActivity < ago(30))
           ctx.net.pool.get(connection.url).socket.close()
-        }
+
       }
     }, 5_000)
 
-    return () => {
-      clearInterval(interval1)
-    }
+    return () => clearInterval(interval1)
   })
 </script>
 

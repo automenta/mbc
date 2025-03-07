@@ -10,14 +10,10 @@
 
   onMount(() => {
     const interval = setInterval(() => {
-      const cxn = ctx.net.pool.get(url)
-
-      status = getConnectionStatus(cxn)
+      status = getConnectionStatus(ctx.net.pool.get(url))
     }, 800)
 
-    return () => {
-      clearInterval(interval)
-    }
+    return () => clearInterval(interval)
   })
 </script>
 
