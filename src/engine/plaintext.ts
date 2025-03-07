@@ -52,7 +52,7 @@ export const ensureMessagePlaintext = async (event: TrustedEvent) => {
 
 const pendingUnwraps = new Map<string, Promise<TrustedEvent>>()
 
-export const ensureUnwrapped = async (event: TrustedEvent) => {
+export async function ensureUnwrapped(event: TrustedEvent) {
   if (event.kind !== WRAP) {
     return event
   }
@@ -91,7 +91,7 @@ export const ensureUnwrapped = async (event: TrustedEvent) => {
 
 // Unwrap/decrypt stuff as it comes in
 
-const unwrapper = new Worker<TrustedEvent>({chunkSize: 10})
+const unwrapper = new Worker<TrustedEvent>({ chunkSize: 10 });
 
 unwrapper.addGlobalHandler(async (event: TrustedEvent) => {
   if (event.kind === WRAP) {
@@ -103,7 +103,7 @@ unwrapper.addGlobalHandler(async (event: TrustedEvent) => {
 
 const decryptKinds = [APP_DATA, FOLLOWS, MUTES]
 
-repository.on("update", ({added}: {added: TrustedEvent[]}) => {
+repository.on("update", ({ added }: { added: TrustedEvent[] }) => {
   for (const event of added) {
     if (decryptKinds.includes(event.kind) && event.content && !getPlaintext(event)) {
       unwrapper.push(event)
@@ -114,3 +114,5 @@ repository.on("update", ({added}: {added: TrustedEvent[]}) => {
     }
   }
 })
+
+export { ensureUnwrapped };
