@@ -25,13 +25,12 @@
 </script>
 
 <Input type="datetime" class={className} {...$$props} bind:value={value}>
-  <button slot="before" type="button" class:opacity-0={!value} on:click={init}>
+  <button type="button" class:opacity-0={!value} on:click={init} class="absolute left-0 top-0 m-px flex cursor-pointer gap-2 rounded-full px-4 pt-3 text-black opacity-75">
     <i class="fa fa-calendar-days"></i>
   </button>
   <DateInput format="yyyy-MM-dd HH:mm" bind:value />
   {#if value}
     <button
-      slot="after"
       type="button"
       class="absolute right-0 top-0 m-px flex cursor-pointer gap-2 rounded-full px-4 pt-3 text-black opacity-75"
       on:click={clear}>
