@@ -674,14 +674,15 @@ export const collectionSearch = derived(
 const executorCache = new Map<string, Executor>(); // Cache for Executors
 
 export const getExecutor = (urls: string[]) => {
-  const sortedUrlsKey = [...urls].sort().join(','); // Create a consistent key
+  const normalizedUrls = urls.map(normalizeRelayUrl); // Normalize URLs here
+  const sortedUrlsKey = [...normalizedUrls].sort().join(','); // Create a consistent key
   if (executorCache.has(sortedUrlsKey)) {
     //console.trace(`getExecutor cache hit for: ${sortedUrlsKey}`); // Optional logging for cache hits
     return executorCache.get(sortedUrlsKey)!; // Return cached Executor
   }
 
   //console.trace(`getExecutor cache miss, creating new Executor for: ${sortedUrlsKey}`); // Optional logging for cache misses
-  const [localUrls, remoteUrls] = partition(url => LOCAL_RELAY_URL === url, urls);
+  const [localUrls, remoteUrls] = partition(url => LOCAL_RELAY_URL === url, normalizedUrls);
   let target: Target = new Relays(remoteUrls.map(url => ctx.net.pool.get(url)));
   if (localUrls.length > 0) {
     target = new Multi([target, new Local(relay)]);
@@ -807,7 +808,7 @@ export const addClientTags = <T extends Partial<EventTemplate>>({tags = [], ...e
 
 let ready: Promise<any> = Promise.resolve()
 
-const migrateFreshness = ( data:{key: string, value: number}[]) => {
+const migrateFreshness = ( {key: string, value: number}[]) => {
   const cutoff = now() - HOUR;
   return data.filter(({value}) => value > cutoff);
 }
