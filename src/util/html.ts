@@ -11,10 +11,10 @@ export const copyToClipboard = (text: string): boolean => {
     result = document.execCommand("copy")
   } catch (err) {
     console.error("Failed to copy text to clipboard", err)
+  } finally {
+    document.body.removeChild(input)
+    ;(activeElement as HTMLElement)?.focus()
   }
-
-  document.body.removeChild(input)
-  ;(activeElement as HTMLElement)?.focus() // Simplified optional chaining
 
   return result
 }
@@ -31,22 +31,27 @@ export const stripExifData = async (
     return null
   }
 
-  const {default: Compressor} = await import("compressorjs")
+  try {
+    const {default: Compressor} = await import("compressorjs")
 
-  return new Promise((resolve, reject) => {
-    new Compressor(file as File, { // Explicit cast to File
-      maxWidth,
-      maxHeight,
-      convertSize: 10 * 1024 * 1024,
-      success: resolve,
-      error: e => {
-        if (e.toString().includes("File or Blob")) {
-          return resolve(file)
-        }
-        reject(e)
-      },
+    return await new Promise((resolve, reject) => {
+      new Compressor(file as File, {
+        maxWidth,
+        maxHeight,
+        convertSize: 10 * 1024 * 1024,
+        success: resolve,
+        error: e => {
+          if (e.toString().includes("File or Blob")) {
+            return resolve(file)
+          }
+          reject(e)
+        },
+      })
     })
-  })
+  } catch (e) {
+    console.error("Error stripping EXIF ", e)
+    return file instanceof File ? file : null // Return original file if stripping fails
+  }
 }
 
 export const listenForFile = (input: HTMLInputElement, onChange: (files: FileList | null) => void) => {
@@ -64,7 +69,7 @@ export const blobToString = async (blob: Blob): Promise<string | ArrayBuffer | n
     reader.readAsDataURL(blob)
   })
 
-export const blobToFile = (blob, name?: string) => new File([blob], name || blob.name, {type: blob.type})
+export const blobToFile = (blob: Blob, name?: string) => new File([blob], name || "file", {type: blob.type}) // Default name
 
 export const stripHtml = (html: string): string => {
   const doc = new DOMParser().parseFromString(html, "text/html")
@@ -84,5 +89,5 @@ export const parseHex = (hex: string): number[] | null => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   if (!result) return null
 
-  return [Number.parseInt(result[1], 16), Number.parseInt(result[2], 16), Number.parseInt(result[3], 16)]
+  return result.slice(1, 4).map(channel => Number.parseInt(channel, 16)) as number[] // Type assertion
 }

@@ -48,8 +48,9 @@ export const nsecEncode = (secret: string) => nip19.nsecEncode(hexToBytes(secret
 export const nsecDecode = (nsec: string) => {
   const {type, data} = nip19.decode(nsec)
 
-  if (type !== "nsec")
+  if (type !== "nsec") { // Use curly braces for multi-line if
     throw new Error(`Invalid nsec: ${nsec}`)
+  }
 
   return bytesToHex(data)
 }
@@ -107,8 +108,9 @@ export const decodeNostrEntityToHex = (entity: string): string | null => {
   try {
     let key = nip19.decode(entity).data
 
-    if (key instanceof Uint8Array)
+    if (key instanceof Uint8Array) { // Use curly braces for multi-line if
       key = Buffer.from(key).toString("hex")
+    }
 
     return key as string
   } catch (e) {
@@ -120,10 +122,10 @@ export const getRating = (event: TrustedEvent) => {
   if (event.kind === 1985) {
     const reviewTag = getTags("l", event.tags).find(nthEq(1, "review/relay"))
     return parseJson(last(reviewTag || []))?.quality
-  } else {
-    const ratingTag = getTags("rating", event.tags).find(t => t.length === 2)
-    return parseInt(ratingTag?.[1] || "") || undefined
   }
+
+  const ratingTag = getTags("rating", event.tags).find(t => t.length === 2)
+  return parseInt(ratingTag?.[1] || "", 10) || undefined // Explicit radix
 }
 
 export const getAvgRating = (events: TrustedEvent[]) =>
@@ -139,9 +141,14 @@ export const getContentWarning = (e: TrustedEvent) => {
 
 export const parseAnything = async (entity: string) => {
   if (entity.includes("@")) {
-    const profile = await nip05.queryProfile(entity)
-    if (profile)
-      return {type: "npub", pubkey: profile.pubkey}
+    try { // Added try-catch for nip05.queryProfile
+      const profile = await nip05.queryProfile(entity)
+      if (profile) {
+        return {type: "npub", pubkey: profile.pubkey}
+      }
+    } catch (error) {
+      console.error("NIP-05 lookup failed:", error) // Log NIP-05 errors
+    }
   }
 
   return parseAnythingSync(entity)
@@ -150,11 +157,13 @@ export const parseAnything = async (entity: string) => {
 export const parseAnythingSync = (entity: string) => {
   const normalizedEntity = fromNostrURI(entity)
 
-  if (Address.isAddress(normalizedEntity))
+  if (Address.isAddress(normalizedEntity)) { // Use curly braces for multi-line if
     return nip19.decode(Address.from(normalizedEntity).toNaddr())
+  }
 
-  if (isHex(normalizedEntity))
+  if (isHex(normalizedEntity)) { // Use curly braces for multi-line if
     return {type: "npub", pubkey: normalizedEntity}
+  }
 
   try {
     return nip19.decode(normalizedEntity)
@@ -165,7 +174,7 @@ export const parseAnythingSync = (entity: string) => {
 
 export const parsePubkey = async (entity: string) => {
   const result = await parseAnything(entity)
-  return result?.type === "npub" || result?.type === "nprofile" ? result.data : undefined;
+  return result?.type === "npub" || result?.type === "nprofile" ? result.data : undefined
 }
 
 
@@ -178,16 +187,18 @@ export async function extractPrivateKey(input: string): Promise<string | null> {
   }
 
   // Try as hex
-  if (isHex(input))
+  if (isHex(input)) { // Use curly braces for multi-line if
     return input
+  }
 
 
   // Try as JSON
   try {
     const json = JSON.parse(input)
     const privateKey = json?.privateKey || json?.sec
-    if (typeof privateKey === 'string')
+    if (typeof privateKey === 'string') { // Use curly braces for multi-line if
       return privateKey
+    }
 
   } catch (e) {
     // Not a valid JSON, try next

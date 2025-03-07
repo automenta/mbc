@@ -24,18 +24,20 @@ export function swipe(
   let startX: number | null = null
   let startY: number | null = null
 
-  function handleTouchStart(event: TouchEvent) {
+  const handleTouchStart = (event: TouchEvent) => {
     const touch = event.touches[0]
     startX = touch.clientX
     startY = touch.clientY
   }
 
-  function handleTouchMove(event: TouchEvent) {
+  const handleTouchMove = (event: TouchEvent) => {
     if (startX === null || startY === null) return
 
     const touch = event.touches[0]
     const deltaX = touch.clientX - startX
     const deltaY = touch.clientY - startY
+
+    if (!direction) return // Added check for direction being undefined
 
     const lateral = deltaX > 0 ? "right" : "left"
     const vertical = deltaY > 0 ? "top" : "bottom"
@@ -63,12 +65,14 @@ export function swipe(
     )
   }
 
-  function handleTouchEnd(event: TouchEvent) {
+  const handleTouchEnd = (event: TouchEvent) => {
     if (startX === null || startY === null) return
 
     const touch = event.changedTouches[0]
     const deltaX = touch.clientX - startX
     const deltaY = touch.clientY - startY
+
+    if (!direction) return // Added check for direction being undefined
 
     const lateral = deltaX > 0 ? "right" : "left"
     const vertical = deltaY > 0 ? "top" : "bottom"

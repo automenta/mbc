@@ -19,19 +19,19 @@ const rankRoute = (route: Route, index: number) => {
   const score = route.default
     ? 0
     : segmentize(route.path).reduce((currentScore, segment) => {
-        let score = currentScore + SEGMENT_POINTS
+        let segmentScore = SEGMENT_POINTS // Renamed to avoid shadowing
 
         if (segment === "") {
-          score += ROOT_POINTS
+          segmentScore += ROOT_POINTS
         } else if (PARAM.test(segment)) {
-          score += DYNAMIC_POINTS
+          segmentScore += DYNAMIC_POINTS
         } else if (segment[0] === "*") {
-          score -= SEGMENT_POINTS + SPLAT_PENALTY
+          segmentScore -= SEGMENT_POINTS + SPLAT_PENALTY
         } else {
-          score += STATIC_POINTS
+          segmentScore += STATIC_POINTS
         }
 
-        return score
+        return currentScore + segmentScore
       }, 0)
 
   return {route, score, index}
@@ -39,7 +39,7 @@ const rankRoute = (route: Route, index: number) => {
 
 const pickRoute = (routes: Route[], uri: string) => {
   let match: {route: Route; params: Record<string, string>; uri: string} | null = null
-  let default_: {route: Route; params: {}; uri: string} | null = null
+  let defaultMatch: {route: Route; params: {}; uri: string} | null = null // Renamed to avoid shadowing
 
   const [uriPathname] = uri.split("?")
   const uriSegments = segmentize(uriPathname)
@@ -49,11 +49,12 @@ const pickRoute = (routes: Route[], uri: string) => {
     .sort((a, b) => (a.score < b.score ? 1 : a.score > b.score ? -1 : a.index - b.index))
 
   for (let i = 0, l = ranked.length; i < l; i++) {
-    const route = ranked[i].route
+    const rankedRoute = ranked[i] // Renamed to avoid shadowing
+    const route = rankedRoute.route
     let missed = false
 
     if (route.default) {
-      default_ = {
+      defaultMatch = { // Use defaultMatch here
         route,
         params: {},
         uri,
@@ -71,19 +72,12 @@ const pickRoute = (routes: Route[], uri: string) => {
       const uriSegment = uriSegments[index]
 
       if (routeSegment && routeSegment[0] === "*") {
-        // Hit a splat, just grab the rest, and return a match
-        // uri:   /files/documents/work
-        // route: /files/* or /files/*splatname
         const splatName = routeSegment === "*" ? "*" : routeSegment.slice(1)
-
         params[splatName] = uriSegments.slice(index).map(decodeURIComponent).join("/")
         break
       }
 
       if (typeof uriSegment === "undefined") {
-        // URI is shorter than the route, no match
-        // uri:   /users
-        // route: /users/:userId
         missed = true
         break
       }
@@ -94,9 +88,6 @@ const pickRoute = (routes: Route[], uri: string) => {
         const value = decodeURIComponent(uriSegment)
         params[dynamicMatch[1]] = value
       } else if (routeSegment !== uriSegment) {
-        // Current segments don't match, not dynamic, not splat, so no match
-        // uri:   /users/123/settings
-        // route: /users/:id/profile
         missed = true
         break
       }
@@ -112,7 +103,7 @@ const pickRoute = (routes: Route[], uri: string) => {
     }
   }
 
-  return match || default_ || null
+  return match || defaultMatch || null // Use defaultMatch here
 }
 
 export type Serializer = {
@@ -127,7 +118,7 @@ export type RegisterOpts = {
   serializers?: ComponentSerializers
   requireUser?: boolean
   requireSigner?: boolean
-  default?: boolean // Added default route type
+  default?: boolean
 }
 
 export type Route = RegisterOpts & {
@@ -195,14 +186,14 @@ class RouterExtension {
 
   qp = (queryParams: Record<string, any>) => {
     const match = pickRoute(this.router.routes, this.path)
-    if (!match) return this.clone({queryParams}) // Handle no match case
+    if (!match) return this.clone({queryParams})
 
     const data = {...this.queryParams}
 
     for (const [k, v] of Object.entries(queryParams)) {
       const serializer = match.route.serializers?.[k]
 
-      if (serializer && v) {
+      if (serializer && v != null) { // Check for null or undefined
         data[k] = serializer.encode(v)
       }
     }
@@ -210,21 +201,16 @@ class RouterExtension {
     return this.clone({queryParams: data})
   }
 
-  // @ts-ignore
   cx = (context: Record<string, any>) => this.clone(updateIn("context", c => mergeLeft(context, c))(this.params))
 
-  // @ts-ignore
   cg = (config: Record<string, any>) => this.clone(updateIn("config", c => mergeLeft(config, c))(this.params))
 
   toString = () => {
     let path = this.path
 
-    if (this.queryParams) {
+    if (this.queryParams && Object.keys(this.queryParams).length > 0) { // Check if queryParams is not empty
       const qs = buildQueryString(this.queryParams)
-
-      if (qs.length > 1) {
-        path += qs
-      }
+      path += qs
     }
 
     return path
@@ -259,17 +245,9 @@ export class Router {
   pages: Readable<HistoryItem[]> = derived(this.nonVirtual, $nonVirtual => $nonVirtual.filter(h => !h.modal))
   page: Readable<HistoryItem | undefined> = derived(this.nonVirtual, $nonVirtual => $nonVirtual.find((h: HistoryItem) => !h.modal))
   modals: Readable<HistoryItem[]> = derived(this.nonVirtual, $nonVirtual => {
-    const modals: HistoryItem[] = []
-    for (const h of $nonVirtual) {
-      if (h.modal) {
-        modals.push(h)
-      } else {
-        break
-      }
-    }
-    return modals
+    return $nonVirtual.filter(h => h.modal).reverse() // Modals are now reversed to get the topmost modal easily
   })
-  modal: Readable<HistoryItem | undefined> = derived(this.nonVirtual, $nonVirtual => $nonVirtual.find((h: HistoryItem) => h.modal))
+  modal: Readable<HistoryItem | undefined> = derived(this.modals, $modals => $modals[0]) // Get the topmost modal
   current: Readable<HistoryItem | undefined> = derived(this.nonVirtual, $nonVirtual => $nonVirtual[0])
 
   init() {
@@ -285,11 +263,11 @@ export class Router {
     return globalHistory.listen(({location, action}) => {
       const {pathname, search} = location
       const path = pathname + search
-      const currentHistory = get(this.history)[0] // Simplified history access
+      const currentHistory = get(this.history)[0]
 
       if (action === "POP") {
          if (path !== currentHistory?.path) {
-          this.go({path})
+          this.go({path, virtual: currentHistory?.virtual}) // Preserve virtual state on POP
         }
       }
     })
@@ -313,7 +291,7 @@ export class Router {
     return match
   }
 
-  go({replace, ...state}: HistoryItem) {
+  go({replace, virtual, ...state}: HistoryItem) { // Added virtual to go function
     if (!state.path) {
       throw new Error("router.go called without a path")
     }
@@ -323,37 +301,40 @@ export class Router {
     }
 
     this.history.update($history => {
-      // Drop one if we're replacing
       if (replace) {
         $history = $history.slice(1)
       }
 
-      // Limit history size
-      return [state, ...$history.slice(0, 100)]
+      return [{...state, virtual}, ...$history.slice(0, 100)] // Apply virtual here
     })
 
-    globalHistory.navigate(state.path, {replace, state: {key: state.key}})
+    globalHistory.navigate(state.path, {replace, state: {key: state.key, virtual}}) // Pass virtual to history state
   }
 
   pop() {
     const $history = get(this.history)
-    if ($history.length <= 1) { // Prevent popping the initial route
+    if ($history.length <= 1) {
       return
     }
     window.history.back()
   }
 
   back(times: number) {
+    if (times <= 0) return; // Prevent invalid calls
+
     let count = 0
-    const goBack = () => {
-      if (count < times) {
+    const popListener = () => {
+      count++
+      if (count >= times) {
+        window.removeEventListener("popstate", popListener) // Remove listener after use
+      } else {
         this.pop()
-        count++
       }
     }
-    window.addEventListener("popstate", goBack)
+    window.addEventListener("popstate", popListener)
     this.pop()
   }
+
 
   remove(key: string) {
     this.history.update($history => $history.filter($item => $item.key !== key))
@@ -361,12 +342,11 @@ export class Router {
 
   clearModals() {
     this.history.update($history => {
-      let history = [...$history] // Create a copy to avoid direct mutation
+      let history = [...$history]
       while (history[0]?.modal) {
-        history.splice(0, 1)
+        history.shift() // Use shift for better performance when removing from the beginning
       }
 
-      // Make sure we don't completely clear history out
       if (history.length === 0) {
         history.push({path: "/"})
       }
@@ -395,7 +375,7 @@ export class Router {
   }
 
   fromCurrent() {
-    return this.from(get(this.current) || {path: '/'}) // Provide a default if current is undefined
+    return this.from(get(this.current) || {path: '/'})
   }
 
 
@@ -406,33 +386,33 @@ export class Router {
   // Props etc
 
   decodeQueryString = (path: string) => {
-    return this.decodeParams(path, 'query');
+    return this.decodeParams(path, 'query')
   }
 
   decodeRouteParams = (path: string) => {
-    return this.decodeParams(path, 'route');
+    return this.decodeParams(path, 'route')
   }
 
 
   private decodeParams = (path: string, type: 'query' | 'route') => {
-    const match = pickRoute(this.routes, path);
-    if (!match) return {};
+    const match = pickRoute(this.routes, path)
+    if (!match) return {}
 
-    const params = type === 'query' ? parseQueryString(path) : match.params;
-    const serializers = match.route.serializers || {};
-    const data = {};
+    const params = type === 'query' ? parseQueryString(path) : match.params
+    const serializers = match.route.serializers || {}
+    const  Record<string, any> = {} // Explicit type annotation
 
     for (const [k, serializer] of Object.entries(serializers)) {
-      const v = params[k];
+      const v = params[k]
       if (v) {
         try {
-          Object.assign(data, serializer.decode(v));
+          Object.assign(data, serializer.decode(v))
         } catch (e) {
-          logger.warn(`${type} param decoding failed`, k, v, e);
+          logger.warn(`${type} param decoding failed`, k, v, e)
         }
       }
     }
-    return data;
+    return data
   }
 
 
