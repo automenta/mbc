@@ -12,7 +12,7 @@
   import FlexColumn from "src/partials/FlexColumn.svelte"
   import Anchor from "src/partials/Anchor.svelte"
   import FeedField from "src/app/shared/FeedField.svelte"
-  import {createFeed, displayFeed, editFeed, makeFeed} from "src/domain"
+  import {makeFeed, displayFeed, editFeed} from "src/domain"
   import {createAndPublish, deleteEvent, removeFeedFavorite} from "src/engine"
 
   export let feed
@@ -70,7 +70,7 @@
 
   const saveFeed = async () => {
     const relays = ctx.app.router.FromUser().getUrls()
-    const template = draft.event ? editFeed(draft) : createFeed(draft)
+    const template = draft.event ? editFeed(draft) : makeFeed(draft)
     const pub = await createAndPublish({...template, relays})
 
     showInfo("Your feed has been saved!")
