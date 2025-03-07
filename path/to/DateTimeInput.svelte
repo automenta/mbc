@@ -28,7 +28,7 @@
   <button slot="before" type="button" class:opacity-0={!value} on:click={init}>
     <i class="fa fa-calendar-days"></i>
   </button>
-  <DateInput format="yyyy-MM-dd HH:mm" bind:value slot="default" />
+  <DateInput format="yyyy-MM-dd HH:mm" bind:value />
   {#if value}
     <button
       slot="after"
