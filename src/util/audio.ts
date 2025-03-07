@@ -4,11 +4,11 @@ import Hls from "hls.js"
 export class AudioController extends EventEmitter {
   completed = false
   progress = 0
-  interval: any = null
+  interval: number | null = null
   audio = new Audio()
   hls?: Hls
 
-  constructor(readonly url) {
+  constructor(readonly url: string) {
     super()
 
     if (url.endsWith("m3u8")) {
@@ -33,7 +33,7 @@ export class AudioController extends EventEmitter {
     }
   }
 
-  setProgress = progress => {
+  setProgress = (progress: number) => {
     this.audio.currentTime = Math.round(this.audio.duration * progress)
     this.reportProgress()
   }
@@ -42,7 +42,7 @@ export class AudioController extends EventEmitter {
     if (!this.interval) {
       this.audio.play()
       this.emit("play")
-      this.interval = setInterval(this.reportProgress, 30)
+      this.interval = setInterval(this.reportProgress, 30) as unknown as number // Type assertion for setInterval
     }
   }
 
@@ -51,13 +51,12 @@ export class AudioController extends EventEmitter {
       this.audio.pause()
       this.emit("pause")
 
-      clearInterval(this.interval as unknown as number)
-
+      clearInterval(this.interval)
       this.interval = null
     }
   }
 
-  toggle = e => {
+  toggle = () => {
     if (this.interval) {
       this.pause()
     } else {
@@ -66,8 +65,10 @@ export class AudioController extends EventEmitter {
   }
 
   cleanup() {
-    clearInterval(this.interval as unknown as number)
-
+    if (this.interval) {
+      clearInterval(this.interval)
+      this.interval = null
+    }
     this.hls?.destroy()
     this.audio.pause()
   }

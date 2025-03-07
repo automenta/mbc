@@ -44,26 +44,25 @@ import * as nip19 from "nostr-tools/nip19"
 import * as nip05 from "nostr-tools/nip05"
 import {parseJson} from "src/util/misc"
 
-export const nsecEncode = secret => nip19.nsecEncode(hexToBytes(secret))
+export const nsecEncode = (secret: string) => nip19.nsecEncode(hexToBytes(secret))
 
 export const nsecDecode = (nsec: string) => {
   const {type, data} = nip19.decode(nsec)
 
-  if (type !== "nsec") throw new Error(`Invalid nsec: ${nsec}`)
+  if (type !== "nsec") {
+    throw new Error(`Invalid nsec: ${nsec}`)
+  }
 
   return bytesToHex(data)
 }
 
-export const isKeyValid = (key: string) => {
-  // Validate the key before setting it to state by encoding it using bech32.
-  // This will error if invalid (this works whether it's a public or a private key)
+export const isKeyValid = (key: string): boolean => {
   try {
     getPubkey(key)
+    return true
   } catch (e) {
     return false
   }
-
-  return true
 }
 
 export const noteKinds = [NOTE, PICTURE_NOTE, LONG_FORM, HIGHLIGHT]
@@ -87,8 +86,8 @@ export const headerlessKinds = [
   BOOKMARKS,
   COMMUNITIES,
   CHANNELS,
-  GROUPS,
   TOPICS,
+  GROUPS, // Duplicated GROUPS, removed one instance
 ]
 
 export const appDataKeys = {
@@ -102,8 +101,8 @@ export const isLike = (e: TrustedEvent) =>
 export const isReply = (e: TrustedEvent) =>
   Boolean([NOTE, COMMENT].includes(e.kind) && getParentIdOrAddr(e))
 
-export const toHex = (string): string | null => {
-  if (data.match(/[a-zA-Z0-9]{64}/)) {
+export const decodeToHex = ( string): string | null => {
+  if (data.match(/^[a-fA-F0-9]{64}$/)) {
     return data
   }
 
@@ -120,30 +119,23 @@ export const toHex = (string): string | null => {
   }
 }
 
-export const getRating = (event: TrustedEvent) =>
-  event.kind === 1985
-    ? parseJson(last(getTags("l", event.tags).find(nthEq(1, "review/relay")) || []))?.quality
-    : parseInt(getTags("rating", event.tags).find(t => t.length === 2)?.[1])
-
-export const getAvgRating = (events: TrustedEvent[]) => avg(events.map(getRating).filter(identity))
-
-export const isHex = x => x?.length === 64 && x?.match(/^[a-f0-9]{64}$/)
-
-const BAD_DOMAINS = ["libfans.com", "matrix.org/_matrix/media/v3/download"]
-
-const getBadDomainsWarning = e => {
-  for (const domain of BAD_DOMAINS) {
-    if (e.content.includes(domain)) {
-      return "This note includes media from untrusted hosts."
-    }
-
-    for (const tag of e.tags) {
-      if (tag.some(t => t.includes(domain))) {
-        return "This note includes media from untrusted hosts."
-      }
-    }
+export const getRating = (event: TrustedEvent) => {
+  if (event.kind === 1985) {
+    const reviewTag = getTags("l", event.tags).find(nthEq(1, "review/relay"))
+    return parseJson(last(reviewTag || []))?.quality
+  } else {
+    const ratingTag = getTags("rating", event.tags).find(t => t.length === 2)
+    return parseInt(ratingTag?.[1] || "") || undefined // Return undefined if not found or invalid
   }
 }
+
+export const getAvgRating = (events: TrustedEvent[]) =>
+  avg(events.map(getRating).filter(rating => rating !== undefined))
+
+export const isHex = (x: any): x is string => typeof x === 'string' && x.length === 64 && /^[a-f0-9]{64}$/.test(x)
+
+
+const BAD_DOMAINS = ["libfans.com", "matrix.org/_matrix/media/v3/download"] as const
 
 const WARN_TAGS = new Set([
   "nsfw",
@@ -158,79 +150,79 @@ const WARN_TAGS = new Set([
   "fuck",
 ])
 
-export const getContentWarning = e =>
-  getBadDomainsWarning(e) ||
-  getTagValue("content-warning", e.tags) ||
-  getTopicTagValues(e.tags).find(t => WARN_TAGS.has(t.toLowerCase()))
+export const getContentWarning = (e: TrustedEvent) => {
+  for (const domain of BAD_DOMAINS) {
+    if (e.content.includes(domain)) {
+      return "This note includes media from untrusted hosts."
+    }
+    if (e.tags.some(tag => tag.some(t => t.includes(domain)))) {
+      return "This note includes media from untrusted hosts."
+    }
+  }
 
-export const parseAnything = async entity => {
+  return getTagValue("content-warning", e.tags) ||
+         getTopicTagValues(e.tags).find(t => WARN_TAGS.has(t.toLowerCase()))
+}
+
+
+export const parseAnything = async (entity: string) => {
   if (entity.includes("@")) {
     const profile = await nip05.queryProfile(entity)
-
     if (profile) {
-      return {type: "npub", pubkey: profile.pubkey}
+      return {type: "npub",  profile.pubkey}
     }
   }
 
   return parseAnythingSync(entity)
 }
 
-export const parseAnythingSync = entity => {
-  entity = fromNostrURI(entity)
+export const parseAnythingSync = (entity: string) => {
+  const normalizedEntity = fromNostrURI(entity)
 
-  // Interpret addresses as naddrs
-  if (Address.isAddress(entity)) {
-    entity = Address.from(entity).toNaddr()
+  if (Address.isAddress(normalizedEntity)) {
+    return nip19.decode(Address.from(normalizedEntity).toNaddr())
   }
 
-  if (isHex(entity)) {
-    return {type: "npub", pubkey: entity}
+  if (isHex(normalizedEntity)) {
+    return {type: "npub",  normalizedEntity}
   }
 
   try {
-    return nip19.decode(entity)
+    return nip19.decode(normalizedEntity)
   } catch (e) {
     return null
   }
 }
 
-export const parsePubkey = async entity => {
+export const parsePubkey = async (entity: string) => {
   const result = await parseAnything(entity)
-
-  if (result.type === "npub") return result.data
-  if (result.type === "nprofile") return result.data.pubkey
+  return result?.type === "npub" || result?.type === "nprofile" ? result.data : undefined;
 }
+
 
 export async function extractPrivateKey(input: string): Promise<string | null> {
+  // Try decoding as NSEC
   try {
-    // Try decoding as NSEC
-    try {
-      return nsecDecode(input)
-    } catch (e) {
-      // Not a valid NSEC, try next
-    }
-
-    // Try as hex
-    if (isHex(input)) {
-      return input
-    }
-
-    // Try as JSON
-    try {
-      const json = JSON.parse(input)
-      if (json?.privateKey) {
-        return json.privateKey
-      }
-      if (json?.sec) {
-        return json.sec
-      }
-    } catch (e) {
-      // Not a valid JSON, try next
-    }
-
-    return null // No valid key found
+    return nsecDecode(input)
   } catch (e) {
-    console.error("Error extracting private key:", e)
-    return null
+    // Not a valid NSEC, try next
   }
+
+  // Try as hex
+  if (isHex(input)) {
+    return input
+  }
+
+  // Try as JSON
+  try {
+    const json = JSON.parse(input)
+    const privateKey = json?.privateKey || json?.sec
+    if (typeof privateKey === 'string') {
+      return privateKey
+    }
+  } catch (e) {
+    // Not a valid JSON, try next
+  }
+
+  return null // No valid key found
 }

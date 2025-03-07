@@ -1,35 +1,34 @@
 import {cubicOut} from "svelte/easing"
-import * as t from "svelte/transition"
+import {fade as svelteFade, fly as svelteFly, slide as svelteSlide, type TransitionConfig} from "svelte/transition"
 
 // Fly animation kills safari for some reason, use a modified fade instead
-// @ts-ignore
-export const fly = window.safari
-  ? (node, params) => t.fade(node, {duration: 100, ...params})
-  : t.fly
-export const fade = t.fade
-export const slide = t.slide
+export const fly: (node: Element, params?: TransitionConfig) => TransitionConfig = window.safari
+  ? (node, params) => svelteFade(node, {duration: 100, ...params})
+  : svelteFly
+export const fade = svelteFade
+export const slide = svelteSlide
 
 // Copy-pasted and tweaked from slide source code
 export function slideAndFade(
-  node: any,
+  node: Element,
   {delay = 0, duration = 400, easing = cubicOut, axis = "y"} = {},
-) {
+): TransitionConfig {
   const style = getComputedStyle(node)
-  const primary_property = axis === "y" ? "height" : "width"
-  const primary_property_value = parseFloat(style[primary_property])
-  const secondary_properties = axis === "y" ? ["top", "bottom"] : ["left", "right"]
-  const capitalized_secondary_properties = secondary_properties.map(
+  const primaryProperty = axis === "y" ? "height" : "width"
+  const primaryPropertyValue = parseFloat(style[primaryProperty])
+  const secondaryProperties = axis === "y" ? ["top", "bottom"] : ["left", "right"]
+  const capitalizedSecondaryProperties = secondaryProperties.map(
     (e: string) => `${e[0].toUpperCase()}${e.slice(1)}`,
   )
-  const padding_start_value = parseFloat(style[`padding${capitalized_secondary_properties[0]}`])
-  const padding_end_value = parseFloat(style[`padding${capitalized_secondary_properties[1]}`])
-  const margin_start_value = parseFloat(style[`margin${capitalized_secondary_properties[0]}`])
-  const margin_end_value = parseFloat(style[`margin${capitalized_secondary_properties[1]}`])
-  const border_width_start_value = parseFloat(
-    style[`border${capitalized_secondary_properties[0]}Width`],
+  const paddingStartValue = parseFloat(style[`padding${capitalizedSecondaryProperties[0]}`])
+  const paddingEndValue = parseFloat(style[`padding${capitalizedSecondaryProperties[1]}`])
+  const marginStartValue = parseFloat(style[`margin${capitalizedSecondaryProperties[0]}`])
+  const marginEndValue = parseFloat(style[`margin${capitalizedSecondaryProperties[1]}`])
+  const borderWidthStartValue = parseFloat(
+    style[`border${capitalizedSecondaryProperties[0]}Width`],
   )
-  const border_width_end_value = parseFloat(
-    style[`border${capitalized_secondary_properties[1]}Width`],
+  const borderWidthEndValue = parseFloat(
+    style[`border${capitalizedSecondaryProperties[1]}Width`],
   )
   return {
     delay,
@@ -38,12 +37,12 @@ export function slideAndFade(
     css: (t: number) =>
       "overflow: hidden;" +
       `opacity: ${t};` +
-      `${primary_property}: ${t * primary_property_value}px;` +
-      `padding-${secondary_properties[0]}: ${t * padding_start_value}px;` +
-      `padding-${secondary_properties[1]}: ${t * padding_end_value}px;` +
-      `margin-${secondary_properties[0]}: ${t * margin_start_value}px;` +
-      `margin-${secondary_properties[1]}: ${t * margin_end_value}px;` +
-      `border-${secondary_properties[0]}-width: ${t * border_width_start_value}px;` +
-      `border-${secondary_properties[1]}-width: ${t * border_width_end_value}px;`,
+      `${primaryProperty}: ${t * primaryPropertyValue}px;` +
+      `padding-${secondaryProperties[0]}: ${t * paddingStartValue}px;` +
+      `padding-${secondaryProperties[1]}: ${t * paddingEndValue}px;` +
+      `margin-${secondaryProperties[0]}: ${t * marginStartValue}px;` +
+      `margin-${secondaryProperties[1]}: ${t * marginEndValue}px;` +
+      `border-${secondaryProperties[0]}-width: ${t * borderWidthStartValue}px;` +
+      `border-${secondaryProperties[1]}-width: ${t * borderWidthEndValue}px;`,
   }
 }

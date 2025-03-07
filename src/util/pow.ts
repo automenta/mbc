@@ -7,10 +7,10 @@ import {isMobile} from "src/util/html"
 
 export const benchmark = withGetter(synced("benchmark", 0))
 
-export const benchmarkDifficulty = isMobile ? 14 : 16
+export const defaultBenchmarkDifficulty = isMobile ? 14 : 16
 
 export const estimateWork = (difficulty: number) =>
-  Math.ceil(benchmark.get() * Math.pow(2, difficulty - benchmarkDifficulty))
+  Math.ceil(benchmark.get() * Math.pow(2, difficulty - defaultBenchmarkDifficulty))
 
 export type ProofOfWork = {
   worker: Worker
@@ -42,7 +42,7 @@ if (benchmark.get() === 0) {
   const secret = makeSecret()
   const pubkey = getPubkey(secret)
   const event = own(createEvent(1, {}), pubkey)
-  const pow = makePow(event, benchmarkDifficulty)
+  const pow = makePow(event, defaultBenchmarkDifficulty)
   const start = Date.now()
 
   pow.result.then(() => {

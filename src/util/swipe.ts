@@ -1,4 +1,4 @@
-export type SwipeCustomEvent = {
+export type SwipeCustomEventDetail = {
   isTop: boolean
   deltaX: number
   deltaY: number
@@ -7,6 +7,8 @@ export type SwipeCustomEvent = {
   currentX: number
   currentY: number
 }
+
+export type SwipeCustomEvent = CustomEvent<SwipeCustomEventDetail>
 
 export function swipe(
   node: HTMLElement,
@@ -19,8 +21,8 @@ export function swipe(
   },
 ) {
   const {direction} = options
-  let startX: number | null
-  let startY: number | null
+  let startX: number | null = null
+  let startY: number | null = null
 
   function handleTouchStart(event: TouchEvent) {
     const touch = event.touches[0]
@@ -29,7 +31,7 @@ export function swipe(
   }
 
   function handleTouchMove(event: TouchEvent) {
-    if (!startX || !startY) return
+    if (startX === null || startY === null) return
 
     const touch = event.touches[0]
     const deltaX = touch.clientX - startX
@@ -43,14 +45,11 @@ export function swipe(
 
     if (!swipeX && !swipeY) return
 
-    // for an horizontla swipe, make sure deltaX is 2x deltaY
     if (swipeX && Math.abs(deltaX) < Math.abs(2 * deltaY)) return
-
-    // for an vertical swipe, make sure deltaY is 2x deltaX
     if (swipeY && Math.abs(deltaY) < Math.abs(2 * deltaX)) return
 
     node.dispatchEvent(
-      new CustomEvent("swipe", {
+      new CustomEvent<SwipeCustomEventDetail>("swipe", {
         detail: {
           isTop: node.scrollTop === 0,
           startX,
@@ -60,12 +59,12 @@ export function swipe(
           currentX: touch.clientX,
           currentY: touch.clientY,
         },
-      }),
+      } as SwipeCustomEvent),
     )
   }
 
   function handleTouchEnd(event: TouchEvent) {
-    if (!startX || !startY) return
+    if (startX === null || startY === null) return
 
     const touch = event.changedTouches[0]
     const deltaX = touch.clientX - startX
@@ -79,14 +78,11 @@ export function swipe(
 
     if (swipeX && swipeY) return
 
-    // for an horizontla swipe, make sure deltaX is 2x deltaY
     if (swipeX && Math.abs(deltaX) < Math.abs(2 * deltaY)) return
-
-    // for an vertical swipe, make sure deltaY is 2x deltaX
     if (swipeY && Math.abs(deltaY) < Math.abs(2 * deltaX)) return
 
     node.dispatchEvent(
-      new CustomEvent("end", {
+      new CustomEvent<SwipeCustomEventDetail>("end", {
         detail: {
           isTop: node.scrollTop === 0,
           startX,
@@ -96,22 +92,22 @@ export function swipe(
           currentX: touch.clientX,
           currentY: touch.clientY,
         },
-      }),
+      } as SwipeCustomEvent),
     )
 
     startX = null
     startY = null
   }
 
-  node.addEventListener("touchstart", handleTouchStart)
-  node.addEventListener("touchmove", handleTouchMove)
-  node.addEventListener("touchend", handleTouchEnd)
+  node.addEventListener("touchstart", handleTouchStart as EventListener)
+  node.addEventListener("touchmove", handleTouchMove as EventListener)
+  node.addEventListener("touchend", handleTouchEnd as EventListener)
 
   return {
     destroy() {
-      node.removeEventListener("touchstart", handleTouchStart)
-      node.removeEventListener("touchmove", handleTouchMove)
-      node.removeEventListener("touchend", handleTouchEnd)
+      node.removeEventListener("touchstart", handleTouchStart as EventListener)
+      node.removeEventListener("touchmove", handleTouchMove as EventListener)
+      node.removeEventListener("touchend", handleTouchEnd as EventListener)
     },
   }
 }
