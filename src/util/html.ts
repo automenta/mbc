@@ -14,7 +14,7 @@ export const copyToClipboard = (text: string): boolean => {
   }
 
   document.body.removeChild(input)
-  ;(activeElement as HTMLElement)?.focus?.() // Use optional chaining more consistently
+  ;(activeElement as HTMLElement)?.focus() // Simplified optional chaining
 
   return result
 }

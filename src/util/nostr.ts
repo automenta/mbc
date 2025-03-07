@@ -135,24 +135,7 @@ export const getAvgRating = (events: TrustedEvent[]) =>
 export const isHex = (x: any): x is string => typeof x === 'string' && x.length === 64 && /^[a-f0-9]{64}$/.test(x)
 
 
-// Consider using these or removing them if not needed
-// const BAD_DOMAINS = [] as const
-// const WARN_TAGS = new Set([])
-
-
 export const getContentWarning = (e: TrustedEvent) => {
-  // Example usage if BAD_DOMAINS and WARN_TAGS were used:
-  // for (const domain of BAD_DOMAINS) {
-  //   if (e.content.includes(domain)) {
-  //     return "This note includes media from untrusted hosts.";
-  //   }
-  //   if (e.tags.some(tag => tag.some(t => t.includes(domain)))) {
-  //     return "This note includes media from untrusted hosts.";
-  //   }
-  // }
-  // return getTagValue("content-warning", e.tags) ||
-  //        getTopicTagValues(e.tags).find(t => WARN_TAGS.has(t.toLowerCase()));
-
   return getTagValue("content-warning", e.tags)
 }
 

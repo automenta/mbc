@@ -283,11 +283,11 @@ export class Router {
     return globalHistory.listen(({location, action}) => {
       const {state, pathname, search} = location
       const path = pathname + search
-      const [currentHistory] = get(this.history)
+      const currentHistory = get(this.history)[0] // Simplified history access
       const key = this.getKey({path: pathname, ...state})
 
       if (action === "POP") {
-         if (path !== currentHistory?.path) { // Added check to avoid potential undefined access
+         if (path !== currentHistory?.path) {
           this.go({path})
         }
       }
