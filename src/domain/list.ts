@@ -138,3 +138,15 @@ export class UserListSearch extends SearchHelper<UserList, string> {
   getValue = (option: UserList) => getAddress(option.event)
   displayValue = (address: string) => displayUserList(this.getOption(address))
 }
+
+export class KindSearch extends SearchHelper<KindOption, number> {
+  config = {keys: ["kind", "label"]}
+
+  getValue = (option: KindOption) => option.kind
+
+  displayValue = (kind: number) => {
+    const option = this.getOption(kind)
+
+    return option ? `${option.label} (kind ${kind})` : `Kind ${kind}`
+  }
+}
