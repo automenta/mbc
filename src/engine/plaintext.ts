@@ -5,6 +5,7 @@ import {
   repository,
   setPlaintext,
   tracker,
+  getPlaintext // <-- moved getPlaintext here from @welshman/util to @welshman/app
 } from "@welshman/app"
 import {Worker} from "@welshman/lib"
 import {Nip59} from "@welshman/signer"
@@ -12,7 +13,6 @@ import type {SignedEvent, TrustedEvent} from "@welshman/util"
 import {
   APP_DATA,
   FOLLOWS,
-  getPlaintext,
   getTagValue,
   isHashedEvent,
   MUTES,
