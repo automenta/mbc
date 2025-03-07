@@ -26,7 +26,7 @@
   <PersonDetail pubkey={data.pubkey} relays={data.relays} />
 {:else if type === "npub"}
   <PersonDetail pubkey={data} />
-{:else if entity.includes("@")}
+{:else if typeof entity === 'string' && entity.includes("@")}
   {#await loadHandle(entity)}
     <Spinner />
   {:then $handle}
