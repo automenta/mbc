@@ -114,3 +114,5 @@ repository.on("update", ({ added }: { added: TrustedEvent[] }) => {
     }
   }
 })
+
+export { ensureUnwrapped, ensureMessagePlaintext };
