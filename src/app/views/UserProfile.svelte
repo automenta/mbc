@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {profilesByPubkey, pubkey} from "@welshman/app"
+  import { profilesByPubkey, pubkey } from "@welshman/app"
   import Input from "src/partials/Input.svelte"
   import FlexColumn from "src/partials/FlexColumn.svelte"
   import Card from "src/partials/Card.svelte"
@@ -10,8 +10,8 @@
   import Heading from "src/partials/Heading.svelte"
   import Modal from "src/partials/Modal.svelte"
   import Field from "src/partials/Field.svelte"
-  import {env, publishProfile} from "src/engine"
-  import {router} from "src/app/util/router"
+  import { env, publishProfile } from "src/engine"
+  import { router } from "src/app/util/router"
 
   const nip05Url = "https://github.com/nostr-protocol/nips/blob/master/05.md"
   const lud16Url = "https://lightningaddress.com/"
@@ -23,12 +23,12 @@
   }
 
   const publishToPlatform = () => {
-    publishProfile(values, {forcePlatform: true})
+    publishProfile(values, { forcePlatform: true })
     router.pop()
   }
 
   const publishToNetwork = () => {
-    publishProfile(values, {forcePlatform: false})
+    publishProfile(values, { forcePlatform: false })
     router.pop()
   }
 
