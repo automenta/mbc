@@ -21,7 +21,7 @@
   import SearchSelect from "src/partials/SearchSelect.svelte"
   import PersonSelect from "src/app/shared/PersonSelect.svelte"
   import {createAndPublish, deleteEvent} from "src/engine"
-  import {createUserList, displayUserList, editUserList, KindSearch} from "src/domain"
+  import {makeUserList, displayUserList, KindSearch} from "src/domain/list"
 
   export let list
   export let exit
@@ -43,7 +43,7 @@
 
   const submit = async () => {
     const relays = ctx.app.router.FromUser().getUrls()
-    const template = list.event ? editUserList(list) : createUserList(list)
+    const template = list.event ? makeUserList(list) : makeUserList(list)
     const pub = await createAndPublish({...template, relays})
 
     showInfo("Your list has been saved!")
