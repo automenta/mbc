@@ -135,19 +135,10 @@ export const getAvgRating = (events: TrustedEvent[]) =>
 export const isHex = (x: any): x is string => typeof x === 'string' && x.length === 64 && /^[a-f0-9]{64}$/.test(x)
 
 
-const BAD_DOMAINS = ["libfans.com", "matrix.org/_matrix/media/v3/download"] as const
+const BAD_DOMAINS = [] as const
 
 const WARN_TAGS = new Set([
-  "nsfw",
-  "nude",
-  "nudity",
-  "porn",
-  "ass",
-  "boob",
-  "boobstr",
-  "sex",
-  "sexy",
-  "fuck",
+
 ])
 
 export const getContentWarning = (e: TrustedEvent) => {

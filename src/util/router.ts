@@ -411,11 +411,10 @@ export class Router {
     if (!match) return {} // Handle no match case
 
     const queryParams = parseQueryString(path)
-    const  Record<string, any> = {}
+    const data = {};
 
     for (const [k, serializer] of Object.entries(match.route.serializers || {})) {
       const v = queryParams[k]
-
       if (v) {
         try {
           Object.assign(data, serializer.decode(v))
@@ -429,13 +428,10 @@ export class Router {
   }
 
   decodeRouteParams = (path: string) => {
-    const match = pickRoute(this.routes, path)
-    if (!match) return {} // Handle no match case
+    const {route, params} = this.getMatch(path)
+    const data = {...params}
 
-    const params = match.params
-    const  Record<string, any> = {...params}
-
-    for (const [k, serializer] of Object.entries(match.route.serializers || {})) {
+    for (const [k, serializer] of Object.entries(route.serializers || {})) {
       const v = params[k]
 
       if (v) {
