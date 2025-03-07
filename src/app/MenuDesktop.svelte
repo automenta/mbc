@@ -26,12 +26,16 @@
 
   const {page} = router
 
-  $: recent = (Object.values($thunks) as Thunk[]).filter(
-    t => t.event.pubkey === $pubkey && t.event.created_at > now() - 5 * MINUTE,
-  )
+  $: recent = ()=>{
+    const n = now();
+    return (Object.values($thunks) as Thunk[]).filter(
+      t => t.event.pubkey === $pubkey && t.event.created_at > n - 5 * MINUTE,
+    );
+  };
+
 
   $: hud = derived(
-    recent.map(t => t.status),
+    recent().map(t => t.status),
     $statuses => {
       let pending = 0
       let success = 0

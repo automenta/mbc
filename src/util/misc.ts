@@ -260,10 +260,7 @@ export const getStringWidth = (text: string): number => {
   return width
 }
 
-export const fuzzy = <T, U extends keyof T>(
-   T[],
-  opts: IFuseOptions<T> = {},
-): ((q: string) => T[]) => {
+export const fuzzy = <T, U extends keyof T>(data:T[], opts: IFuseOptions<T> = {},): ((q: string) => T[]) => {
   const fuse = new Fuse(data, opts)
   return (q: string) => q ? fuse.search(q.slice(0, 32)).map(result => result.item) : data
 }

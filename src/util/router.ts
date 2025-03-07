@@ -139,13 +139,8 @@ export type HistoryItem = {
 }
 
 export const asPath = (...parts: string[]) => {
-  let path = parts.filter(identity).join("/")
-
-  if (path && !path.startsWith("/")) {
-    path = "/" + path
-  }
-
-  return path
+  const path = parts.filter(identity).join("/")
+  return path && !path.startsWith("/") ? "/" + path : path
 }
 
 type RouterExtensionParams = {
@@ -193,7 +188,7 @@ class RouterExtension {
     for (const [k, v] of Object.entries(queryParams)) {
       const serializer = match.route.serializers?.[k]
 
-      if (serializer && v != null) { // Check for null or undefined
+      if (serializer && v) {
         data[k] = serializer.encode(v)
       }
     }
@@ -245,9 +240,17 @@ export class Router {
   pages: Readable<HistoryItem[]> = derived(this.nonVirtual, $nonVirtual => $nonVirtual.filter(h => !h.modal))
   page: Readable<HistoryItem | undefined> = derived(this.nonVirtual, $nonVirtual => $nonVirtual.find((h: HistoryItem) => !h.modal))
   modals: Readable<HistoryItem[]> = derived(this.nonVirtual, $nonVirtual => {
-    return $nonVirtual.filter(h => h.modal).reverse() // Modals are now reversed to get the topmost modal easily
+    const modals: HistoryItem[] = []
+    for (const h of $nonVirtual) {
+      if (h.modal) {
+        modals.push(h)
+      } else {
+        break
+      }
+    }
+    return modals
   })
-  modal: Readable<HistoryItem | undefined> = derived(this.modals, $modals => $modals[0]) // Get the topmost modal
+  modal: Readable<HistoryItem | undefined> = derived(this.nonVirtual, $nonVirtual => $nonVirtual.find((h: HistoryItem) => h.modal))
   current: Readable<HistoryItem | undefined> = derived(this.nonVirtual, $nonVirtual => $nonVirtual[0])
 
   init() {
@@ -400,7 +403,7 @@ export class Router {
 
     const params = type === 'query' ? parseQueryString(path) : match.params
     const serializers = match.route.serializers || {}
-    const  Record<string, any> = {} // Explicit type annotation
+    const data: Record<string, any> = {} // Explicit type annotation
 
     for (const [k, serializer] of Object.entries(serializers)) {
       const v = params[k]

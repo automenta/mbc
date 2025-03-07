@@ -28,7 +28,7 @@
     }
   }
 
-  const createNote = () => {
+  const newNote = () => {
     if (!$pubkey) {
       return router.at("/login").open()
     }
@@ -65,7 +65,7 @@
       {#if $searchTerm}
         <div
           on:mousedown|preventDefault
-          out:fly|local={{y: 20, duration: 200}}
+          out:fly|local={{ y: 20, duration: 200}}
           class="absolute right-0 top-10 w-96 rounded opacity-100 shadow-2xl transition-colors">
           <div class="max-h-[70vh] overflow-auto rounded bg-tinted-700">
             <SearchResults bind:searching term={searchTerm}>
@@ -95,7 +95,7 @@
       {/if}
     </div>
     {#if $signer}
-      <Anchor button accent on:click={createNote}>Post +</Anchor>
+      <Anchor button accent on:click={newNote}>+</Anchor>
     {:else if !$pubkey}
       <Anchor modal button accent href="/login">Log In</Anchor>
     {/if}
@@ -115,7 +115,7 @@
     </div>
     <div>
       {#if $signer}
-        <Anchor button accent on:click={createNote}>Post +</Anchor>
+        <Anchor button accent on:click={newNote}>Post +</Anchor>
       {:else if !$pubkey}
         <Anchor modal button accent href="/login">Log In</Anchor>
       {/if}

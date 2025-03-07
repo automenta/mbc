@@ -216,7 +216,7 @@
 
   router.register("/publishes", Publishes)
 
-  let relaySerializer = {
+  const relaySerializer = {
     serializers: {
       entity: asRelay
     }
@@ -243,16 +243,13 @@
     }
   })
 
-  router.register("/:entity", Bech32Entity, {
+  const entitySerializer = {
     serializers: {
       entity: asEntity,
     },
-  })
-  router.register("/:entity/*", Bech32Entity, {
-    serializers: {
-      entity: asEntity,
-    },
-  })
+  }
+  router.register("/:entity", Bech32Entity, entitySerializer)
+  router.register("/:entity/*", Bech32Entity, entitySerializer)
 
   router.init()
 
@@ -274,28 +271,25 @@
     ...engine
   })
 
-  // Theme
-
   const style = document.createElement("style")
 
   document.head.append(style)
 
   $: style.textContent = `:root { ${$themeVariables}; background: var(--neutral-800); }`
 
-  // Scroll position
-
-  let scrollY: number
+  let scrollY: number // Scroll position
 
   const unsubHistory = router.history.subscribe($history => {
+    const s = document.body.style
     if ($history[0].modal) {
       // This is not idempotent, so don't duplicate it
-      if (document.body.style.position !== "fixed") {
+      if (s.position !== "fixed") {
         scrollY = window.scrollY
 
-        document.body.style.top = `-${scrollY}px`
-        document.body.style.position = `fixed`
+        s.top = `-${scrollY}px`
+        s.position = `fixed`
       }
-    } else if (document.body.style.position === "fixed") {
+    } else if (s.position === "fixed") {
       document.body.setAttribute("style", "")
 
       if (!isNil(scrollY)) {
@@ -305,7 +299,6 @@
     }
   })
 
-  // Usage logging, router listener
 
   onMount(() => {
     const unsubPage = router.page.subscribe(
@@ -324,7 +317,6 @@
     }
   })
 
-  // Protocol handler
 
   try {
     const handler = navigator.registerProtocolHandler as (
@@ -333,8 +325,9 @@
       name: string
     ) => void
 
-    handler?.("web+nostr", `${location.origin}/%s`, appName)
-    handler?.("nostr", `${location.origin}/%s`, appName)
+    const o = `${location.origin}/%s`
+    handler?.("web+nostr", o, appName)
+    handler?.("nostr", o, appName)
   } catch (e) {
     // pass
   }
@@ -344,8 +337,6 @@
     trackRelayStats(connection)
   })
 
-
-
   ready.then(async () => {
     // Our stores are throttled by 300, so wait until they're populated
     // before loading app data
@@ -354,7 +345,7 @@
     if ($session)
       loadUserData()
 
-    const interval1 = setInterval(() => {
+    const slowCloser = setInterval(() => {
       slowConnections.set(getPubkeyRelays($pubkey).filter(url => getRelayQuality(url) < 0.5))
 
       // Prune connections we haven't used in a while
@@ -372,7 +363,7 @@
       }
     }, 5_000)
 
-    return () => clearInterval(interval1)
+    return () => clearInterval(slowCloser)
   })
 </script>
 
