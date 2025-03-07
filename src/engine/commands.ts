@@ -1,3 +1,6 @@
+import crypto from "crypto"
+import {get} from "svelte/store"
+
 import type {Session} from "@welshman/app"
 import {
   follow as baseFollow,
@@ -58,7 +61,7 @@ import {
   removeFromList,
   uniqTags,
 } from "@welshman/util"
-import crypto from "crypto"
+
 import {
   addClientTags,
   anonymous,
@@ -72,7 +75,6 @@ import {
 import {blobToFile, stripExifData} from "src/util/html"
 import {joinPath} from "src/util/misc"
 import {appDataKeys} from "src/util/nostr"
-import {get} from "svelte/store"
 
 // Helpers
 
@@ -468,7 +470,7 @@ export const logout = () => {
   sessions.set({})
 }
 
-export const setAppData = async (d: string, data: any) => {
+export const setAppData = async (d: string,  any) => {
   if (signer.get()) {
     const {pubkey} = session.get()
 

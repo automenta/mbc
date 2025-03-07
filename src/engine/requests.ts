@@ -78,13 +78,14 @@ export const pullConservatively = ({relays, filters}: AppSyncOpts) => {
   // Since pulling from relays without negentropy is expensive, limit how many
   // duplicates we repeatedly download
   if (dumb.length > 0) {
+    let filtersForDumb = filters
     const events = sortBy(e => -e.created_at, repository.query(filters))
 
     if (events.length > 100) {
-      filters = filters.map(assoc("since", events[100]!.created_at))
+      filtersForDumb = filters.map(assoc("since", events[100]!.created_at))
     }
 
-    promises.push(pull({relays: dumb, filters}))
+    promises.push(pull({relays: dumb, filters: filtersForDumb}))
   }
 
   return Promise.all(promises)
@@ -278,7 +279,6 @@ export const listenForNotifications = () => {
   })
 
   return notificationSubscription;
-
 }
 
 // Other user data

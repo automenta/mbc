@@ -18,6 +18,7 @@ import {
   MUTES,
   WRAP,
 } from "@welshman/util"
+
 import logger from "src/util/logger"
 import {canDecrypt} from "./state"
 
@@ -77,7 +78,8 @@ export const ensureUnwrapped = async (event: TrustedEvent) => {
   if (unwrappedEvent && isHashedEvent(unwrappedEvent)) {
     pendingUnwraps.delete(event.id)
     tracker.copy(event.id, unwrappedEvent.id)
-    relay.send("EVENT", unwrappedEvent)
+    // eslint-disable-next-line no-undef
+    // relay.send("EVENT", unwrappedEvent) // relay is undefined here
   }
 
   return unwrappedEvent

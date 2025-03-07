@@ -1,12 +1,14 @@
+import {derived} from "svelte/store"
+
 import {pubkey, repository} from "@welshman/app"
 import {now, without} from "@welshman/lib"
 import {deriveEvents} from "@welshman/store"
-import {type TrustedEvent} from "@welshman/util"
+import type {TrustedEvent} from "@welshman/util"
+
 import {OnboardingTask} from "src/engine/model"
 import {sortEventsDesc} from "src/engine/utils"
 import {checked, getSeenAt, isEventMuted, sessionWithMeta} from "src/engine/state"
 import {noteKinds, reactionKinds} from "src/util/nostr"
-import {derived} from "svelte/store"
 
 export const isSeen = derived(
   getSeenAt,
