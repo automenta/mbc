@@ -12,7 +12,6 @@ import {
   getDefaultAppContext,
   getDefaultNetContext,
   getNetwork,
-  getPlaintext,
   getSession,
   getSigner,
   getUserWotScore,
@@ -69,7 +68,7 @@ import {
   Relays,
   SubscriptionEvent,
 } from "@welshman/net"
-import {Nip01Signer, Nip59} from "@welshman/signer"
+import {Nip01Signer} from "@welshman/signer"
 import {deriveEvents, deriveEventsMapped, synced, withGetter} from "@welshman/store"
 import type {
   EventTemplate,
@@ -127,28 +126,31 @@ import logger from "src/util/logger"
 import {fromCsv, parseJson, SearchHelper} from "src/util/misc"
 import {appDataKeys, metaKinds, noteKinds, reactionKinds, repostKinds} from "src/util/nostr"
 
-const VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID
-const VITE_CLIENT_NAME = import.meta.env.VITE_CLIENT_NAME
-const VITE_DEFAULT_FOLLOWS = import.meta.env.VITE_DEFAULT_FOLLOWS
-const VITE_DEFAULT_RELAYS = import.meta.env.VITE_DEFAULT_RELAYS
-const VITE_INDEXER_RELAYS = import.meta.env.VITE_INDEXER_RELAYS
-const VITE_DUFFLEPUD_URL = import.meta.env.VITE_DUFFLEPUD_URL
-const VITE_DVM_RELAYS = import.meta.env.VITE_DVM_RELAYS
-const VITE_ENABLE_MARKET = import.meta.env.VITE_ENABLE_MARKET
-const VITE_ENABLE_ZAPS = import.meta.env.VITE_ENABLE_ZAPS
-const VITE_BLUR_CONTENT = import.meta.env.VITE_BLUR_CONTENT
-const VITE_IMGPROXY_URL = import.meta.env.VITE_IMGPROXY_URL
-const VITE_NIP96_URLS = import.meta.env.VITE_NIP96_URLS
-const VITE_BLOSSOM_URLS = import.meta.env.VITE_BLOSSOM_URLS
-const VITE_ONBOARDING_LISTS = import.meta.env.VITE_ONBOARDING_LISTS
-const VITE_PLATFORM_PUBKEY = import.meta.env.VITE_PLATFORM_PUBKEY
-const VITE_PLATFORM_RELAYS = import.meta.env.VITE_PLATFORM_RELAYS
-const VITE_PLATFORM_ZAP_SPLIT = import.meta.env.VITE_PLATFORM_ZAP_SPLIT
-const VITE_SEARCH_RELAYS = import.meta.env.VITE_SEARCH_RELAYS
-const VITE_SIGNER_RELAYS = import.meta.env.VITE_SIGNER_RELAYS
-const VITE_APP_URL = import.meta.env.VITE_APP_URL
-const VITE_APP_NAME = import.meta.env.VITE_APP_NAME
-//const VITE_APP_LOGO = import.meta.env.VITE_APP_LOGO
+const envVars = import.meta.env
+
+const {
+  VITE_CLIENT_ID,
+  VITE_CLIENT_NAME,
+  VITE_DEFAULT_FOLLOWS,
+  VITE_DEFAULT_RELAYS,
+  VITE_INDEXER_RELAYS,
+  VITE_DUFFLEPUD_URL,
+  VITE_DVM_RELAYS,
+  VITE_ENABLE_MARKET,
+  VITE_ENABLE_ZAPS,
+  VITE_BLUR_CONTENT,
+  VITE_IMGPROXY_URL,
+  VITE_NIP96_URLS,
+  VITE_BLOSSOM_URLS,
+  VITE_ONBOARDING_LISTS,
+  VITE_PLATFORM_PUBKEY,
+  VITE_PLATFORM_RELAYS,
+  VITE_PLATFORM_ZAP_SPLIT,
+  VITE_SEARCH_RELAYS,
+  VITE_SIGNER_RELAYS,
+  VITE_APP_URL,
+  VITE_APP_NAME,
+} = envVars
 
 export const env = {
   CLIENT_ID: VITE_CLIENT_ID as string,
@@ -172,10 +174,9 @@ export const env = {
   SIGNER_RELAYS: fromCsv(VITE_SIGNER_RELAYS).map(normalizeRelayUrl) as string[],
   APP_URL: VITE_APP_URL,
   APP_NAME: VITE_APP_NAME,
-  //APP_LOGO: VITE_APP_LOGO,
 }
 
-export const sessionWithMeta = withGetter(derived(session, $s => $s as SessionWithMeta))
+export const sessionWithMeta = withGetter(derived(session, $session => $session as SessionWithMeta))
 
 export const hasNip44 = derived(signer, $signer => Boolean($signer?.nip44))
 
@@ -183,41 +184,39 @@ export const anonymous = withGetter(writable<AnonymousUserState>({follows: [], r
 
 export const canDecrypt = withGetter(synced("canDecrypt", false))
 
-// Plaintext - moved to plaintext.ts
-
-// Tracker
 
 export const trackerStore = makeTrackerStore({throttle: 1000})
 
 // Settings
-
 export const defaultSettings = {
-  relay_limit: 5,
-  default_zap: 21,
-  show_media: true,
-  send_delay: 0, // undo send delay in ms
-  pow_difficulty: 0,
-  muted_words: [],
-  ignore_muted_content: true,
-  hide_sensitive: true,
-  report_analytics: true,
-  min_wot_score: 0,
-  min_pow_difficulty: 0,
-  enable_client_tag: false,
   auto_authenticate: false,
-  note_actions: ["zaps", "replies", "reactions", "recommended_apps"],
-  upload_type: "nip96",
-  nip96_urls: env.NIP96_URLS.slice(0, 1),
   blossom_urls: env.BLOSSOM_URLS.slice(0, 1),
-  imgproxy_url: env.IMGPROXY_URL,
+  default_zap: 21,
   dufflepud_url: env.DUFFLEPUD_URL,
+  enable_client_tag: false,
+  hide_sensitive: true,
+  ignore_muted_content: true,
+  imgproxy_url: env.IMGPROXY_URL,
+  min_pow_difficulty: 0,
+  min_wot_score: 0,
+  muted_words: [],
+  nip96_urls: env.NIP96_URLS.slice(0, 1),
+  note_actions: ["zaps", "replies", "reactions", "recommended_apps"],
   platform_zap_split: env.PLATFORM_ZAP_SPLIT,
+  pow_difficulty: 0,
+  relay_limit: 5,
+  report_analytics: true,
+  send_delay: 0,
+  show_media: true,
+  upload_type: "nip96",
 }
 
 export const settingsEvents = deriveEvents(repository, {filters: [{kinds: [APP_DATA]}]})
 
 export const userSettingsEvent = derived([pubkey, settingsEvents], ([$pubkey, $settingsEvents]) =>
-  $settingsEvents.find(e => e.pubkey === $pubkey && getIdentifier(e) === appDataKeys.USER_SETTINGS),
+  $settingsEvents.find(
+    event => event.pubkey === $pubkey && getIdentifier(event) === appDataKeys.USER_SETTINGS,
+  ),
 )
 
 export const userSettingsPlaintext = derived(
@@ -232,10 +231,13 @@ export const userSettings = withGetter<typeof defaultSettings>(
   }),
 )
 
-export const getSetting = <T = any>(k: string): T => prop(k)(userSettings.get()) as T
+export const getSetting = <T = any>(key: string): T => prop(key)(userSettings.get()) as T
 
-export const imgproxy = (url: string, {w = 640, h = 1024} = {}) => {
-  if (!url || url.match("gif$")) {
+const IMGPROXY_DEFAULT_WIDTH = 640
+const IMGPROXY_DEFAULT_HEIGHT = 1024
+
+export const imgproxy = (url: string, {w = IMGPROXY_DEFAULT_WIDTH, h = IMGPROXY_DEFAULT_HEIGHT} = {}) => {
+  if (!url || url.endsWith(".gif")) {
     return url
   }
 
@@ -249,7 +251,7 @@ export const imgproxy = (url: string, {w = 640, h = 1024} = {}) => {
   try {
     return `${baseUrl}/x/s:${w}:${h}/${btoa(urlWithoutParams)}`
   } catch (error) {
-    logger.error("Error creating imgproxy URL", error)
+    logger.error("Imgproxy URL creation error", error)
     return url
   }
 }
@@ -258,7 +260,7 @@ export const dufflepud = (path: string) => {
   const base = getSetting("dufflepud_url")
 
   if (!base) {
-    throw new Error("Dufflepud is not enabled")
+    throw new Error("Dufflepud not enabled")
   }
 
   return `${base}/${path}`
@@ -268,24 +270,26 @@ export const dufflepud = (path: string) => {
 
 export const getMinWot = () => getSetting("min_wot_score") / maxWot.get()
 
-export const userFollowList = derived([followsByPubkey, pubkey, anonymous], ([$m, $pk, $anon]) => {
-  return $pk ? $m.get($pk) : makeList({kind: FOLLOWS, publicTags: $anon.follows})
-})
+export const userFollowList = derived([followsByPubkey, pubkey, anonymous], ([$m, $pk, $anon]) =>
+  $pk ? $m.get($pk) : makeList({kind: FOLLOWS, publicTags: $anon.follows}),
+)
 
-export const userFollows = derived(userFollowList, l => new Set(getPubkeyTagValues(getListTags(l))))
+export const userFollows = derived(userFollowList, list => new Set(getPubkeyTagValues(getListTags(list))))
 
-export const userNetwork = derived(userFollowList, l => getNetwork(l.event.pubkey))
+export const userNetwork = derived(userFollowList, list => getNetwork(list.event.pubkey))
 
 export const userMuteList = derived([mutesByPubkey, pubkey], ([$m, $pk]) => $m.get($pk))
 
 export const userMutes = derived(
   userMuteList,
-  l => new Set(getTagValues(["p", "e"], getListTags(l))),
+  list => new Set(getTagValues(["p", "e"], getListTags(list))),
 )
 
 export const userPinList = derived([pinsByPubkey, pubkey], ([$m, $pk]) => $m.get($pk))
 
-export const userPins = derived(userPinList, l => new Set(getTagValues(["e"], getListTags(l))))
+export const userPins = derived(userPinList, list => new Set(getTagValues(["e"], getListTags(list))))
+
+const EVENT_MUTE_CACHE_SIZE = 5000
 
 export const isEventMuted = withGetter(
   derived(
@@ -296,44 +300,43 @@ export const isEventMuted = withGetter(
       const minPow = $userSettings.min_pow_difficulty
       const mutedWordsRegex =
         mutedWords.length > 0
-          ? new RegExp(`\\b(${mutedWords.map(w => w.toLowerCase().trim()).join("|")})\\b`)
+          ? new RegExp(`\\b(${mutedWords.map(word => word.toLowerCase().trim()).join("|")})\\b`)
           : null
 
       return cached({
-        maxSize: 5000,
-        getKey: ([e, strict = false]: [e: HashedEvent, strict?: boolean]) => `${e.id}:${strict}`,
-        getValue: ([e, strict = false]: [e: HashedEvent, strict?: boolean]) => {
-          if (!$pubkey || !e.pubkey) {
+        maxSize: EVENT_MUTE_CACHE_SIZE,
+        getKey: ([event, strict = false]: [event: HashedEvent, strict?: boolean]) => `${event.id}:${strict}`,
+        getValue: ([event, strict = false]: [event: HashedEvent, strict?: boolean]) => {
+          if (!$pubkey || !event.pubkey) {
             return false
           }
 
-          const {roots, replies} = getReplyTagValues(e.tags)
+          const {roots, replies} = getReplyTagValues(event.tags)
 
-          // Mute if any of these pubkeys are muted
-          if ([e.id, e.pubkey, ...roots, ...replies].some(x => x !== $pubkey && $userMutes.has(x))) {
+          if ([event.id, event.pubkey, ...roots, ...replies].some(
+            entity => entity !== $pubkey && $userMutes.has(entity),
+          )) {
             return true
           }
 
-          // Mute if content or profile info matches muted words regex
           if (mutedWordsRegex) {
-            const contentToMatch = e.content?.toLowerCase() || ""
-            const profileNameToMatch = displayProfileByPubkey(e.pubkey).toLowerCase()
-            const nip05ToMatch = $profilesByPubkey.get(e.pubkey)?.nip05 || ""
+            const contentToMatch = event.content?.toLowerCase() || ""
+            const profileNameToMatch = displayProfileByPubkey(event.pubkey).toLowerCase()
+            const nip05ToMatch = $profilesByPubkey.get(event.pubkey)?.nip05 || ""
 
             if (contentToMatch.match(mutedWordsRegex)) return true
             if (profileNameToMatch.match(mutedWordsRegex)) return true
             if (nip05ToMatch.match(mutedWordsRegex)) return true
           }
 
-          if (strict || $userFollows.has(e.pubkey)) {
+          if (strict || $userFollows.has(event.pubkey)) {
             return false
           }
 
-          // Check WOT and POW if not strict and not followed
-          const wotScore = getUserWotScore(e.pubkey)
+          const wotScore = getUserWotScore(event.pubkey)
           const okWot = wotScore >= minWot
-          const powDifficulty = Number(getTag("nonce", e.tags)?.[2] || "0")
-          const isValidPow = getPow(e.id) >= powDifficulty
+          const powDifficulty = Number(getTag("nonce", event.tags)?.[2] || "0")
+          const isValidPow = getPow(event.id) >= powDifficulty
           const okPow = isValidPow && powDifficulty > minPow
 
           return !okWot && !okPow
@@ -350,13 +353,9 @@ export const checked = writable<Record<string, number>>({})
 export const deriveChecked = (key: string) => derived(checked, prop(key))
 
 export const getSeenAt = derived([checked], ([$checked]) => (path: string, event: TrustedEvent) => {
-  const ts = max([$checked[path], $checked[path.split("/")[0] + "/*"], $checked["*"]])
+  const timestamp = max([$checked[path], $checked[path.split("/")[0] + "/*"], $checked["*"]])
 
-  if (ts >= event.created_at) {
-    return ts
-  }
-
-  return 0
+  return timestamp >= event.created_at ? timestamp : 0
 })
 
 // Channels
@@ -366,7 +365,11 @@ export const getChannelId = (pubkeys: string[]) => sort(uniq(pubkeys)).join(",")
 export const getChannelIdFromEvent = (event: TrustedEvent) =>
   getChannelId([event.pubkey, ...getPubkeyTagValues(event.tags)])
 
-export const messages = deriveEvents(repository, {filters: [{kinds: [4, DIRECT_MESSAGE]}]})
+const DIRECT_MESSAGE_AND_CHANNEL_MESSAGE_KINDS = [4, DIRECT_MESSAGE]
+
+export const messages = deriveEvents(repository, {
+  filters: [{kinds: DIRECT_MESSAGE_AND_CHANNEL_MESSAGE_KINDS}],
+})
 
 export const channels = derived(
   [pubkey, messages, getSeenAt],
@@ -381,9 +384,9 @@ export const channels = derived(
       const channelId = getChannelIdFromEvent(event)
       const channel = channelsById[channelId] || {
         id: channelId,
-        last_sent: 0,
-        last_received: 0,
         last_checked: 0,
+        last_received: 0,
+        last_sent: 0,
         messages: [],
       }
 
@@ -399,8 +402,7 @@ export const channels = derived(
       channelsById[channelId] = channel
     }
 
-    // Convert to array and sort by last message activity
-    return sortBy(c => -Math.max(c.last_sent, c.last_received), Object.values(channelsById))
+    return sortBy(channel => -Math.max(channel.last_sent, channel.last_received), Object.values(channelsById))
   },
 )
 
@@ -425,15 +427,15 @@ export const withIndexers = (relays: string[]) => withRelays(relays, env.INDEXER
 
 export const lists = deriveEventsMapped<PublishedUserList>(repository, {
   filters: [{kinds: EDITABLE_LIST_KINDS}],
-  eventToItem: (event: TrustedEvent) => (event.tags.length > 1 ? readUserList(event) : null),
+  eventToItem: event => (event.tags.length > 1 ? readUserList(event) : null),
   itemToEvent: prop<TrustedEvent>("event"),
 })
 
 export const userLists = derived(
   [lists, pubkey],
-  ([$lists, $pubkey]: [PublishedUserList[], string]) =>
+  ([$lists, $pubkey]) =>
     sortBy(
-      l => l.title.toLowerCase(),
+      list => list.title.toLowerCase(),
       $lists.filter(list => list.event.pubkey === $pubkey),
     ),
 )
@@ -448,7 +450,7 @@ export const feeds = deriveEventsMapped<PublishedFeed>(repository, {
   eventToItem: readFeed,
 })
 
-export const userFeeds = derived([feeds, pubkey], ([$feeds, $pubkey]: [PublishedFeed[], string]) =>
+export const userFeeds = derived([feeds, pubkey], ([$feeds, $pubkey]) =>
   $feeds.filter(feed => feed.event.pubkey === $pubkey),
 )
 
@@ -468,32 +470,34 @@ export const feedFavorites = derived(
 
 export const feedFavoritesByAddress = withGetter(
   derived(feedFavorites, $feedFavorites => {
-    const $feedFavoritesByAddress = new Map<string, PublishedList[]>()
+    const favoritesByAddress = new Map<string, PublishedList[]>()
 
     for (const list of $feedFavorites) {
       for (const address of getAddressTagValues(getListTags(list))) {
-        pushToMapKey($feedFavoritesByAddress, address, list)
+        pushToMapKey(favoritesByAddress, address, list)
       }
     }
 
-    return $feedFavoritesByAddress
+    return favoritesByAddress
   }),
 )
 
 export const userFeedFavorites = derived(
   [feedFavorites, pubkey],
-  ([$lists, $pubkey]: [PublishedList[], string]) =>
-    $lists.find(list => list.event.pubkey === $pubkey),
+  ([$feedFavorites, $pubkey]) => $feedFavorites.find(list => list.event.pubkey === $pubkey),
 )
 
 export const userFavoritedFeeds = derived(userFeedFavorites, $list =>
-  getAddressTagValues(getListTags($list)).map(repository.getEvent).filter(identity).map(readFeed),
+  getAddressTagValues(getListTags($list))
+    .map(repository.getEvent)
+    .filter(identity)
+    .map(readFeed),
 )
 
 export class FeedSearch extends SearchHelper<PublishedFeed, string> {
   getSearch = () => {
-    const $feedFavoritesByAddress = feedFavoritesByAddress.get()
-    const getScore = (feed: PublishedFeed) => $feedFavoritesByAddress.get(getAddress(feed.event))?.length || 0
+    const favoritesByAddress = feedFavoritesByAddress.get()
+    const getScore = (feed: PublishedFeed) => favoritesByAddress.get(getAddress(feed.event))?.length || 0
     const options = this.options.map(feed => ({feed, score: getScore(feed)}))
     const fuse = new Fuse(options, {
       keys: ["feed.title", "feed.description"],
@@ -507,31 +511,30 @@ export class FeedSearch extends SearchHelper<PublishedFeed, string> {
       }
 
       return sortBy(
-        (r: any) => r.score - Math.pow(Math.max(0, r.item.score), 1 / 100),
+        result => result.score - Math.pow(Math.max(0, result.item.score), 1 / 100),
         fuse.search(term),
-      ).map((r: any) => r.item.feed)
+      ).map(result => result.item.feed)
     }
   }
 
   getValue = (option: PublishedFeed) => getAddress(option.event)
-
   displayValue = (address: string) => displayFeed(this.getOption(address))
 }
 
 export const feedSearch = derived(feeds, $feeds => new FeedSearch($feeds))
 
 export const listFeeds = deriveEventsMapped<PublishedListFeed>(repository, {
-  filters: [{kinds: [NAMED_BOOKMARKS]}],
-  eventToItem: (event: TrustedEvent) =>
+  eventToItem: event =>
     event.tags.length > 1 ? mapListToFeed(readUserList(event)) : undefined,
+  filters: [{kinds: [NAMED_BOOKMARKS]}],
   itemToEvent: prop<TrustedEvent>("event"),
 })
 
 export const userListFeeds = derived(
   [listFeeds, pubkey],
-  ([$listFeeds, $pubkey]: [PublishedListFeed[], string]) =>
+  ([$listFeeds, $pubkey]) =>
     sortBy(
-      l => l.title.toLowerCase(),
+      feed => feed.title.toLowerCase(),
       $listFeeds.filter(feed => feed.list.event.pubkey === $pubkey),
     ),
 )
@@ -556,12 +559,15 @@ export const recommendationsByHandlerAddress = derived(recommendations, $events 
 )
 
 export const deriveHandlersForKind = simpleCache(([kind]: [number]) =>
-  derived([handlers, recommendationsByHandlerAddress], ([$handlers, $recs]) =>
+  derived([handlers, recommendationsByHandlerAddress], ([$handlers, $recommendationsByAddress]) =>
     sortBy(
-      h => -h.recommendations.length,
+      handler => -handler.recommendations.length,
       $handlers
-        .filter(h => h.kind === kind)
-        .map(h => ({...h, recommendations: $recs.get(getAddress(h.event)) || []})),
+        .filter(handler => handler.kind === kind)
+        .map(handler => ({
+          ...handler,
+          recommendations: $recommendationsByAddress.get(getAddress(handler.event)) || [],
+        })),
     ),
   ),
 )
@@ -573,10 +579,10 @@ export const collections = derived(
   readCollections,
 )
 
-export const deriveCollections = (currentPubkey: string) => // Renamed parameter for clarity
+export const deriveCollections = (currentPubkey: string) =>
   derived(collections, $collections =>
     sortBy(
-      f => f.name.toLowerCase(),
+      collection => collection.name.toLowerCase(),
       $collections.filter(collection => collection.pubkey === currentPubkey),
     ),
   )
@@ -588,38 +594,32 @@ export const collectionSearch = derived(
 
 // Network
 
-const executorCache = new Map<string, Executor>(); // Cache for Executors
+const executorCache = new Map<string, Executor>()
 
 export const getExecutor = (urls: string[]) => {
-  // Normalize and sort URLs for consistent cache key
-  const normalizedUrls = urls.map(normalizeRelayUrl);
-  const sortedUrlsKey = [...normalizedUrls].sort().join(',');
+  const sortedUrlsKey = [...urls].map(normalizeRelayUrl).sort().join(",")
 
-  // Return cached Executor if available
   if (executorCache.has(sortedUrlsKey)) {
-    return executorCache.get(sortedUrlsKey)!;
+    return executorCache.get(sortedUrlsKey)!
   }
 
-  // Separate local and remote relays
-  const [localUrls, remoteUrls] = partition(url => LOCAL_RELAY_URL === url, normalizedUrls);
+  const [localUrls, remoteUrls] = partition(url => LOCAL_RELAY_URL === url, urls.map(normalizeRelayUrl))
 
-  // Create target based on relay types (Relays for remote, Local for local)
-  let target: Target = new Relays(remoteUrls.map(url => ctx.net.pool.get(url)));
+  let target: Target = new Relays(remoteUrls.map(url => ctx.net.pool.get(url)))
   if (localUrls.length > 0) {
-    target = new Multi([target, new Local(relay)]);
+    target = new Multi([target, new Local(relay)])
   }
 
-  target.setMaxListeners(20); // Increased max listeners - adjust if needed
-  const executor = new Executor(target);
+  target.setMaxListeners(20)
+  const executor = new Executor(target)
 
-  executorCache.set(sortedUrlsKey, executor); // Store in cache
-  return executor;
-};
-
+  executorCache.set(sortedUrlsKey, executor)
+  return executor
+}
 
 export type MySubscribeRequest = PartialSubscribeRequest & {
-  skipCache?: boolean
   forcePlatform?: boolean
+  skipCache?: boolean
 }
 
 export const subscribe = ({forcePlatform, skipCache, ...request}: MySubscribeRequest) => {
@@ -627,7 +627,6 @@ export const subscribe = ({forcePlatform, skipCache, ...request}: MySubscribeReq
     request.relays = env.PLATFORM_RELAYS
   }
 
-  // Only add our local relay if we have relay selections to avoid bypassing auto relay selection
   if (!skipCache && request.relays?.length > 0) {
     request.relays = [...request.relays, LOCAL_RELAY_URL]
   }
@@ -640,13 +639,13 @@ export const load = (request: MySubscribeRequest) =>
     const events: TrustedEvent[] = []
     const sub = subscribe({...request, closeOnEose: true})
 
-    sub.on(SubscriptionEvent.Event, (_url: string, event: TrustedEvent) => events.push(event)) // Removed unused url parameter
-    sub.on(SubscriptionEvent.Complete, (_url: string) => resolve(events)) // Removed unused url parameter
+    sub.on(SubscriptionEvent.Event, (_url, event) => events.push(event))
+    sub.on(SubscriptionEvent.Complete, _url => resolve(events))
   })
 
 export type MyPublishRequest = PublishRequest & {
-  forcePlatform?: boolean
   delay?: number
+  forcePlatform?: boolean
 }
 
 export const publish = ({forcePlatform = true, ...request}: MyPublishRequest) => {
@@ -654,18 +653,16 @@ export const publish = ({forcePlatform = true, ...request}: MyPublishRequest) =>
     ? forcePlatformRelays(request.relays)
     : withPlatformRelays(request.relays)
 
-  // Ensure publication to the local relay for subscription notifications
-  request.relays = uniq([...request.relays, LOCAL_RELAY_URL]) // Using spread syntax for clarity
+  request.relays = uniq([...request.relays, LOCAL_RELAY_URL])
 
-  logger.info(`Publishing event`, request)
+  logger.info("Publishing event", request)
 
   return publishThunk(request)
 }
 
-export const sign = (
-  template, // Added type for template
-  opts: {anonymous?: boolean; sk?: string} = {},
-): Promise<SignedEvent> => {
+export type SignOptions = {anonymous?: boolean; sk?: string}
+
+export const sign = (template: EventTemplate, opts: SignOptions = {}): Promise<SignedEvent> => {
   if (opts.anonymous) {
     return Nip01Signer.ephemeral().sign(template)
   }
@@ -677,36 +674,41 @@ export const sign = (
   return signer.get().sign(template)
 }
 
-export type CreateAndPublishOpts = {
+export type CreateAndPublishOpts = CreateAndPublishOptions & {
+  anonymous?: boolean
+  forcePlatform?: boolean
+  sk?: string
+}
+
+type CreateAndPublishOptions = {
+  content?: string
+  created_at?: number
   kind: number
   relays: string[]
   tags?: string[][]
-  content?: string
-  created_at?: number
-  anonymous?: boolean
-  sk?: string
   timeout?: number
-  verb?: "EVENT" | "AUTH"
-  forcePlatform?: boolean
+  verb?: "AUTH" | "EVENT"
 }
 
 export const createAndPublish = async ({
-                                         kind,
-                                         relays,
-                                         tags = [],
-                                         content = "",
-                                         created_at = now(),
-                                         anonymous,
-                                         sk,
-                                         timeout,
-                                         verb,
-                                         forcePlatform = true,
-                                       }: CreateAndPublishOpts) => {
-  const eventTemplate = createEvent(kind, {content, tags, created_at}) // More descriptive variable name
-  const signedEvent = await sign(eventTemplate, {anonymous, sk}) // More descriptive variable name
+  kind,
+  content = "",
+  tags = [],
+  created_at = now(),
+  anonymous,
+  sk,
+  relays,
+  timeout,
+  verb,
+  forcePlatform = true,
+}: CreateAndPublishOpts) => {
+  const eventTemplate = createEvent(kind, {content, tags, created_at})
+  const signedEvent = await sign(eventTemplate, {anonymous, sk})
 
-  return publish({event: signedEvent, relays, verb, timeout, forcePlatform}) // Using object shorthand
+  return publish({event: signedEvent, relays, verb, timeout, forcePlatform})
 }
+
+const CLIENT_TAG_NAME = "client"
 
 export const getClientTags = () => {
   if (!getSetting("enable_client_tag")) {
@@ -714,7 +716,7 @@ export const getClientTags = () => {
   }
 
   const {CLIENT_NAME = "", CLIENT_ID} = env
-  const tag = ["client", CLIENT_NAME]
+  const tag: string[] = [CLIENT_TAG_NAME, CLIENT_NAME]
 
   if (CLIENT_ID) {
     tag.push(CLIENT_ID)
@@ -725,17 +727,23 @@ export const getClientTags = () => {
 
 export const addClientTags = <T extends Partial<EventTemplate>>({tags = [], ...event}: T) => ({
   ...event,
-  tags: tags.filter(t => t[0] !== "client").concat(getClientTags()),
+  tags: tags.filter(tag => tag[0] !== CLIENT_TAG_NAME).concat(getClientTags()),
 })
 
 // Storage
 
 let ready: Promise<any> = Promise.resolve()
 
-const migrateFresh = ( data : { key: string, value: number }[] ) => {
-  const cutoff = now() - HOUR;
-  return data.filter(({value}) => value > cutoff);
-}
+const STORAGE_VERSION = 3
+const HOUR_IN_SECONDS = 60 * 60
+const CUTOFF_TIME = now() - HOUR_IN_SECONDS
+const EVENT_LIMIT = 30_000
+const LARGE_EVENT_COUNT = 50_000
+const MIGRATION_COOLDOWN = 60
+
+const migrateFresh = ( { key: string; value: number }[]) =>
+  data.filter(({value}) => value > CUTOFF_TIME)
+
 
 const getScoreEvent = () => {
   const ALWAYS_KEEP = Infinity
@@ -745,17 +753,23 @@ const getScoreEvent = () => {
   const $userFollows = get(userFollows)
   const $maxWot = get(maxWot)
 
-  return (event: TrustedEvent) => { // Parameter name 'e' changed to 'event' for clarity
-    const isFollowing = $userFollows.has(event.pubkey)
+  return (event: TrustedEvent) => {
+    if (event.kind === FOLLOWS && !$userFollows.has(event.pubkey)) {
+      return NEVER_KEEP
+    }
 
-    if (event.kind === FOLLOWS && !isFollowing) return NEVER_KEEP // Optimization: Early return
+    if ($sessionKeys.has(event.pubkey) || event.tags.some(tag => $sessionKeys.has(tag[1]))) {
+      return ALWAYS_KEEP
+    }
 
-    if ($sessionKeys.has(event.pubkey) || event.tags.some(t => $sessionKeys.has(t[1]))) return ALWAYS_KEEP // Combined conditions
+    if (event.wrap || event.kind === DIRECT_MESSAGE || event.kind === WRAP) {
+      return NEVER_KEEP
+    }
+    if (repostKinds.includes(event.kind) || reactionKinds.includes(event.kind)) {
+      return NEVER_KEEP
+    }
 
-    if (event.wrap || event.kind === 4 || event.kind === WRAP) return NEVER_KEEP // Combined conditions
-    if (repostKinds.includes(event.kind) || reactionKinds.includes(event.kind)) return NEVER_KEEP // Combined conditions
-
-    let score = isFollowing ? $maxWot : getUserWotScore(event.pubkey)
+    let score = $userFollows.has(event.pubkey) ? $maxWot : getUserWotScore(event.pubkey)
 
     if (noteKinds.includes(event.kind)) {
       score = (event.created_at / now()) * score
@@ -772,23 +786,23 @@ const getScoreEvent = () => {
 let lastMigrate = 0
 
 const migrateEvents = (events: TrustedEvent[]) => {
-  if (events.length < 50_000 || ago(lastMigrate) < 60) {
+  if (events.length < LARGE_EVENT_COUNT || ago(lastMigrate) < MIGRATION_COOLDOWN) {
     return events
   }
 
-  events = events.filter(e => !e.wrap?.tags.some(t => t[1].startsWith("35834:")))
+  events = events.filter(event => !event.wrap?.tags.some(tag => tag[1].startsWith("35834:")))
 
   lastMigrate = now()
 
   const scoreEvent = getScoreEvent()
 
   return take(
-    30_000,
-    sortBy(e => -scoreEvent(e), events),
+    EVENT_LIMIT,
+    sortBy(event => -scoreEvent(event), events),
   )
 }
 
-// Initialize storage and context if not already initialized
+
 if (!db) {
   const noticeVerbs = ["NOTICE", "CLOSED", "OK", "NEG-MSG"]
   const initialRelays = [
@@ -819,31 +833,32 @@ if (!db) {
   })
 
   ctx.net.pool.on("init", (connection: Connection) => {
-    connection.on(ConnectionEvent.Receive, function (_cxn, args) { // Removed unused cxn parameter, using args directly
+    connection.on(ConnectionEvent.Receive, (_connection, args) => {
       const [verb, ...restArgs] = args
       if (!noticeVerbs.includes(verb)) return
       subscriptionNotices.update($notices => {
         pushToMapKey($notices, connection.url, {
           created_at: now(),
+          notice: [verb, ...restArgs],
           url: connection.url,
-          notice: [verb, ...restArgs], // Using restArgs for clarity
         })
         return $notices
       })
     })
   })
 
-  ready = initStorage("coracle", 3, {
-    relays: storageAdapters.fromCollectionStore("url", relays, {throttle: 3000}),
-    handles: storageAdapters.fromCollectionStore("nip05", handles, {throttle: 3000}),
-    zappers: storageAdapters.fromCollectionStore("lnurl", zappers, {throttle: 3000}),
+
+  ready = initStorage("coracle", STORAGE_VERSION, {
     checked: storageAdapters.fromObjectStore(checked, {throttle: 3000}),
     freshness: storageAdapters.fromObjectStore(freshness, {
-      throttle: 3000,
       migrate: migrateFresh,
+      throttle: 3000,
     }),
+    handles: storageAdapters.fromCollectionStore("nip05", handles, {throttle: 3000}),
     plaintext: storageAdapters.fromObjectStore(plaintext, {throttle: 3000}),
-    repository: storageAdapters.fromRepository(repository, {throttle: 3000, migrate: migrateEvents}),
+    relays: storageAdapters.fromCollectionStore("url", relays, {throttle: 3000}),
+    repository: storageAdapters.fromRepository(repository, {migrate: migrateEvents, throttle: 3000}),
+    zappers: storageAdapters.fromCollectionStore("lnurl", zappers, {throttle: 3000}),
   }).then(() => Promise.all(initialRelays.map(loadRelay)))
 }
 

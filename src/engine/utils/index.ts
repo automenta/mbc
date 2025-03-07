@@ -1,2 +1,2 @@
+export {sortEventsDesc} from "./events"
 export * from "./events"
-export { sortEventsDesc } from "./events"

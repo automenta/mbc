@@ -21,17 +21,18 @@ export enum OnboardingTask {
   BackupKey = "backup_key",
   SetupWallet = "setup_wallet",
 }
+
 export type Topic = {
-  name: string
   count?: number
   last_seen?: number
+  name: string
 }
 
 export type Channel = {
   id: string
-  last_sent?: number
-  last_received?: number
   last_checked?: number
+  last_received?: number
+  last_sent?: number
   messages: TrustedEvent[]
 }
 

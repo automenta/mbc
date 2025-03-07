@@ -79,66 +79,84 @@ import logger from "src/util/logger"
 
 // Helpers
 
-export const updateRecord = (record, timestamp, updates) => {
+export const updateRecord = <T extends Record<string, any>>(
+  record: T | undefined,
+  timestamp: number,
+  updates: Partial<T>,
+): T => {
+  let updatedRecord = {...(record || {})}
   for (const [field, value] of Object.entries(updates)) {
     const tsField = `${field}_updated_at`
-    const lastUpdated = record?.[tsField] || -1
+    const lastUpdated = updatedRecord[tsField] || -1
 
     if (timestamp > lastUpdated) {
-      record = {
-        ...record,
+      updatedRecord = {
+        ...updatedRecord,
         [field]: value,
         [tsField]: timestamp,
-        updated_at: Math.max(timestamp, record?.updated_at || 0),
+        updated_at: Math.max(timestamp, updatedRecord.updated_at || 0),
       }
     }
   }
 
-  return record
+  return updatedRecord as T
 }
 
-export const updateStore = (store, timestamp, updates) =>
-  store.set(updateRecord(store.get(), timestamp, updates))
+export const updateStore = <T extends Record<string, any>>(store, timestamp: number, updates: Partial<T>) =>
+  store.update(currentRecord => updateRecord(currentRecord, timestamp, updates))
 
-export const nip44EncryptToSelf = (payload: string) =>
+export const nip44EncryptToSelf = async (payload: string) =>
   signer.get().nip44.encrypt(pubkey.get(), payload)
 
 // Files
 
-export const nip98Fetch = async (url, method, body = null) => {
-  const tags = [
+const AUTH_REQUIRED_EVENT_KIND = 27235
+
+export const nip98Fetch = async (url: string, method: string, body: BodyInit | null = null) => {
+  const tags: string[][] = [
     ["u", url],
     ["method", method],
   ]
 
   if (body) {
-    tags.push(["payload", crypto.createHash("sha256").update(JSON.stringify(body)).digest("hex")])
+    const payloadHash = crypto.createHash("sha256").update(JSON.stringify(body)).digest("hex")
+    tags.push(["payload", payloadHash])
   }
 
-  const $signer = signer.get() || Nip01Signer.ephemeral()
-  const event = await $signer.sign(createEvent(27235, {tags}))
-  const auth = btoa(JSON.stringify(event))
+  const currentSigner = signer.get() || Nip01Signer.ephemeral()
+  const authEvent = await currentSigner.sign(createEvent(AUTH_REQUIRED_EVENT_KIND, {tags}))
+  const auth = btoa(JSON.stringify(authEvent))
   const headers = {Authorization: `Nostr ${auth}`}
 
-  return fetchJson(url, {body, method, headers})
+  try {
+    const response = await fetchJson(url, {body, method, headers})
+    return response
+  } catch (error) {
+    logger.error("NIP98 Fetch error", error)
+    throw error
+  }
 }
+
+const PROGRESS_EVENT_KIND = 7000
+const DVM_REQUEST_RESULT_DELAY = 30_000
+const DVM_POLL_INTERVAL = 3000
+const DVM_MAX_POLL_TIME = 60
 
 export const makeDvmRequest = (request: DVMRequestOptions & {delay?: number}) => {
   const emitter = new Emitter()
-  const {event, relays, timeout = 30_000, autoClose = true, reportProgress = true} = request
-  const kind = event.kind + 1000
-  const kinds = reportProgress ? [kind, 7000] : [kind]
+  const {event, relays, timeout = DVM_REQUEST_RESULT_DELAY, autoClose = true, reportProgress = true} = request
+  const resultKind = event.kind + 1000
+  const kinds = reportProgress ? [resultKind, PROGRESS_EVENT_KIND] : [resultKind]
   const filters: Filter[] = [{kinds, since: now() - 60, "#e": [event.id]}]
 
   const sub = subscribe({relays, timeout, filters})
   const thunk = publish({event, relays, timeout, delay: request.delay})
 
-  sub.on(SubscriptionEvent.Event, (url: string, event: TrustedEvent) => {
-    if (event.kind === 7000) {
-      emitter.emit(DVMEvent.Progress, url, event)
+  sub.on(SubscriptionEvent.Event, (_url: string, event: TrustedEvent) => {
+    if (event.kind === PROGRESS_EVENT_KIND) {
+      emitter.emit(DVMEvent.Progress, _url, event)
     } else {
-      emitter.emit(DVMEvent.Result, url, event)
-
+      emitter.emit(DVMEvent.Result, _url, event)
       if (autoClose) {
         sub.close()
       }
@@ -147,20 +165,20 @@ export const makeDvmRequest = (request: DVMRequestOptions & {delay?: number}) =>
   return {request, emitter, sub, thunk}
 }
 
+const MEDIA_PROVIDER_CACHE_SIZE = 10
+
 export const getMediaProviderURL = cached({
-  maxSize: 10,
+  maxSize: MEDIA_PROVIDER_CACHE_SIZE,
   getKey: ([url]) => url,
   getValue: ([url]) => fetchMediaProviderURL(url),
 })
 
-const fetchMediaProviderURL = async host =>
+const fetchMediaProviderURL = async (host: string) =>
   prop("api_url")(await fetchJson(joinPath(host, ".well-known/nostr/nip96.json")))
 
-const fileToFormData = file => {
+const fileToFormData = (file: File) => {
   const formData = new FormData()
-
   formData.append("file[]", file)
-
   return formData
 }
 
@@ -168,34 +186,31 @@ export const uploadFileToHost = async <T = any>(url: string, file: File): Promis
   const startTime = now()
   const apiUrl = await getMediaProviderURL(url)
   let response
+
   try {
     response = await nip98Fetch(apiUrl, "POST", fileToFormData(file))
   } catch (error) {
-    logger.error("Error uploading file to host", error)
-    throw error // Re-throw the error to be caught by the caller
+    logger.error("File upload to host failed", error)
+    throw error
   }
 
-
-  // If the media provider uses delayed processing, we need to wait for the processing to be done
   while (response.processing_url) {
     try {
       const {status, nip94_event} = await nip98Fetch(response.processing_url, "GET")
-
       if (status === "success") {
         return nip94_event
       }
     } catch (error) {
       logger.error("Error fetching processing URL", error)
-      break // Exit loop on error to prevent infinite loop
+      break
     }
 
-
-    if (now() - startTime > 60) {
+    if (now() - startTime > DVM_MAX_POLL_TIME) {
       logger.warn("Timeout waiting for media processing")
       break
     }
 
-    await sleep(3000)
+    await sleep(DVM_POLL_INTERVAL)
   }
 
   return response.nip94_event
@@ -210,46 +225,45 @@ export const uploadFileToHosts = <T = any>(urls: string[], file: File): Promise<
 export const uploadFilesToHosts = async <T = any>(urls: string[], files: File[]): Promise<T[]> =>
   flatten(await Promise.all(urls.map(url => uploadFilesToHost<T>(url, files)))).filter(identity)
 
-export const compressFiles = (files, opts) =>
-  Promise.all(
-    files.map(async f => {
-      if (f.type.match("image/(webp|gif)")) {
-        return f
-      }
+const WEBP_MIME_TYPE_REGEX = /image\/(webp|gif)/
+const COMPRESS_WAIT_TIME = 3000
 
-      return blobToFile(await stripExifData(f, opts))
+export const compressFiles = (files: File[], opts: any) =>
+  Promise.all(
+    files.map(async file => {
+      if (file.type.match(WEBP_MIME_TYPE_REGEX)) {
+        return file
+      }
+      return blobToFile(await stripExifData(file, opts))
     }),
   )
 
 export const eventsToMeta = (events: TrustedEvent[]) => {
   const tagsByHash = groupBy(
-    imeta => getTagValue("ox", imeta),
+    metaEvent => getTagValue("ox", metaEvent),
     events.map(e => e.tags),
   )
-
   return uniqTags(Array.from(tagsByHash.values()).flatMap(identity).flatMap(identity))
 }
 
-export const uploadFiles = async (urls, files, compressorOpts = {}) => {
+export const uploadFiles = async (urls: string[], files: File[], compressorOpts = {}) => {
   const compressedFiles = await compressFiles(files, compressorOpts)
   const nip94Events = await uploadFilesToHosts(urls, compressedFiles)
-
   return eventsToMeta(nip94Events as TrustedEvent[])
 }
 
 // Key state management
 
-export const signAndPublish = async (template, {anonymous = false} = {}) => {
+export const signAndPublish = async (template: EventTemplate, {anonymous = false} = {}) => {
   const event = await sign(template, {anonymous})
   const relays = ctx.app.router.PublishEvent(event).getUrls()
-
   return await publish({event, relays})
 }
 
 // Deletes
 
 export const publishDeletion = ({kind, address = null, id = null}) => {
-  const tags = [["k", String(kind)]]
+  const tags: string[][] = [["k", String(kind)]]
 
   if (address) {
     tags.push(["a", address])
@@ -287,12 +301,12 @@ export const publishProfile = (profile: Profile, {forcePlatform = false} = {}) =
 export const unfollow = async (value: string) =>
   signer.get()
     ? baseUnfollow(value)
-    : anonymous.update($a => ({...$a, follows: $a.follows.filter(nthNe(1, value))}))
+    : anonymous.update($anon => ({...$anon, follows: $anon.follows.filter(nthNe(1, value))}))
 
 export const follow = async (tag: string[]) =>
   signer.get()
     ? baseFollow(tag)
-    : anonymous.update($a => ({...$a, follows: append(tag, $a.follows)}))
+    : anonymous.update($anon => ({...$anon, follows: append(tag, $anon.follows)}))
 
 // Feed favorites
 
@@ -320,7 +334,9 @@ export const requestRelayAccess = async (url: string, claim: string) =>
     relays: [url],
   })
 
-export const setOutboxPolicies = async (modifyTags: (tags: string[][]) => string[][]) => {
+type ModifyTagsFn = (tags: string[][]) => string[][]
+
+export const setOutboxPolicies = async (modifyTags: ModifyTagsFn) => {
   if (signer.get()) {
     const list = get(userRelaySelections) || makeList({kind: RELAYS})
 
@@ -331,11 +347,11 @@ export const setOutboxPolicies = async (modifyTags: (tags: string[][]) => string
       relays: withIndexers(ctx.app.router.FromUser().getUrls()),
     })
   } else {
-    anonymous.update($a => ({...$a, relays: modifyTags($a.relays)}))
+    anonymous.update($anon => ({...$anon, relays: modifyTags($anon.relays)}))
   }
 }
 
-export const setInboxPolicies = async (modifyTags: (tags: string[][]) => string[][]) => {
+export const setInboxPolicies = async (modifyTags: ModifyTagsFn) => {
   const list = get(userInboxRelaySelections) || makeList({kind: INBOX_RELAYS})
 
   createAndPublish({
@@ -350,7 +366,6 @@ export const setInboxPolicy = (url: string, enabled: boolean) => {
   const urls = getRelayUrls(inboxRelaySelectionsByPubkey.get().get(pubkey.get()))
   const isPolicySet = urls.includes(url)
 
-  // Only update inbox policies if they already exist or we're adding them
   if (enabled || isPolicySet) {
     setInboxPolicies($tags => {
       return $tags.filter(t => normalizeRelayUrl(t[1]) !== url).concat(enabled ? [["relay", url]] : [])
@@ -360,13 +375,13 @@ export const setInboxPolicy = (url: string, enabled: boolean) => {
 
 export const setOutboxPolicy = (url: string, read: boolean, write: boolean) => {
   setOutboxPolicies($tags => {
-    const filteredTags = $tags.filter(t => normalizeRelayUrl(t[1]) !== url)
+    let filteredTags = $tags.filter(t => normalizeRelayUrl(t[1]) !== url)
     if (read && write) {
-      return filteredTags.concat([["r", url]])
+      filteredTags = filteredTags.concat([["r", url]])
     } else if (read) {
-      return filteredTags.concat([["r", url, "read"]])
+      filteredTags = filteredTags.concat([["r", url, "read"]])
     } else if (write) {
-      return filteredTags.concat([["r", url, "write"]])
+      filteredTags = filteredTags.concat([["r", url, "write"]])
     }
     return filteredTags
   })
@@ -375,7 +390,6 @@ export const setOutboxPolicy = (url: string, read: boolean, write: boolean) => {
 export const leaveRelay = async (url: string) => {
   await Promise.all([setInboxPolicy(url, false), setOutboxPolicy(url, false, false)])
 
-  // Make sure the new relay selections get to the old relay
   if (pubkey.get()) {
     broadcastUserData([url])
   }
@@ -390,29 +404,28 @@ export const joinRelay = async (url: string, claim?: string) => {
 
   await setOutboxPolicy(url, true, true)
 
-  // Re-publish user meta to the new relay
   if (pubkey.get()) {
     broadcastUserData([url])
   }
 }
 
+const DIRECT_MESSAGE_KIND = 14
+
 export const sendMessage = async (channelId: string, content: string, delay: number) => {
   const recipients = channelId.split(",")
   const template = {
     content,
-    kind: 14,
+    kind: DIRECT_MESSAGE_KIND,
     created_at: now(),
     tags: [...remove(pubkey.get(), recipients).map(tagPubkey), ...getClientTags()],
   }
 
-  for (const recipient of uniq(recipients.concat(pubkey.get()))) {
+  for (const recipient of uniq([pubkey.get(), ...recipients])) {
     const helper = Nip59.fromSigner(signer.get())
     const rumor = await helper.wrap(recipient, template)
 
-    // Publish immediately to the repository so messages show up right away
     repository.publish(rumor)
 
-    // Publish via thunk
     publish({
       event: rumor.wrap,
       relays: ctx.app.router.PubkeyInbox(recipient).getUrls(),
@@ -425,51 +438,52 @@ export const sendMessage = async (channelId: string, content: string, delay: num
 // Session/login
 
 const addSession = (s: Session) => {
-  sessions.update(assoc(s.pubkey, s))
+  sessions.update(allSessions => assoc(s.pubkey, s)(allSessions))
   pubkey.set(s.pubkey)
 }
 
-export const loginWithPublicKey = pubkey => addSession({method: "pubkey", pubkey})
+export const loginWithPublicKey = (publicKey: string) => addSession({method: "pubkey", pubkey: publicKey})
 
-export const loginWithNip07 = pubkey => addSession({method: "nip07", pubkey})
+export const loginWithNip07 = (publicKey: string) => addSession({method: "nip07", pubkey: publicKey})
 
-export const loginWithNip55 = (pubkey, pkg) =>
-  addSession({method: "nip55", pubkey: pubkey, signer: pkg})
+export const loginWithNip55 = (publicKey: string, pkg: any) =>
+  addSession({method: "nip55", pubkey: publicKey, signer: pkg})
+
+export type Nip46LoginArgs = {
+  relays: string[]
+  signerPubkey: string
+  clientSecret?: string
+  connectSecret?: string
+}
 
 export const loginWithNip46 = async ({
   relays,
   signerPubkey,
   clientSecret = makeSecret(),
   connectSecret = "",
-}: {
-  relays: string[]
-  signerPubkey: string
-  clientSecret?: string
-  connectSecret?: string
-}) => {
+}: Nip46LoginArgs) => {
   const broker = Nip46Broker.get({relays, clientSecret, signerPubkey})
   const result = await broker.connect(connectSecret, nip46Perms)
 
-  // TODO: remove ack result
   if (!["ack", connectSecret].includes(result)) return false
 
-  const pubkey = await broker.getPublicKey()
+  const publicKey = await broker.getPublicKey()
 
-  if (!pubkey) return false
+  if (!publicKey) return false
 
   const handler = {relays, pubkey: signerPubkey}
 
-  addSession({method: "nip46", pubkey, secret: clientSecret, handler})
+  addSession({method: "nip46", pubkey: publicKey, secret: clientSecret, handler})
 
   return true
 }
 
-export const logoutPubkey = pubkey => {
-  if (session.get().pubkey === pubkey) {
-    throw new Error("Can't destroy the current session, use logout instead")
+export const logoutPubkey = (publicKey: string) => {
+  if (session.get().pubkey === publicKey) {
+    throw new Error("Cannot destroy the current session, use logout instead")
   }
 
-  sessions.update(s => omit([pubkey], s))
+  sessions.update(allSessions => omit([publicKey], allSessions))
 }
 
 export const logout = () => {
@@ -477,14 +491,14 @@ export const logout = () => {
   sessions.set({})
 }
 
-export const setAppData = async (d: string,  any) => {
+export const setAppData = async <T = any>(dataKey: string,  T) => {
   if (signer.get()) {
-    const {pubkey} = session.get()
+    const userPubkey = session.get().pubkey
 
     return createAndPublish({
       kind: 30078,
-      tags: [["d", d]],
-      content: await signer.get().nip04.encrypt(pubkey, JSON.stringify(data)),
+      tags: [["d", dataKey]],
+      content: await signer.get().nip04.encrypt(userPubkey, JSON.stringify(data)),
       relays: ctx.app.router.FromUser().getUrls(),
       forcePlatform: false,
     })

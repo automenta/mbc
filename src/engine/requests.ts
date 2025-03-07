@@ -58,13 +58,18 @@ import {env, load, type MySubscribeRequest, subscribe} from "src/engine/state"
 
 // Utils
 
-export const addSinceToFilter = (filter, overlap = int(HOUR)) => {
+const DEFAULT_EVENT_OVERLAP = int(HOUR)
+const CONSERVATIVE_PULL_LIMIT = 100
+const PROFILE_LOAD_CHUNK_SIZE = 50
+const PROFILE_LOAD_DELAY = 300
+const PEOPLE_SEARCH_DEBOUNCE_DELAY = 500
+const PEOPLE_SEARCH_MIN_LENGTH = 2
+const PEOPLE_SEARCH_THROTTLE_DELAY = 1000
+
+export const addSinceToFilter = (filter, overlap = DEFAULT_EVENT_OVERLAP) => {
   const limit = 50
   const events = repository.query([{...filter, limit}])
 
-  // If we only have a few events, it won't hurt to re-fetch everything. This can happen when
-  // we fetch notifications with a limit of 1, giving us just a handful of events without pulling
-  // the full dataset.
   const since =
     events.length < limit ? EPOCH : max(events.map(e => e.created_at).concat(EPOCH)) - overlap
 
@@ -72,20 +77,18 @@ export const addSinceToFilter = (filter, overlap = int(HOUR)) => {
 }
 
 export const pullConservatively = ({relays, filters}: AppSyncOpts) => {
-  const [smart, dumb] = partition(hasNegentropy, relays)
-  const promises = [pull({relays: smart, filters})]
+  const [smartRelays, dumbRelays] = partition(hasNegentropy, relays)
+  const promises = [pull({relays: smartRelays, filters})]
 
-  // Since pulling from relays without negentropy is expensive, limit how many
-  // duplicates we repeatedly download
-  if (dumb.length > 0) {
+  if (dumbRelays.length > 0) {
     let filtersForDumb = filters
     const events = sortBy(e => -e.created_at, repository.query(filters))
 
-    if (events.length > 100) {
-      filtersForDumb = filters.map(assoc("since", events[100]!.created_at))
+    if (events.length > CONSERVATIVE_PULL_LIMIT) {
+      filtersForDumb = filters.map(assoc("since", events[CONSERVATIVE_PULL_LIMIT]!.created_at))
     }
 
-    promises.push(pull({relays: dumb, filters: filtersForDumb}))
+    promises.push(pull({relays: dumbRelays, filters: filtersForDumb}))
   }
 
   return Promise.all(promises)
@@ -93,7 +96,6 @@ export const pullConservatively = ({relays, filters}: AppSyncOpts) => {
 
 export const loadAll = (feed, {onEvent}: {onEvent: (e: TrustedEvent) => void}) => {
   const loading = writable(true)
-
   const onExhausted = () => loading.set(false)
 
   const promise = new Promise<void>(async resolve => {
@@ -121,7 +123,6 @@ export const loadEvent = async (eventIdOrAddress: string, request: Partial<MySub
 
 export const deriveEvent = (eventIdOrAddress: string, request: Partial<MySubscribeRequest> = {}) => {
   let attempted = false
-
   const filters = getIdFilters([eventIdOrAddress])
 
   return derived(
@@ -129,8 +130,8 @@ export const deriveEvent = (eventIdOrAddress: string, request: Partial<MySubscri
     (events: TrustedEvent[]) => {
       if (!attempted && events.length === 0) {
         if (Address.isAddress(eventIdOrAddress) && !request.relays) {
-          const {pubkey, relays} = Address.from(eventIdOrAddress)
-          request.relays = uniq([...relays, ...ctx.app.router.ForPubkey(pubkey).getUrls()])
+          const {pubkey: eventPubkey, relays} = Address.from(eventIdOrAddress)
+          request.relays = uniq([...relays, ...ctx.app.router.ForPubkey(eventPubkey).getUrls()])
         }
         loadEvent(eventIdOrAddress, request)
         attempted = true
@@ -140,8 +141,6 @@ export const deriveEvent = (eventIdOrAddress: string, request: Partial<MySubscri
     },
   )
 }
-
-// People
 
 type PeopleLoaderOpts = {
   shouldLoad?: (term: string) => boolean
@@ -156,8 +155,8 @@ export const createPeopleLoader = ({
 
   return {
     loading,
-    load: debounce(500, term => {
-      if (term.length > 2 && shouldLoad(term)) {
+    load: debounce(PEOPLE_SEARCH_DEBOUNCE_DELAY, term => {
+      if (term.length > PEOPLE_SEARCH_MIN_LENGTH && shouldLoad(term)) {
         const now = Date.now()
 
         loading.set(true)
@@ -168,8 +167,7 @@ export const createPeopleLoader = ({
           forcePlatform: false,
           filters: [{kinds: [0], search: term, limit: 100}],
           onComplete: async () => {
-            await sleep(Math.min(1000, Date.now() - now))
-
+            await sleep(Math.min(PEOPLE_SEARCH_THROTTLE_DELAY, Date.now() - now))
             loading.set(false)
           },
         })
@@ -179,9 +177,8 @@ export const createPeopleLoader = ({
 }
 
 export const loadPubkeys = async (pubkeys: string[]) => {
-  // Load slowly to avoid congestion and messing up relay selections for profiles.
-  for (const pubkeyChunk of chunk(50, pubkeys)) {
-    await sleep(300)
+  for (const pubkeyChunk of chunk(PROFILE_LOAD_CHUNK_SIZE, pubkeys)) {
+    await sleep(PROFILE_LOAD_DELAY)
 
     for (const pubkey of pubkeyChunk) {
       loadProfile(pubkey)
@@ -191,26 +188,23 @@ export const loadPubkeys = async (pubkeys: string[]) => {
   }
 }
 
-// Feeds
-
 export type FeedRequestHandlerOptions = {forcePlatform: boolean; signal: AbortSignal}
 
 export const makeFeedRequestHandler =
   ({forcePlatform, signal}: FeedRequestHandlerOptions) =>
   async ({relays, filters, onEvent}: RequestOpts) => {
     const tracker = new Tracker()
-    const requestOptions = { // Renamed from loadOptions to requestOptions
+    const requestOptions = {
       onEvent,
       tracker,
       forcePlatform,
       skipCache: true,
       delay: 0,
     }
+
     if (relays?.length > 0) {
       await load({...requestOptions, filters, relays, signal, authTimeout: 3000})
     } else {
-      // Break out selections by relay so we can complete early after a certain number
-      // of requests complete for faster load times
       await race(
         filters.every(f => f.search) ? 0.1 : 0.8,
         getFilterSelections(filters).flatMap(({relays, filters}) =>
@@ -218,9 +212,6 @@ export const makeFeedRequestHandler =
         ),
       )
 
-      // Wait until after we've queried the network to access our local cache. This results in less
-      // snappy response times, but is necessary to prevent stale stuff that the user has already seen
-      // from showing up at the top of the feed
       for (const event of repository.query(filters)) {
         onEvent(event)
       }
@@ -247,41 +238,46 @@ export const createFeedController = ({forcePlatform = true, ...options}: FeedCon
   })
 }
 
-// Notifications
-
-let notificationSubscription;
+let notificationSubscription
 
 export const getNotificationKinds = () =>
   without(env.ENABLE_ZAPS ? [] : [9735], [...noteKinds, ...reactionKinds])
 
-export const loadNotifications = () => {
+const notificationFilters = () => {
   const filter = {kinds: getNotificationKinds(), "#p": [pubkey.get()]}
+  return [addSinceToFilter(filter, int(WEEK))]
+}
+
+const liveNotificationFilters = () => {
+  const filter = {kinds: getNotificationKinds(), "#p": [pubkey.get()]}
+  return [addSinceToFilter(filter)]
+}
+
+
+export const loadNotifications = () => {
   if (notificationSubscription) {
-    notificationSubscription.close();
+    notificationSubscription.close()
   }
 
   return pullConservatively({
     relays: ctx.app.router.ForUser().getUrls(),
-    filters: [addSinceToFilter(filter, int(WEEK))],
+    filters: notificationFilters(),
   })
 }
 
 export const listenForNotifications = () => {
-  const filter = {kinds: getNotificationKinds(), "#p": [pubkey.get()]}
   if (notificationSubscription) {
-    notificationSubscription.close();
+    notificationSubscription.close()
   }
 
   notificationSubscription = subscribe({
     skipCache: true,
     relays: ctx.app.router.ForUser().getUrls(),
-    filters: [addSinceToFilter(filter)],
+    filters: liveNotificationFilters(),
   })
 
-  return notificationSubscription;
+  return notificationSubscription
 }
-
-// Other user data
 
 export const loadLabels = (authors: string[]) =>
   load({
@@ -311,7 +307,6 @@ export const loadFeedsAndLists = () =>
 
 export const loadMessages = () =>
   pullConservatively({
-    // TODO, stop using non-inbox relays
     relays: ctx.app.router
       .merge([ctx.app.router.ForUser(), ctx.app.router.FromUser(), ctx.app.router.UserInbox()])
       .getUrls(),
@@ -321,19 +316,18 @@ export const loadMessages = () =>
     ],
   })
 
-let messageSubscription;
+let messageSubscription
 
 export const listenForMessages = (pubkeys: string[]) => {
-  const allPubkeys = uniq(pubkeys.concat(pubkey.get()))
+  const allPubkeys = uniq([pubkey.get(), ...pubkeys])
 
   if (messageSubscription) {
-    messageSubscription.close();
+    messageSubscription.close()
   }
 
   messageSubscription = subscribe({
     skipCache: true,
     forcePlatform: false,
-    // TODO, stop using non-inbox relays
     relays: ctx.app.router
       .merge([
         ctx.app.router.ForPubkeys(pubkeys),
@@ -347,14 +341,14 @@ export const listenForMessages = (pubkeys: string[]) => {
     ],
   })
 
-  return messageSubscription;
+  return messageSubscription
 }
 
 export const loadHandlers = () =>
   load({
     skipCache: true,
     forcePlatform: false,
-    relays: ctx.app.router.ForUser().getUrls().concat("wss://relay.nostr.band/"),
+    relays: [...ctx.app.router.ForUser().getUrls(), "wss://relay.nostr.band/"],
     filters: [
       addSinceToFilter({
         kinds: [HANDLER_RECOMMENDATION],

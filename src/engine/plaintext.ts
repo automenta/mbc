@@ -1,11 +1,11 @@
 import {
   getSession,
   getSigner,
+  getPlaintext, // moved getPlaintext import here
   plaintext,
   repository,
   setPlaintext,
   tracker,
-  getPlaintext // <-- moved getPlaintext here from @welshman/util to @welshman/app
 } from "@welshman/app"
 import {Worker} from "@welshman/lib"
 import {Nip59} from "@welshman/signer"
@@ -43,7 +43,7 @@ export const ensureMessagePlaintext = async (event: TrustedEvent) => {
         return decryptedContent
       }
     } catch (error) {
-      logger.error("Error decrypting message", error)
+      logger.error("Message decryption error", error)
     }
   }
 
@@ -75,23 +75,19 @@ export async function ensureUnwrapped(event: TrustedEvent) {
       pendingUnwraps.set(event.id, unwrapPromise)
       unwrappedEvent = await unwrapPromise
     } catch (error) {
-      logger.error("Failed to unwrap event", error)
+      logger.error("Event unwrap failed", error)
     }
   }
 
   if (unwrappedEvent && isHashedEvent(unwrappedEvent)) {
     pendingUnwraps.delete(event.id)
     tracker.copy(event.id, unwrappedEvent.id)
-    // eslint-disable-next-line no-undef
-    // relay.send("EVENT", unwrappedEvent) // relay is undefined here - potential dead code?
   }
 
   return unwrappedEvent
 }
 
-// Unwrap/decrypt stuff as it comes in
-
-const unwrapper = new Worker<TrustedEvent>({ chunkSize: 10 });
+const unwrapper = new Worker<TrustedEvent>({chunkSize: 10})
 
 unwrapper.addGlobalHandler(async (event: TrustedEvent) => {
   if (event.kind === WRAP) {
@@ -101,11 +97,11 @@ unwrapper.addGlobalHandler(async (event: TrustedEvent) => {
   }
 })
 
-const decryptKinds = [APP_DATA, FOLLOWS, MUTES]
+const autoDecryptKinds = [APP_DATA, FOLLOWS, MUTES]
 
-repository.on("update", ({ added }: { added: TrustedEvent[] }) => {
+repository.on("update", ({added}: { added: TrustedEvent[] }) => {
   for (const event of added) {
-    if (decryptKinds.includes(event.kind) && event.content && !getPlaintext(event)) {
+    if (autoDecryptKinds.includes(event.kind) && event.content && !getPlaintext(event)) {
       unwrapper.push(event)
     }
 

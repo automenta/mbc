@@ -15,15 +15,17 @@ export const isSeen = derived(
   $getSeenAt => (key: string, event: TrustedEvent) => $getSeenAt(key, event) > 0,
 )
 
-export const setChecked = (path: string, ts = now()) =>
-  checked.update(state => ({...state, [path]: ts}))
+export const setChecked = (path: string, timestamp = now()) =>
+  checked.update(state => ({...state, [path]: timestamp}))
 
-// Notifications
-
-// -- Main Notifications
+// Main Notifications
+const notificationFilter = (pubkey) => ({
+  kinds: noteKinds,
+  "#p": [pubkey],
+})
 
 export const mainNotifications = derived(
-  [pubkey, isEventMuted, deriveEvents(repository, {throttle: 800, filters: [{kinds: noteKinds}]})],
+  [pubkey, isEventMuted, deriveEvents(repository, {throttle: 800, filters: [notificationFilter(get(pubkey))]})],
   ([$pubkey, $isEventMuted, $events]) =>
     sortEventsDesc(
       $events.filter(
@@ -46,7 +48,6 @@ export const hasNewNotifications = derived(
       return true
     }
 
-    // Check for uncompleted onboarding tasks
     if ($sessionWithMeta?.onboarding_tasks_completed) {
       const uncompletedTasks = without(
         $sessionWithMeta.onboarding_tasks_completed,
@@ -59,13 +60,17 @@ export const hasNewNotifications = derived(
   },
 )
 
-// -- Reaction Notifications
+// Reaction Notifications
+const reactionNotificationFilter = (pubkey) => ({
+  kinds: reactionKinds,
+  "#p": [pubkey],
+})
 
 export const reactionNotifications = derived(
   [
     pubkey,
     isEventMuted,
-    deriveEvents(repository, {throttle: 800, filters: [{kinds: reactionKinds}]}),
+    deriveEvents(repository, {throttle: 800, filters: [reactionNotificationFilter(get(pubkey))]}),
   ],
   ([$pubkey, $isEventMuted, $events]) =>
     sortEventsDesc(
