@@ -27,6 +27,7 @@
 
   onMount(() => {
     notificationSubscription = listenForNotifications(); // Use listenForNotifications and assign to subscription
+    console.log("Notifications.svelte: Subscription START - notificationSubscription"); // ADDED LOG
 
     const scroller = createScroller(loadMore, {element})
 
@@ -37,6 +38,14 @@
       }
     }
   })
+
+  onDestroy(() => { // ADDED onDestroy BLOCK
+    if (notificationSubscription) {
+      notificationSubscription.close(); // Close the subscription
+      notificationSubscription = undefined; // Good practice
+      console.log("Notifications.svelte: Subscription EVENT: CLOSE - notificationSubscription"); // ADDED LOG
+    }
+  });
 </script>
 
 <svelte:window bind:innerWidth />
