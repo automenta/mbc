@@ -36,10 +36,14 @@ export const ensureMessagePlaintext = async (event: TrustedEvent) => {
   const currentSigner = getSigner(currentSession)
 
   if (currentSigner) {
-    const decryptedContent = await currentSigner.nip04.decrypt(otherPubkey, event.content)
-    if (decryptedContent) {
-      setPlaintext(event, decryptedContent)
-      return decryptedContent
+    try {
+      const decryptedContent = await currentSigner.nip04.decrypt(otherPubkey, event.content)
+      if (decryptedContent) {
+        setPlaintext(event, decryptedContent)
+        return decryptedContent
+      }
+    } catch (error) {
+      logger.error("Error decrypting message", error)
     }
   }
 
@@ -79,7 +83,7 @@ export const ensureUnwrapped = async (event: TrustedEvent) => {
     pendingUnwraps.delete(event.id)
     tracker.copy(event.id, unwrappedEvent.id)
     // eslint-disable-next-line no-undef
-    // relay.send("EVENT", unwrappedEvent) // relay is undefined here
+    // relay.send("EVENT", unwrappedEvent) // relay is undefined here - potential dead code?
   }
 
   return unwrappedEvent

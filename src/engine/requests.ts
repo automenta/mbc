@@ -109,30 +109,30 @@ export const loadAll = (feed, {onEvent}: {onEvent: (e: TrustedEvent) => void}) =
   return {promise, loading, stop: onExhausted}
 }
 
-export const loadEvent = async (idOrAddress: string, request: Partial<MySubscribeRequest> = {}) =>
+export const loadEvent = async (eventIdOrAddress: string, request: Partial<MySubscribeRequest> = {}) =>
   first(
     await load({
       ...request,
       skipCache: true,
       forcePlatform: false,
-      filters: getIdFilters([idOrAddress]),
+      filters: getIdFilters([eventIdOrAddress]),
     }),
   )
 
-export const deriveEvent = (idOrAddress: string, request: Partial<MySubscribeRequest> = {}) => {
+export const deriveEvent = (eventIdOrAddress: string, request: Partial<MySubscribeRequest> = {}) => {
   let attempted = false
 
-  const filters = getIdFilters([idOrAddress])
+  const filters = getIdFilters([eventIdOrAddress])
 
   return derived(
     deriveEvents(repository, {filters, includeDeleted: true}),
     (events: TrustedEvent[]) => {
       if (!attempted && events.length === 0) {
-        if (Address.isAddress(idOrAddress) && !request.relays) {
-          const {pubkey, relays} = Address.from(idOrAddress)
+        if (Address.isAddress(eventIdOrAddress) && !request.relays) {
+          const {pubkey, relays} = Address.from(eventIdOrAddress)
           request.relays = uniq([...relays, ...ctx.app.router.ForPubkey(pubkey).getUrls()])
         }
-        loadEvent(idOrAddress, request)
+        loadEvent(eventIdOrAddress, request)
         attempted = true
       }
 
@@ -199,7 +199,7 @@ export const makeFeedRequestHandler =
   ({forcePlatform, signal}: FeedRequestHandlerOptions) =>
   async ({relays, filters, onEvent}: RequestOpts) => {
     const tracker = new Tracker()
-    const loadOptions = {
+    const requestOptions = { // Renamed from loadOptions to requestOptions
       onEvent,
       tracker,
       forcePlatform,
@@ -207,14 +207,14 @@ export const makeFeedRequestHandler =
       delay: 0,
     }
     if (relays?.length > 0) {
-      await load({...loadOptions, filters, relays, signal, authTimeout: 3000})
+      await load({...requestOptions, filters, relays, signal, authTimeout: 3000})
     } else {
       // Break out selections by relay so we can complete early after a certain number
       // of requests complete for faster load times
       await race(
         filters.every(f => f.search) ? 0.1 : 0.8,
         getFilterSelections(filters).flatMap(({relays, filters}) =>
-          relays.map(relay => load({...loadOptions, relays: [relay], signal, filters})),
+          relays.map(relay => load({...requestOptions, relays: [relay], signal, filters})),
         ),
       )
 

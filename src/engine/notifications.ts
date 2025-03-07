@@ -46,11 +46,13 @@ export const hasNewNotifications = derived(
       return true
     }
 
+    // Check for uncompleted onboarding tasks
     if ($sessionWithMeta?.onboarding_tasks_completed) {
-      return (
-        without($sessionWithMeta.onboarding_tasks_completed, Object.values(OnboardingTask)).length >
-        0
+      const uncompletedTasks = without(
+        $sessionWithMeta.onboarding_tasks_completed,
+        Object.values(OnboardingTask),
       )
+      return uncompletedTasks.length > 0
     }
 
     return false

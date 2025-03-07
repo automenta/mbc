@@ -58,7 +58,6 @@ import {
   sortBy,
   take,
   uniq,
-  Worker,
 } from "@welshman/lib"
 import type {Connection, PublishRequest, Target} from "@welshman/net"
 import {
@@ -184,95 +183,7 @@ export const anonymous = withGetter(writable<AnonymousUserState>({follows: [], r
 
 export const canDecrypt = withGetter(synced("canDecrypt", false))
 
-// Plaintext
-
-export const ensureMessagePlaintext = async (event: TrustedEvent) => {
-  if (!event.content) {
-    return undefined
-  }
-  if (getPlaintext(event)) {
-    return getPlaintext(event)
-  }
-
-  const recipient = getTagValue("p", event.tags)
-  const currentSession = getSession(event.pubkey) || getSession(recipient)
-  const otherPubkey = event.pubkey === currentSession?.pubkey ? recipient : event.pubkey
-  const currentSigner = getSigner(currentSession)
-
-  if (currentSigner) {
-    const decryptedContent = await currentSigner.nip04.decrypt(otherPubkey, event.content)
-    if (decryptedContent) {
-      setPlaintext(event, decryptedContent)
-      return decryptedContent
-    }
-  }
-
-  return undefined
-}
-
-const pendingUnwraps = new Map<string, Promise<TrustedEvent>>()
-
-export const ensureUnwrapped = async (event: TrustedEvent) => {
-  if (event.kind !== WRAP) {
-    return event
-  }
-
-  let rumor = repository.eventsByWrap.get(event.id)
-  if (rumor) { // variable name was rumor, should be unwrappedEvent
-    return rumor
-  }
-
-  if (pendingUnwraps.has(event.id)) {
-    return pendingUnwraps.get(event.id)
-  }
-
-  const sessionForUnwrap = getSession(getTagValue("p", event.tags))
-  const currentSigner = getSigner(sessionForUnwrap)
-
-  if (currentSigner) {
-    try {
-      const unwrapPromise = Nip59.fromSigner(currentSigner).unwrap(event as SignedEvent)
-      pendingUnwraps.set(event.id, unwrapPromise)
-      rumor = await unwrapPromise
-    } catch (error) {
-      logger.error("Failed to unwrap event", error) // Added error logging
-    }
-  }
-
-  if (rumor && isHashedEvent(rumor)) {
-    pendingUnwraps.delete(event.id)
-    tracker.copy(event.id, rumor.id)
-    relay.send("EVENT", rumor)
-  }
-
-  return rumor
-}
-
-// Unwrap/decrypt stuff as it comes in
-
-const unwrapper = new Worker<TrustedEvent>({chunkSize: 10})
-
-unwrapper.addGlobalHandler(async (event: TrustedEvent) => {
-  if (event.kind === WRAP) {
-    await ensureUnwrapped(event)
-  } else {
-    await ensurePlaintext(event)
-  }
-})
-
-const decryptKinds = [APP_DATA, FOLLOWS, MUTES]
-
-repository.on("update", ({added}: {added: TrustedEvent[]}) => {
-  for (const event of added) {
-    if (decryptKinds.includes(event.kind) && event.content && !getPlaintext(event)) {
-      unwrapper.push(event)
-    }
-
-    if (event.kind === WRAP && canDecrypt.get()) {
-      unwrapper.push(event)
-    }
-  }
-})
+// Plaintext - moved to plaintext.ts
 
 // Tracker
 
@@ -338,7 +249,7 @@ export const imgproxy = (url: string, {w = 640, h = 1024} = {}) => {
   try {
     return `${baseUrl}/x/s:${w}:${h}/${btoa(urlWithoutParams)}`
   } catch (error) {
-    logger.error("Error creating imgproxy URL", error) // Added error logging
+    logger.error("Error creating imgproxy URL", error)
     return url
   }
 }
@@ -398,10 +309,12 @@ export const isEventMuted = withGetter(
 
           const {roots, replies} = getReplyTagValues(e.tags)
 
+          // Mute if any of these pubkeys are muted
           if ([e.id, e.pubkey, ...roots, ...replies].some(x => x !== $pubkey && $userMutes.has(x))) {
             return true
           }
 
+          // Mute if content or profile info matches muted words regex
           if (mutedWordsRegex) {
             const contentToMatch = e.content?.toLowerCase() || ""
             const profileNameToMatch = displayProfileByPubkey(e.pubkey).toLowerCase()
@@ -416,6 +329,7 @@ export const isEventMuted = withGetter(
             return false
           }
 
+          // Check WOT and POW if not strict and not followed
           const wotScore = getUserWotScore(e.pubkey)
           const okWot = wotScore >= minWot
           const powDifficulty = Number(getTag("nonce", e.tags)?.[2] || "0")
@@ -485,6 +399,7 @@ export const channels = derived(
       channelsById[channelId] = channel
     }
 
+    // Convert to array and sort by last message activity
     return sortBy(c => -Math.max(c.last_sent, c.last_received), Object.values(channelsById))
   },
 )
@@ -676,23 +591,27 @@ export const collectionSearch = derived(
 const executorCache = new Map<string, Executor>(); // Cache for Executors
 
 export const getExecutor = (urls: string[]) => {
-  const normalizedUrls = urls.map(normalizeRelayUrl); // Normalize URLs here
-  const sortedUrlsKey = [...normalizedUrls].sort().join(','); // Create a consistent key
+  // Normalize and sort URLs for consistent cache key
+  const normalizedUrls = urls.map(normalizeRelayUrl);
+  const sortedUrlsKey = [...normalizedUrls].sort().join(',');
+
+  // Return cached Executor if available
   if (executorCache.has(sortedUrlsKey)) {
-    //console.trace(`getExecutor cache hit for: ${sortedUrlsKey}`); // Optional logging for cache hits
-    return executorCache.get(sortedUrlsKey)!; // Return cached Executor
+    return executorCache.get(sortedUrlsKey)!;
   }
 
-  //console.trace(`getExecutor cache miss, creating new Executor for: ${sortedUrlsKey}`); // Optional logging for cache misses
+  // Separate local and remote relays
   const [localUrls, remoteUrls] = partition(url => LOCAL_RELAY_URL === url, normalizedUrls);
+
+  // Create target based on relay types (Relays for remote, Local for local)
   let target: Target = new Relays(remoteUrls.map(url => ctx.net.pool.get(url)));
   if (localUrls.length > 0) {
     target = new Multi([target, new Local(relay)]);
   }
-  /** START OF CHANGE **/
-  target.setMaxListeners(20); // Increased max listeners to 20 (adjust as needed)
-  /** END OF CHANGE **/
+
+  target.setMaxListeners(20); // Increased max listeners - adjust if needed
   const executor = new Executor(target);
+
   executorCache.set(sortedUrlsKey, executor); // Store in cache
   return executor;
 };

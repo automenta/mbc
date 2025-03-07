@@ -75,6 +75,7 @@ import {
 import {blobToFile, stripExifData} from "src/util/html"
 import {joinPath} from "src/util/misc"
 import {appDataKeys} from "src/util/nostr"
+import logger from "src/util/logger"
 
 // Helpers
 
@@ -166,17 +167,31 @@ const fileToFormData = file => {
 export const uploadFileToHost = async <T = any>(url: string, file: File): Promise<T> => {
   const startTime = now()
   const apiUrl = await getMediaProviderURL(url)
-  const response = await nip98Fetch(apiUrl, "POST", fileToFormData(file))
+  let response
+  try {
+    response = await nip98Fetch(apiUrl, "POST", fileToFormData(file))
+  } catch (error) {
+    logger.error("Error uploading file to host", error)
+    throw error // Re-throw the error to be caught by the caller
+  }
+
 
   // If the media provider uses delayed processing, we need to wait for the processing to be done
   while (response.processing_url) {
-    const {status, nip94_event} = await nip98Fetch(response.processing_url, "GET")
+    try {
+      const {status, nip94_event} = await nip98Fetch(response.processing_url, "GET")
 
-    if (status === "success") {
-      return nip94_event
+      if (status === "success") {
+        return nip94_event
+      }
+    } catch (error) {
+      logger.error("Error fetching processing URL", error)
+      break // Exit loop on error to prevent infinite loop
     }
 
+
     if (now() - startTime > 60) {
+      logger.warn("Timeout waiting for media processing")
       break
     }
 
@@ -333,35 +348,29 @@ export const setInboxPolicies = async (modifyTags: (tags: string[][]) => string[
 
 export const setInboxPolicy = (url: string, enabled: boolean) => {
   const urls = getRelayUrls(inboxRelaySelectionsByPubkey.get().get(pubkey.get()))
+  const isPolicySet = urls.includes(url)
 
   // Only update inbox policies if they already exist or we're adding them
-  if (enabled || urls.includes(url)) {
+  if (enabled || isPolicySet) {
     setInboxPolicies($tags => {
-      $tags = $tags.filter(t => normalizeRelayUrl(t[1]) !== url)
-
-      if (enabled) {
-        $tags.push(["relay", url])
-      }
-
-      return $tags
+      return $tags.filter(t => normalizeRelayUrl(t[1]) !== url).concat(enabled ? [["relay", url]] : [])
     })
   }
 }
 
-export const setOutboxPolicy = (url: string, read: boolean, write: boolean) =>
+export const setOutboxPolicy = (url: string, read: boolean, write: boolean) => {
   setOutboxPolicies($tags => {
-    $tags = $tags.filter(t => normalizeRelayUrl(t[1]) !== url)
-
+    const filteredTags = $tags.filter(t => normalizeRelayUrl(t[1]) !== url)
     if (read && write) {
-      $tags.push(["r", url])
+      return filteredTags.concat([["r", url]])
     } else if (read) {
-      $tags.push(["r", url, "read"])
+      return filteredTags.concat([["r", url, "read"]])
     } else if (write) {
-      $tags.push(["r", url, "write"])
+      return filteredTags.concat([["r", url, "write"]])
     }
-
-    return $tags
+    return filteredTags
   })
+}
 
 export const leaveRelay = async (url: string) => {
   await Promise.all([setInboxPolicy(url, false), setOutboxPolicy(url, false, false)])
@@ -386,8 +395,6 @@ export const joinRelay = async (url: string, claim?: string) => {
     broadcastUserData([url])
   }
 }
-
-// Messages
 
 export const sendMessage = async (channelId: string, content: string, delay: number) => {
   const recipients = channelId.split(",")
