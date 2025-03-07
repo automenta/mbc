@@ -71,6 +71,11 @@ export const createFeedPayload = ({identifier, definition, title, description}: 
   ],
 })
 
+// Placeholder editFeed function - you'll need to implement the actual logic
+export const editFeed = (feed: Feed) => {
+  return createFeedPayload(feed);
+}
+
 
 export const displayFeed = (feed?: Feed) => feed?.title || "[no name]"
 
@@ -84,3 +89,4 @@ export const isContextFeed = f =>
   isTagFeed(f) && f[1] === "#a" && f.slice(2).every(Address.isAddress)
 
 export const isPeopleFeed = f => isAuthorFeed(f) || isScopeFeed(f)
+
