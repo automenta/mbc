@@ -75,6 +75,7 @@ import type {
   HashedEvent,
   PublishedList,
   SignedEvent,
+  StampedEvent,
   TrustedEvent,
 } from "@welshman/util"
 import {
@@ -107,7 +108,12 @@ import {
   WRAP,
 } from "@welshman/util"
 
-import type {PublishedFeed, PublishedListFeed, PublishedUserList} from "src/domain"
+import type {
+  PublishedFeed,
+  PublishedFeedUserList,
+  PublishedListFeed,
+  PublishedUserList,
+} from "src/domain"
 import {
   CollectionSearch,
   displayFeed,
@@ -155,7 +161,7 @@ const {
 export const env = {
   CLIENT_ID: VITE_CLIENT_ID as string,
   CLIENT_NAME: VITE_CLIENT_NAME as string,
-  DEFAULT_FOLLOWS: fromCsv(VITE_DEFAULT_FOLLOWS) as string,
+  DEFAULT_FOLLOWS: fromCsv(VITE_DEFAULT_FOLLOWS),
   DEFAULT_RELAYS: fromCsv(VITE_DEFAULT_RELAYS).map(normalizeRelayUrl) as string[],
   INDEXER_RELAYS: fromCsv(VITE_INDEXER_RELAYS).map(normalizeRelayUrl) as string[],
   DUFFLEPUD_URL: VITE_DUFFLEPUD_URL as string,
@@ -662,7 +668,7 @@ export const publish = ({forcePlatform = true, ...request}: MyPublishRequest) =>
 
 export type SignOptions = {anonymous?: boolean; sk?: string}
 
-export const sign = (template: EventTemplate, opts: SignOptions = {}): Promise<SignedEvent> => {
+export const sign = (template: StampedEvent, opts: SignOptions = {}): Promise<SignedEvent> => {
   if (opts.anonymous) {
     return Nip01Signer.ephemeral().sign(template)
   }

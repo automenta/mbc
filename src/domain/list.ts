@@ -24,6 +24,7 @@ import {
   TOPICS,
 } from "@welshman/util"
 import {SearchHelper} from "src/util/misc"
+import type {KindOption} from "src/domain/kind"
 
 export const CUSTOM_LIST_KINDS = [
   FOLLOWS,
@@ -63,7 +64,7 @@ export type PublishedUserList = Omit<UserList, "event"> & {
   event: TrustedEvent
 }
 
-export type PublishedListFeed = Omit<UserList, "list"> & {
+export type PublishedFeedUserList = Omit<UserList, "list"> & {
   event: TrustedEvent
   list: PublishedUserList
 }

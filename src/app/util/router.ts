@@ -75,7 +75,7 @@ export const asNote = {
 
 export const asPerson = {
   encode: nip19.npubEncode,
-  decode: entity => {
+  decode: (entity: string) => {
     const parsed = parseAnythingSync(entity)
 
     if (parsed?.type === "npub") {

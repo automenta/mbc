@@ -17,10 +17,10 @@ import {
   sum,
   tryCatch,
 } from "@welshman/lib"
-import Fuse from "fuse.js"
+import Fuse, {type IFuseOptions} from "fuse.js"
 import logger from "src/util/logger"
 
-export const timestamp1: Readable<number> = derived([], set => {
+export const timestamp1: Readable<number> = derived([], (_, set) => {
   const interval = setInterval(() => {
     set(Math.floor(Date.now() / 1000))
   }, 1000)
@@ -164,10 +164,10 @@ export const stringToHue = (value: string) => {
 export const hsl = (hue: number, {saturation = 100, lightness = 50, opacity = 1} = {}) =>
   `hsl(${hue}, ${saturation}%, ${lightness}%, ${opacity})`
 
-export const parseJson = <T>(json: string | null | undefined): T | null => { // Added generic type
+export const parseJson = (json) => { // Added generic type
   if (!json) return null
   try {
-    return JSON.parse(json) as T
+    return JSON.parse(json)
   } catch (e) {
     logger.warn("JSON parse error:", e) // More informative log
     return null
@@ -291,16 +291,15 @@ export const getStringWidth = (text: string): number => {
   return width
 }
 
-export const fuzzy = <T, U extends keyof T>( T[], opts: Fuse.IFuseOptions<T> = {}): ((q: string) => T[]) => { // More specific types
+export const fuzzy = <T, U extends keyof T>( data:T[], opts: IFuseOptions<T> = {}): ((q: string) => T[]) => { // More specific types
   const fuse = new Fuse(data, opts)
-
   return (q: string) => {
     return q ? fuse.search(q.slice(0, 32)).map(result => result.item) : data // Directly return items
   }
 }
 
 export class SearchHelper<T, V> {
-  config: Fuse.IFuseOptions<T> = {} // More specific type
+  config: IFuseOptions<T> = {} // More specific type
   _optionsByValue = new Map<V, T>()
   _search?: (term: string) => T[]
 

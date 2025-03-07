@@ -31,7 +31,6 @@ export type PublishedListFeed = Omit<Feed, "list"> & {
   list: PublishedUserList
 }
 
-
 export const normalizeFeedDefinition = feed =>
   hasSubFeeds(feed) ? feed : makeIntersectionFeed(feed)
 

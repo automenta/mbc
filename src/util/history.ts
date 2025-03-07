@@ -80,46 +80,57 @@ interface MemoryHistory extends History['history'] {
 }
 
 
-// Stores history entries in memory for testing or other platforms like Native
-const createMemorySource = (initialPathname = "/"): MemoryHistorySource => {
-  let index = 0;
-  const stack: Location[] = [{pathname: initialPathname, search: "", hash: '', state: null, key: 'initial'}];
-  const states: any[] = [];
-
-  return {
-    get location() {
-      return stack[index];
-    },
-    addEventListener(_name: string, _fn: any) {},
-    removeEventListener(_name: string, _fn: any) {},
-    history: {
-      get entries() {
-        return stack;
-      },
-      get index() {
-        return index;
-      },
-      get state() {
-        return states[index];
-      },
-      pushState(state: any, _: string, uri: string) {
-        const [pathname, search = ""] = uri.split("?");
-        index++;
-        stack.push({pathname, search, hash: '', state: null, key: 'key-'+index}); // Added key and hash to align with Location
-        states.push(state);
-      },
-      replaceState(state: any, _: string, uri: string) {
-        const [pathname, search = ""] = uri.split("?");
-        stack[index] = {pathname, search, hash: '', state: null, key: 'key-'+index}; // Added key and hash
-        states[index] = state;
-      },
-    },
-  };
-};
+// // Stores history entries in memory for testing or other platforms like Native
+// const createMemorySource = (initialPathname = "/"): {
+//   addEventListener: (_name: string, _fn: any) => void;
+//   history: {
+//     entries: {pathname: string; search: string}[];
+//     index: number;
+//     pushState: (state: any, _: string, uri: string) => void;
+//     replaceState: (state: any, _: string, uri: string) => void;
+//     state: any
+//   };
+//   location: {pathname: string; search: string};
+//   removeEventListener: (_name: string, _fn: any) => void
+// } => {
+//   let index = 0;
+//   const stack = [{pathname: initialPathname, search: ""}];
+//   const states: any[] = [];
+//
+//   return {
+//     get location() {
+//       return stack[index];
+//     },
+//     addEventListener(_name: string, _fn: any) {},
+//     removeEventListener(_name: string, _fn: any) {},
+//     history: {
+//       get entries() {
+//         return stack;
+//       },
+//       get index() {
+//         return index;
+//       },
+//       get state() {
+//         return states[index];
+//       },
+//       pushState(state: any, _: string, uri: string) {
+//         const [pathname, search = ""] = uri.split("?");
+//         index++;
+//         stack.push({pathname, search}); // Added key and hash to align with Location
+//         states.push(state);
+//       },
+//       replaceState(state: any, _: string, uri: string) {
+//         const [pathname, search = ""] = uri.split("?");
+//         stack[index] = {pathname, search}; // Added key and hash
+//         states[index] = state;
+//       },
+//     },
+//   };
+// };
 
 // Global history uses window.history as the source if available,
 // otherwise a memory history
 const globalHistory = createHistory(window) as ReturnType<typeof createHistory> & { navigate: NavigateFn };
-const {navigate} = globalHistory;
+// const {navigate} = globalHistory;
 
-export {globalHistory, navigate, createHistory, createMemorySource};
+export {globalHistory, createHistory};

@@ -2,7 +2,7 @@ import {cubicOut} from "svelte/easing"
 import {fade as svelteFade, fly as svelteFly, slide as svelteSlide, type TransitionConfig} from "svelte/transition"
 
 // Fly animation kills safari for some reason, use a modified fade instead
-export const fly: (node: Element, params?: TransitionConfig) => TransitionConfig = window.safari
+export const fly: (node: Element, params?: TransitionConfig) => TransitionConfig = window['safari']
   ? (node, params) => svelteFade(node, {duration: 100, ...params})
   : svelteFly
 export const fade = svelteFade

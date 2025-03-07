@@ -210,8 +210,10 @@ class RouterExtension {
     return this.clone({queryParams: data})
   }
 
+  // @ts-ignore
   cx = (context: Record<string, any>) => this.clone(updateIn("context", c => mergeLeft(context, c))(this.params))
 
+  // @ts-ignore
   cg = (config: Record<string, any>) => this.clone(updateIn("config", c => mergeLeft(config, c))(this.params))
 
   toString = () => {
@@ -281,10 +283,9 @@ export class Router {
 
   listen() {
     return globalHistory.listen(({location, action}) => {
-      const {state, pathname, search} = location
+      const {pathname, search} = location
       const path = pathname + search
       const currentHistory = get(this.history)[0] // Simplified history access
-      const key = this.getKey({path: pathname, ...state})
 
       if (action === "POP") {
          if (path !== currentHistory?.path) {

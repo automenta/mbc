@@ -1,4 +1,4 @@
-import {avg, identity, last, nthEq} from "@welshman/lib"
+import {avg, last, nthEq} from "@welshman/lib"
 import type {TrustedEvent} from "@welshman/util"
 import {
   Address,
@@ -13,7 +13,6 @@ import {
   getParentIdOrAddr,
   getTags,
   getTagValue,
-  getTopicTagValues,
   GROUPS,
   HIGHLIGHT,
   INBOX_RELAYS,
@@ -49,9 +48,8 @@ export const nsecEncode = (secret: string) => nip19.nsecEncode(hexToBytes(secret
 export const nsecDecode = (nsec: string) => {
   const {type, data} = nip19.decode(nsec)
 
-  if (type !== "nsec") {
+  if (type !== "nsec")
     throw new Error(`Invalid nsec: ${nsec}`)
-  }
 
   return bytesToHex(data)
 }
@@ -109,9 +107,8 @@ export const decodeNostrEntityToHex = (entity: string): string | null => {
   try {
     let key = nip19.decode(entity).data
 
-    if (key instanceof Uint8Array) {
+    if (key instanceof Uint8Array)
       key = Buffer.from(key).toString("hex")
-    }
 
     return key as string
   } catch (e) {
@@ -143,9 +140,8 @@ export const getContentWarning = (e: TrustedEvent) => {
 export const parseAnything = async (entity: string) => {
   if (entity.includes("@")) {
     const profile = await nip05.queryProfile(entity)
-    if (profile) {
+    if (profile)
       return {type: "npub", pubkey: profile.pubkey}
-    }
   }
 
   return parseAnythingSync(entity)
@@ -154,13 +150,11 @@ export const parseAnything = async (entity: string) => {
 export const parseAnythingSync = (entity: string) => {
   const normalizedEntity = fromNostrURI(entity)
 
-  if (Address.isAddress(normalizedEntity)) {
+  if (Address.isAddress(normalizedEntity))
     return nip19.decode(Address.from(normalizedEntity).toNaddr())
-  }
 
-  if (isHex(normalizedEntity)) {
+  if (isHex(normalizedEntity))
     return {type: "npub", pubkey: normalizedEntity}
-  }
 
   try {
     return nip19.decode(normalizedEntity)
@@ -184,17 +178,17 @@ export async function extractPrivateKey(input: string): Promise<string | null> {
   }
 
   // Try as hex
-  if (isHex(input)) {
+  if (isHex(input))
     return input
-  }
+
 
   // Try as JSON
   try {
     const json = JSON.parse(input)
     const privateKey = json?.privateKey || json?.sec
-    if (typeof privateKey === 'string') {
+    if (typeof privateKey === 'string')
       return privateKey
-    }
+
   } catch (e) {
     // Not a valid JSON, try next
   }

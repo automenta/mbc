@@ -40,7 +40,7 @@ import {
 } from "@welshman/lib"
 import {SubscriptionEvent} from "@welshman/net"
 import {makeSecret, Nip01Signer, Nip46Broker, Nip59} from "@welshman/signer"
-import type {Filter, Profile, TrustedEvent} from "@welshman/util"
+import type {EventTemplate, Filter, Profile, StampedEvent, TrustedEvent} from "@welshman/util"
 import {
   Address,
   addToListPublicly,
@@ -102,8 +102,11 @@ export const updateRecord = <T extends Record<string, any>>(
   return updatedRecord as T
 }
 
-export const updateStore = <T extends Record<string, any>>(store, timestamp: number, updates: Partial<T>) =>
-  store.update(currentRecord => updateRecord(currentRecord, timestamp, updates))
+export const updateStore = <T extends Record<string, any>>(
+  store,
+  timestamp: number,
+  updates: Partial<T>,
+) => store.update(currentRecord => updateRecord(currentRecord, timestamp, updates))
 
 export const nip44EncryptToSelf = async (payload: string) =>
   signer.get().nip44.encrypt(pubkey.get(), payload)
@@ -112,7 +115,7 @@ export const nip44EncryptToSelf = async (payload: string) =>
 
 const AUTH_REQUIRED_EVENT_KIND = 27235
 
-export const nip98Fetch = async (url: string, method: string, body: BodyInit | null = null) => {
+export const nip98Fetch = async (url: string, method: string, body = null) => {
   const tags: string[][] = [
     ["u", url],
     ["method", method],
@@ -144,7 +147,13 @@ const DVM_MAX_POLL_TIME = 60
 
 export const makeDvmRequest = (request: DVMRequestOptions & {delay?: number}) => {
   const emitter = new Emitter()
-  const {event, relays, timeout = DVM_REQUEST_RESULT_DELAY, autoClose = true, reportProgress = true} = request
+  const {
+    event,
+    relays,
+    timeout = DVM_REQUEST_RESULT_DELAY,
+    autoClose = true,
+    reportProgress = true,
+  } = request
   const resultKind = event.kind + 1000
   const kinds = reportProgress ? [resultKind, PROGRESS_EVENT_KIND] : [resultKind]
   const filters: Filter[] = [{kinds, since: now() - 60, "#e": [event.id]}]
@@ -184,7 +193,7 @@ const fileToFormData = (file: File) => {
 
 export const uploadFileToHost = async <T = any>(url: string, file: File): Promise<T> => {
   const startTime = now()
-  const apiUrl = await getMediaProviderURL(url)
+  const apiUrl = <string>await getMediaProviderURL(url)
   let response
 
   try {
@@ -226,7 +235,6 @@ export const uploadFilesToHosts = async <T = any>(urls: string[], files: File[])
   flatten(await Promise.all(urls.map(url => uploadFilesToHost<T>(url, files)))).filter(identity)
 
 const WEBP_MIME_TYPE_REGEX = /image\/(webp|gif)/
-const COMPRESS_WAIT_TIME = 3000
 
 export const compressFiles = (files: File[], opts: any) =>
   Promise.all(
@@ -254,10 +262,10 @@ export const uploadFiles = async (urls: string[], files: File[], compressorOpts 
 
 // Key state management
 
-export const signAndPublish = async (template: EventTemplate, {anonymous = false} = {}) => {
+export const signAndPublish = async (template: StampedEvent, {anonymous = false} = {}) => {
   const event = await sign(template, {anonymous})
   const relays = ctx.app.router.PublishEvent(event).getUrls()
-  return await publish({event, relays})
+  return publish({event, relays})
 }
 
 // Deletes
@@ -265,13 +273,9 @@ export const signAndPublish = async (template: EventTemplate, {anonymous = false
 export const publishDeletion = ({kind, address = null, id = null}) => {
   const tags: string[][] = [["k", String(kind)]]
 
-  if (address) {
-    tags.push(["a", address])
-  }
+  if (address) tags.push(["a", address])
 
-  if (id) {
-    tags.push(["e", id])
-  }
+  if (id) tags.push(["e", id])
 
   return createAndPublish({
     tags,
@@ -368,7 +372,9 @@ export const setInboxPolicy = (url: string, enabled: boolean) => {
 
   if (enabled || isPolicySet) {
     setInboxPolicies($tags => {
-      return $tags.filter(t => normalizeRelayUrl(t[1]) !== url).concat(enabled ? [["relay", url]] : [])
+      return $tags
+        .filter(t => normalizeRelayUrl(t[1]) !== url)
+        .concat(enabled ? [["relay", url]] : [])
     })
   }
 }
@@ -442,9 +448,11 @@ const addSession = (s: Session) => {
   pubkey.set(s.pubkey)
 }
 
-export const loginWithPublicKey = (publicKey: string) => addSession({method: "pubkey", pubkey: publicKey})
+export const loginWithPublicKey = (publicKey: string) =>
+  addSession({method: "pubkey", pubkey: publicKey})
 
-export const loginWithNip07 = (publicKey: string) => addSession({method: "nip07", pubkey: publicKey})
+export const loginWithNip07 = (publicKey: string) =>
+  addSession({method: "nip07", pubkey: publicKey})
 
 export const loginWithNip55 = (publicKey: string, pkg: any) =>
   addSession({method: "nip55", pubkey: publicKey, signer: pkg})
@@ -491,14 +499,12 @@ export const logout = () => {
   sessions.set({})
 }
 
-export const setAppData = async <T = any>(dataKey: string,  T) => {
+export const setAppData = async <T = any>(dataKey: string, data: T) => {
   if (signer.get()) {
-    const userPubkey = session.get().pubkey
-
     return createAndPublish({
       kind: 30078,
       tags: [["d", dataKey]],
-      content: await signer.get().nip04.encrypt(userPubkey, JSON.stringify(data)),
+      content: await signer.get().nip04.encrypt(session.get().pubkey, JSON.stringify(data)),
       relays: ctx.app.router.FromUser().getUrls(),
       forcePlatform: false,
     })
@@ -511,11 +517,7 @@ export const publishSettings = ($settings: Record<string, any>) =>
 export const broadcastUserData = async (relays: string[]) => {
   const authors = [pubkey.get()]
   const kinds = [RELAYS, INBOX_RELAYS, FOLLOWS, PROFILE]
-  const events = repository.query([{kinds, authors}])
-
-  for (const event of events) {
-    if (isSignedEvent(event)) {
-      await publish({event, relays, forcePlatform: false})
-    }
+  for (const event of repository.query([{kinds, authors}])) {
+    if (isSignedEvent(event)) publish({event, relays, forcePlatform: false})
   }
 }

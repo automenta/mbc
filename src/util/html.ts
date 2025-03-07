@@ -64,7 +64,7 @@ export const blobToString = async (blob: Blob): Promise<string | ArrayBuffer | n
     reader.readAsDataURL(blob)
   })
 
-export const blobToFile = (blob: Blob, name?: string) => new File([blob], name || blob.name, {type: blob.type})
+export const blobToFile = (blob, name?: string) => new File([blob], name || blob.name, {type: blob.type})
 
 export const stripHtml = (html: string): string => {
   const doc = new DOMParser().parseFromString(html, "text/html")

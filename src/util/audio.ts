@@ -4,7 +4,7 @@ import Hls from "hls.js"
 export class AudioController extends EventEmitter {
   completed = false
   progress = 0
-  interval: number | null = null
+  interval = null
   audio = new Audio()
   hls?: Hls
 
