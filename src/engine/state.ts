@@ -2,11 +2,13 @@ import type {PartialSubscribeRequest} from "@welshman/app"
 import {
   db,
   displayProfileByPubkey,
+  ensurePlaintext,
   followsByPubkey,
   freshness,
   getDefaultAppContext,
   getDefaultNetContext,
   getNetwork,
+  getPlaintext,
   getSession,
   getSigner,
   getUserWotScore,
@@ -213,9 +215,9 @@ export const ensureUnwrapped = async (event: TrustedEvent) => {
     return event
   }
 
-  let unwrappedEvent = repository.eventsByWrap.get(event.id)
+  let rumor = repository.eventsByWrap.get(event.id)
   if (rumor) { // variable name was rumor, should be unwrappedEvent
-    return unwrappedEvent
+    return rumor
   }
 
   if (pendingUnwraps.has(event.id)) {
@@ -229,19 +231,19 @@ export const ensureUnwrapped = async (event: TrustedEvent) => {
     try {
       const unwrapPromise = Nip59.fromSigner(currentSigner).unwrap(event as SignedEvent)
       pendingUnwraps.set(event.id, unwrapPromise)
-      unwrappedEvent = await unwrapPromise
+      rumor = await unwrapPromise
     } catch (error) {
       logger.error("Failed to unwrap event", error) // Added error logging
     }
   }
 
-  if (unwrappedEvent && isHashedEvent(unwrappedEvent)) {
+  if (rumor && isHashedEvent(rumor)) {
     pendingUnwraps.delete(event.id)
-    tracker.copy(event.id, unwrappedEvent.id)
-    relay.send("EVENT", unwrappedEvent)
+    tracker.copy(event.id, rumor.id)
+    relay.send("EVENT", rumor)
   }
 
-  return unwrappedEvent
+  return rumor
 }
 
 // Unwrap/decrypt stuff as it comes in
@@ -672,21 +674,21 @@ export const collectionSearch = derived(
 const executorCache = new Map<string, Executor>(); // Cache for Executors
 
 export const getExecutor = (urls: string[]) => {
-    const sortedUrlsKey = [...urls].sort().join(','); // Create a consistent key
-    if (executorCache.has(sortedUrlsKey)) {
-        //console.trace(`getExecutor cache hit for: ${sortedUrlsKey}`); // Optional logging for cache hits
-        return executorCache.get(sortedUrlsKey)!; // Return cached Executor
-    }
+  const sortedUrlsKey = [...urls].sort().join(','); // Create a consistent key
+  if (executorCache.has(sortedUrlsKey)) {
+    //console.trace(`getExecutor cache hit for: ${sortedUrlsKey}`); // Optional logging for cache hits
+    return executorCache.get(sortedUrlsKey)!; // Return cached Executor
+  }
 
-    //console.trace(`getExecutor cache miss, creating new Executor for: ${sortedUrlsKey}`); // Optional logging for cache misses
-    const [localUrls, remoteUrls] = partition(url => LOCAL_RELAY_URL === url, urls);
-    let target: Target = new Relays(remoteUrls.map(url => ctx.net.pool.get(url)));
-    if (localUrls.length > 0) {
-        target = new Multi([target, new Local(relay)]);
-    }
-    const executor = new Executor(target);
-    executorCache.set(sortedUrlsKey, executor); // Store in cache
-    return executor;
+  //console.trace(`getExecutor cache miss, creating new Executor for: ${sortedUrlsKey}`); // Optional logging for cache misses
+  const [localUrls, remoteUrls] = partition(url => LOCAL_RELAY_URL === url, urls);
+  let target: Target = new Relays(remoteUrls.map(url => ctx.net.pool.get(url)));
+  if (localUrls.length > 0) {
+    target = new Multi([target, new Local(relay)]);
+  }
+  const executor = new Executor(target);
+  executorCache.set(sortedUrlsKey, executor); // Store in cache
+  return executor;
 };
 
 
@@ -736,7 +738,7 @@ export const publish = ({forcePlatform = true, ...request}: MyPublishRequest) =>
 }
 
 export const sign = (
-  template: EventTemplate, // Added type for template
+  template, // Added type for template
   opts: {anonymous?: boolean; sk?: string} = {},
 ): Promise<SignedEvent> => {
   if (opts.anonymous) {
@@ -764,17 +766,17 @@ export type CreateAndPublishOpts = {
 }
 
 export const createAndPublish = async ({
-  kind,
-  relays,
-  tags = [],
-  content = "",
-  created_at = now(),
-  anonymous,
-  sk,
-  timeout,
-  verb,
-  forcePlatform = true,
-}: CreateAndPublishOpts) => {
+                                         kind,
+                                         relays,
+                                         tags = [],
+                                         content = "",
+                                         created_at = now(),
+                                         anonymous,
+                                         sk,
+                                         timeout,
+                                         verb,
+                                         forcePlatform = true,
+                                       }: CreateAndPublishOpts) => {
   const eventTemplate = createEvent(kind, {content, tags, created_at}) // More descriptive variable name
   const signedEvent = await sign(eventTemplate, {anonymous, sk}) // More descriptive variable name
 
@@ -805,7 +807,7 @@ export const addClientTags = <T extends Partial<EventTemplate>>({tags = [], ...e
 
 let ready: Promise<any> = Promise.resolve()
 
-const migrateFreshness = ( {key: string, value: number}[]) => {
+const migrateFreshness = ( data:{key: string, value: number}[]) => {
   const cutoff = now() - HOUR;
   return data.filter(({value}) => value > cutoff);
 }
