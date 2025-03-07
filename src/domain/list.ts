@@ -46,9 +46,9 @@ export const CUSTOM_LIST_KINDS = [
   SEARCH_RELAYS,
   GROUPS,
   TOPICS,
-]
+] as const
 
-export const EDITABLE_LIST_KINDS = [NAMED_PEOPLE, NAMED_RELAYS, NAMED_CURATIONS, NAMED_TOPICS]
+export const EDITABLE_LIST_KINDS = [NAMED_PEOPLE, NAMED_RELAYS, NAMED_CURATIONS, NAMED_TOPICS] as const
 
 export type UserList = {
   kind: number
@@ -62,6 +62,12 @@ export type UserList = {
 export type PublishedUserList = Omit<UserList, "event"> & {
   event: TrustedEvent
 }
+
+export type PublishedListFeed = Omit<UserList, "list"> & {
+  event: TrustedEvent
+  list: PublishedUserList
+}
+
 
 export const makeUserList = (list: Partial<UserList> = {}): UserList => ({
   kind: NAMED_PEOPLE,
@@ -90,45 +96,42 @@ export const readUserList = (event: TrustedEvent) => {
   } as PublishedUserList
 }
 
-export const createUserList = ({kind, title, description, identifier, tags}: UserList) => {
+export const createUserListPayload = ({kind, title, description, identifier, tags}: UserList) => {
   const data = {title, alt: title, d: identifier, description}
-
   return {kind, tags: tags.filter(t => !data[t[0]]).concat(Object.entries(data))}
 }
 
-export const editUserList = ({kind, title, description, identifier, tags}: UserList) => {
-  const data = {title, alt: title, d: identifier, description}
 
-  return {kind, tags: tags.filter(t => !data[t[0]]).concat(Object.entries(data))}
+const userListDisplayNames = {
+  [FOLLOWS]: "[follows list]",
+  [NAMED_PEOPLE]: "[named people list]",
+  [NAMED_RELAYS]: "[named relays list]",
+  [NAMED_CURATIONS]: "[named curations list]",
+  [NAMED_WIKI_AUTHORS]: "[named wiki authors list]",
+  [NAMED_WIKI_RELAYS]: "[named wiki relays list]",
+  [NAMED_EMOJIS]: "[named emojis list]",
+  [NAMED_TOPICS]: "[named topics list]",
+  [NAMED_ARTIFACTS]: "[named artifacts list]",
+  [NAMED_COMMUNITIES]: "[named communities list]",
+  [MUTES]: "[mutes list]",
+  [PINS]: "[pins list]",
+  [RELAYS]: "[relays list]",
+  [BOOKMARKS]: "[bookmarks list]",
+  [COMMUNITIES]: "[communities list]",
+  [CHANNELS]: "[channels list]",
+  [BLOCKED_RELAYS]: "[blocked relays list]",
+  [SEARCH_RELAYS]: "[search relays list]",
+  [GROUPS]: "[groups list]",
+  [TOPICS]: "[topics list]",
 }
 
 export const displayUserList = (list?: UserList) => {
-  if (list) {
-    if (list.title) return list.title
-    if (list.kind === FOLLOWS) return "[follows list]"
-    if (list.kind === NAMED_PEOPLE) return "[named people list]"
-    if (list.kind === NAMED_RELAYS) return "[named relays list]"
-    if (list.kind === NAMED_CURATIONS) return "[named curations list]"
-    if (list.kind === NAMED_WIKI_AUTHORS) return "[named wiki authors list]"
-    if (list.kind === NAMED_WIKI_RELAYS) return "[named wiki relays list]"
-    if (list.kind === NAMED_EMOJIS) return "[named emojis list]"
-    if (list.kind === NAMED_TOPICS) return "[named topics list]"
-    if (list.kind === NAMED_ARTIFACTS) return "[named artifacts list]"
-    if (list.kind === NAMED_COMMUNITIES) return "[named communities list]"
-    if (list.kind === MUTES) return "[mutes list]"
-    if (list.kind === PINS) return "[pins list]"
-    if (list.kind === RELAYS) return "[relays list]"
-    if (list.kind === BOOKMARKS) return "[bookmarks list]"
-    if (list.kind === COMMUNITIES) return "[communities list]"
-    if (list.kind === CHANNELS) return "[channels list]"
-    if (list.kind === BLOCKED_RELAYS) return "[blocked relays list]"
-    if (list.kind === SEARCH_RELAYS) return "[search relays list]"
-    if (list.kind === GROUPS) return "[groups list]"
-    if (list.kind === TOPICS) return "[topics list]"
+  if (list?.title) {
+    return list.title
   }
-
-  return "[no name]"
+  return userListDisplayNames[list?.kind] || "[no name]"
 }
+
 
 export class UserListSearch extends SearchHelper<UserList, string> {
   config = {keys: ["title", "description", "identifier"]}

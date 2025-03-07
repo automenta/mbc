@@ -40,9 +40,8 @@ export const getConnectionStatus = (cxn: Connection): ConnectionType => {
     return ConnectionType.NotConnected
   } else if (getRelayQuality(cxn.url) < 0.5) {
     return ConnectionType.UnstableConnection
-  } else {
-    return ConnectionType.Connected
   }
+  return ConnectionType.Connected
 }
 
 export function messageAndColorFromStatus(status: ThunkStatus) {
@@ -70,21 +69,14 @@ export enum ConnectionType {
   UnstableConnection,
 }
 
-export const displayConnectionType = (type: ConnectionType) => {
-  switch (type) {
-    case ConnectionType.Connected:
-      return "Connected"
-    case ConnectionType.Logging:
-      return "Logging in"
-    case ConnectionType.LoginFailed:
-      return "Failed to log in"
-    case ConnectionType.ConnectFailed:
-      return "Failed to connect"
-    case ConnectionType.WaitReconnect:
-      return "Wainting to reconnect"
-    case ConnectionType.NotConnected:
-      return "Not connected"
-    case ConnectionType.UnstableConnection:
-      return "Unstable connection"
-  }
+const connectionTypeDisplayStrings = {
+  [ConnectionType.Connected]: "Connected",
+  [ConnectionType.Logging]: "Logging in",
+  [ConnectionType.LoginFailed]: "Failed to log in",
+  [ConnectionType.ConnectFailed]: "Failed to connect",
+  [ConnectionType.WaitReconnect]: "Wainting to reconnect",
+  [ConnectionType.NotConnected]: "Not connected",
+  [ConnectionType.UnstableConnection]: "Unstable connection",
 }
+
+export const displayConnectionType = (type: ConnectionType) => connectionTypeDisplayStrings[type] || "Unknown";

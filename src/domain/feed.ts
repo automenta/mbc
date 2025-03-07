@@ -31,6 +31,7 @@ export type PublishedListFeed = Omit<Feed, "list"> & {
   list: PublishedUserList
 }
 
+
 export const normalizeFeedDefinition = feed =>
   hasSubFeeds(feed) ? feed : makeIntersectionFeed(feed)
 
@@ -59,7 +60,7 @@ export const readFeed = (event: TrustedEvent) => {
   return {title, identifier, description, definition, event} as PublishedFeed
 }
 
-export const createFeed = ({identifier, definition, title, description}: Feed) => ({
+export const createFeedPayload = ({identifier, definition, title, description}: Feed) => ({
   kind: FEED,
   tags: [
     ["d", identifier],
@@ -70,16 +71,6 @@ export const createFeed = ({identifier, definition, title, description}: Feed) =
   ],
 })
 
-export const editFeed = (feed: PublishedFeed) => ({
-  kind: FEED,
-  tags: Object.entries({
-    ...fromPairs(feed.event.tags),
-    title: feed.title,
-    alt: feed.title,
-    description: feed.description,
-    feed: JSON.stringify(feed.definition),
-  }),
-})
 
 export const displayFeed = (feed?: Feed) => feed?.title || "[no name]"
 

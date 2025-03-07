@@ -1,4 +1,4 @@
-import {first, fromPairs, last} from "@welshman/lib"
+import {first, fromPairs} from "@welshman/lib"
 import type {TrustedEvent} from "@welshman/util"
 import {getAddress, getTags, getTagValues} from "@welshman/util"
 import {parseJson, SearchHelper} from "src/util/misc"
@@ -52,7 +52,7 @@ export class HandlerSearch extends SearchHelper<Handler, string> {
 
 export const getHandlerAddress = (event: TrustedEvent) => {
   const tags = getTags("a", event.tags)
-  const tag = tags.find(t => last(t) === "web") || first(tags)
+  const tag = tags.find(t => t[2] === "web") || tags[0]
 
   return tag?.[1]
 }
