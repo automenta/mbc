@@ -134,6 +134,7 @@
 
 <div>
   <Input
+    type="text"
     class={cx(inputClass, "cursor-text text-black outline-0")}
     {autofocus}
     {placeholder}
@@ -142,7 +143,8 @@
     on:keydown={onKeyDown}
     on:focus={onFocus}
     on:blur={onBlur}
-    hideBefore={!$$slots.before}>
+    hideBefore={!$$slots.before}
+    hideAfter={!$$slots.after}>
     <slot slot="before" name="before" />
     <div slot="after" on:click={onFocus}>
       {#if defaultOptions.length > 0}
@@ -150,6 +152,7 @@
           <i class="fa fa-caret-down" />
         </div>
       {/if}
+      <slot name="after" />
     </div>
   </Input>
   {#if focused}

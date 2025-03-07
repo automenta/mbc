@@ -1,6 +1,7 @@
 <script lang="ts">
   import cx from "classnames"
   import {DateInput} from "date-picker-svelte"
+  import Input from "src/partials/Input.svelte"
 
   export let initialValue = null
   export let value = initialValue
@@ -23,19 +24,18 @@
   }
 </script>
 
-<div class={cx(className, "relative")}>
-  <button type="button" class:opacity-0={!value} on:click={init}>
-    <DateInput format="yyyy-MM-dd HH:mm" bind:value />
-  </button>
-  <div class="absolute left-0 top-0 flex gap-2 px-4 pt-3 text-black opacity-75">
+<Input type="datetime" class={className} {...$$props} bind:value={value}>
+  <button slot="before" type="button" class:opacity-0={!value} on:click={init}>
     <i class="fa fa-calendar-days"></i>
-  </div>
+  </button>
   {#if value}
     <button
+      slot="after"
       type="button"
       class="absolute right-0 top-0 m-px flex cursor-pointer gap-2 rounded-full px-4 pt-3 text-black opacity-75"
       on:click={clear}>
       <i class="fa fa-times"></i>
     </button>
   {/if}
-</div>
+  <DateInput format="yyyy-MM-dd HH:mm" bind:value />
+</Input>

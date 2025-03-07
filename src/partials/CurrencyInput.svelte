@@ -3,6 +3,7 @@
   import {fuzzy} from "src/util/misc"
   import {currencyOptions} from "src/util/i18n"
   import SearchSelect from "src/partials/SearchSelect.svelte"
+  import Input from "src/partials/Input.svelte"
 
   export let value
 
@@ -13,11 +14,13 @@
   const defaultOptions = currencyOptions.filter(c => defaultCodes.includes(c.code))
 </script>
 
-<SearchSelect bind:value {getKey} {termToItem} {defaultOptions} {search}>
+<Input type="currency" {...$$props} bind:value={value}>
   <span slot="before">
     <i class="fa fa-right-left" />
   </span>
-  <div slot="item" let:item>
-    {item.name} ({item.code})
-  </div>
-</SearchSelect>
+  <SearchSelect slot="after" bind:value {getKey} {termToItem} {defaultOptions} {search}>
+    <div slot="item" let:item>
+      {item.name} ({item.code})
+    </div>
+  </SearchSelect>
+</Input>

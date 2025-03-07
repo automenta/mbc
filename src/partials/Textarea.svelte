@@ -1,26 +1,11 @@
 <svelte:options accessors />
 
 <script lang="ts">
-  import cx from "classnames"
+  import Input from "src/partials/Input.svelte";
 
   export let value
   export let element = null
 
-  const className = cx(
-    $$props.class,
-    "rounded shadow-inset py-2 px-4 pr-10 w-full bg-white text-black",
-    "placeholder:text-neutral-400",
-  )
 </script>
 
-<textarea
-  {...$$props}
-  class={className}
-  bind:this={element}
-  bind:value
-  on:keydown
-  on:keypress
-  on:change
-  on:input
-  on:blur
-  on:focus />
+<Input type="textarea" {...$$props} bind:value={value} bind:element={element} />
