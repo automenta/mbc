@@ -169,7 +169,7 @@ export const parseAnything = async (entity: string) => {
   if (entity.includes("@")) {
     const profile = await nip05.queryProfile(entity)
     if (profile) {
-      return {type: "npub",  profile.pubkey}
+      return {type: "npub", pubkey: profile.pubkey}
     }
   }
 
@@ -184,7 +184,7 @@ export const parseAnythingSync = (entity: string) => {
   }
 
   if (isHex(normalizedEntity)) {
-    return {type: "npub",  normalizedEntity}
+    return {type: "npub", pubkey: normalizedEntity}
   }
 
   try {
