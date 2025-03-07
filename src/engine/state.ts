@@ -687,6 +687,9 @@ export const getExecutor = (urls: string[]) => {
   if (localUrls.length > 0) {
     target = new Multi([target, new Local(relay)]);
   }
+  /** START OF CHANGE **/
+  target.setMaxListeners(20); // Increased max listeners to 20 (adjust as needed)
+  /** END OF CHANGE **/
   const executor = new Executor(target);
   executorCache.set(sortedUrlsKey, executor); // Store in cache
   return executor;
@@ -808,7 +811,7 @@ export const addClientTags = <T extends Partial<EventTemplate>>({tags = [], ...e
 
 let ready: Promise<any> = Promise.resolve()
 
-const migrateFreshness = ( data:{key: string, value: number}[]) => {
+const migrateFreshness = ( {key: string, value: number}[]) => {
   const cutoff = now() - HOUR;
   return data.filter(({value}) => value > cutoff);
 }
