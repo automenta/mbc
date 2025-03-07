@@ -1,0 +1,37 @@
+{
+  "name": "@welshman/util",
+  "version": "0.0.61",
+  "author": "hodlbod",
+  "license": "MIT",
+  "description": "A collection of nostr-related utilities.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "files": [
+    "build"
+  ],
+  "engines": {
+    "node": ">=10.4.0"
+  },
+  "types": "./build/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/src/index.d.ts",
+      "import": "./build/src/index.js",
+      "require": "./build/src/index.js"
+    }
+  },
+  "scripts": {
+    "pub": "npm run lint && npm run build && npm publish",
+    "build": "tsc",
+    "clean": "npx gts clean",
+    "lint": "npx gts  lint",
+    "fix": "npx gts  fix"
+  },
+  "dependencies": {
+    "@types/ws": "^8.18.0",
+    "@welshman/lib": "file:../lib",
+    "nostr-tools": "^2.10.4"
+  }
+}

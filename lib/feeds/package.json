@@ -1,0 +1,33 @@
+{
+  "name": "@welshman/feeds",
+  "version": "0.0.30",
+  "author": "hodlbod",
+  "license": "MIT",
+  "description": "Utilities for building dynamic nostr feeds.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "files": [
+    "build"
+  ],
+  "types": "./build/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/src/index.d.ts",
+      "import": "./build/src/index.js",
+      "require": "./build/src/index.js"
+    }
+  },
+  "scripts": {
+    "pub": "npm run lint && npm run build && npm publish",
+    "build": "tsc",
+    "clean": "npx gts clean",
+    "lint": "npx gts  lint",
+    "fix": "npx gts  fix"
+  },
+  "dependencies": {
+    "@welshman/lib": "file:../lib",
+    "@welshman/util": "file:../util"
+  }
+}

@@ -6,7 +6,17 @@
     "module": "esnext",
     "target": "ESNext",
     "paths": {
-      "src/*": ["src/*"]
+      "src/*": ["src/*"],
+      "lib/app/src/*": ["lib/util/src/*"],
+      "lib/content/src/*": ["lib/content/src/*"],
+      "lib/dvm/src/*": ["lib/dvm/src/*"],
+      "lib/editor/src/*": ["lib/editor/src/*"],
+      "lib/feeds/src/*": ["lib/feeds/src/*"],
+      "lib/lib/src/*": ["lib/lib/src/*"],
+      "lib/net/src/*": ["lib/net/src/*"],
+      "lib/signer/src/*": ["lib/signer/src/*"],
+      "lib/store/src/*": ["lib/store/src/*"],
+      "lib/util/src/*": ["lib/util/src/*"]
     },
     "isolatedModules": true,
     "noImplicitAny": false,

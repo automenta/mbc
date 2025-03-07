@@ -1,0 +1,36 @@
+{
+  "name": "@welshman/dvm",
+  "version": "0.0.14",
+  "author": "hodlbod",
+  "license": "MIT",
+  "description": "A collection of utilities for building nostr DVMs.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "files": [
+    "build"
+  ],
+  "types": "./build/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/src/index.d.ts",
+      "import": "./build/src/index.js",
+      "require": "./build/src/index.js"
+    }
+  },
+  "scripts": {
+    "pub": "npm run lint && npm run build && npm publish",
+    "build": "tsc",
+    "clean": "npx gts clean",
+    "lint": "npx gts  lint",
+    "fix": "npx gts  fix"
+  },
+  "dependencies": {
+    "@noble/hashes": "^1.7.1",
+    "@welshman/lib": "file:../lib",
+    "@welshman/net": "file:../net",
+    "@welshman/util": "file:../util",
+    "nostr-tools": "^2.10.4"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "@welshman/app",
+  "version": "0.0.42",
+  "author": "hodlbod",
+  "license": "MIT",
+  "description": "A collection of svelte stores for use in building nostr client applications.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "files": [
+    "build"
+  ],
+  "types": "./build/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/src/index.d.ts",
+      "import": "./build/src/index.js",
+      "require": "./build/src/index.js"
+    }
+  },
+  "scripts": {
+    "pub": "npm run lint && npm run build && npm publish",
+    "build": "tsc",
+    "clean": "npx gts clean",
+    "lint": "npx gts lint",
+    "fix": "npx gts fix"
+  },
+  "dependencies": {
+    "@types/throttle-debounce": "^5.0.2",
+    "@welshman/dvm": "file:../dvm",
+    "@welshman/feeds": "file:../feeds",
+    "@welshman/lib": "file:../lib",
+    "@welshman/net": "file:../net",
+    "@welshman/signer": "file:../signer",
+    "@welshman/store": "file:../store",
+    "@welshman/util": "file:../util",
+    "fuse.js": "^7.1.0",
+    "idb": "^8.0.2",
+    "svelte": "^5.22.6",
+    "throttle-debounce": "^5.0.2"
+  }
+}

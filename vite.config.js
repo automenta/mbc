@@ -3,7 +3,7 @@ import * as path from "path"
 import {defineConfig} from "vite"
 import {VitePWA} from "vite-plugin-pwa"
 import htmlPlugin from "vite-plugin-html-config"
-import sveltePreprocess from "svelte-preprocess"
+import { sveltePreprocess } from "svelte-preprocess"
 import {svelte} from "@sveltejs/vite-plugin-svelte"
 import {nodePolyfills} from "vite-plugin-node-polyfills"
 
@@ -13,13 +13,12 @@ dotenv.config({path: ".env"})
 const accentColor = process.env.VITE_LIGHT_THEME.match(/accent:(#\w+)/)[1]
 
 export default defineConfig(async () => {
+
   /*const icons = await favicons("public" + process.env.VITE_APP_LOGO)
-
   if (!fs.existsSync("public/icons")) fs.mkdirSync("public/icons")
-
-  for (const {name, contents} of icons.images) {
+  for (const {name, contents} of icons.images)
     fs.writeFileSync(`public/icons/${name}`, contents, "binary")
-  }*/
+  */
 
   return {
     server: {
@@ -28,6 +27,10 @@ export default defineConfig(async () => {
     },
     build: {
       sourcemap: true,
+      minify: "esbuild", // Default, but explicit
+      target: "esnext", // Modern browsers
+      chunkSizeWarningLimit: 1000, // Warn if chunks exceed 1MB
+      outDir: "dist", // Default, but explicit
     },
     resolve: {
       alias: {
@@ -35,9 +38,10 @@ export default defineConfig(async () => {
       },
     },
     plugins: [
-      nodePolyfills({
-        protocolImports: true,
-      }),
+      // nodePolyfills({
+      //   protocolImports: true,
+      //   //include: ["buffer", "process"], // Only polyfill what's needed
+      // }),
       htmlPlugin({
         title: process.env.VITE_APP_NAME,
         metas: [
@@ -120,7 +124,21 @@ export default defineConfig(async () => {
         registerType: "autoUpdate",
         injectRegister: "auto",
         workbox: {
-          maximumFileSizeToCacheInBytes: 15 * 1024 ** 2, // 5 MB or set to something else
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB or set to something else
+          globPatterns: ["**/*.{js,css,html,png,jpg,svg}"],
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+              handler: "CacheFirst",
+              options: {
+                cacheName: "google-fonts-cache",
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+                },
+              },
+            },
+          ],
         },
         manifest: {
           name: process.env.VITE_APP_NAME,
@@ -145,10 +163,10 @@ export default defineConfig(async () => {
       svelte({
         preprocess: sveltePreprocess(),
         onwarn: (warning, handler) => {
-          if (warning.code.startsWith("a11y-")) return
-          if (warning.filename.includes("node_modules")) return
-
-          handler(warning)
+          if (warning.code.startsWith("a11y-")) return;
+          if (warning.filename.includes("node_modules")) return;
+          console.warn(`Svelte Warning: ${warning.code}`, warning.message); // Log for debugging
+          handler(warning);
         },
       }),
     ],

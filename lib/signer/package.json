@@ -1,0 +1,43 @@
+{
+  "name": "@welshman/signer",
+  "version": "0.0.20",
+  "author": "hodlbod",
+  "license": "MIT",
+  "description": "A nostr signer implemenation supporting several login methods.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "files": [
+    "build"
+  ],
+  "engines": {
+    "node": ">=10.x"
+  },
+  "types": "./build/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/src/index.d.ts",
+      "import": "./build/src/index.js",
+      "require": "./build/src/index.js"
+    }
+  },
+  "scripts": {
+    "pub": "npm run lint && npm run build && npm publish",
+    "build": "tsc",
+    "clean": "npx gts clean",
+    "lint": "npx gts  lint",
+    "fix": "npx gts  fix"
+  },
+  "dependencies": {
+    "@noble/curves": "^1.8.1",
+    "@noble/hashes": "^1.7.1",
+    "@welshman/lib": "file:../lib",
+    "@welshman/net": "file:../net",
+    "@welshman/util": "file:../util",
+    "nostr-tools": "^2.10.4"
+  },
+  "peerDependencies": {
+    "nostr-signer-capacitor-plugin": "^0.0.3"
+  }
+}
