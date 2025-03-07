@@ -1,27 +1,37 @@
-const levels = ["info", "warn", "error"]
+const LOG_LEVELS = {
+  info: 0,
+  warn: 1,
+  error: 2,
+} as const;
 
-let level = import.meta.env.VITE_LOG_LEVEL
+type LogLevel = keyof typeof LOG_LEVELS;
 
-export const setLevel = (l: string) => {
-  level = l
-}
+let level: LogLevel = (import.meta.env.VITE_LOG_LEVEL || "info") as LogLevel;
+
+export const setLevel = (l: LogLevel) => {
+  level = l;
+};
+
+const shouldLog = (messageLevel: LogLevel): boolean => {
+  return LOG_LEVELS[level] <= LOG_LEVELS[messageLevel];
+};
 
 export const info = (...message: any[]) => {
-  if (levels.indexOf(level) <= levels.indexOf("info")) {
-    console.log(...message)
+  if (shouldLog("info")) {
+    console.log("[INFO]", ...message);
   }
-}
+};
 
 export const warn = (...message: any[]) => {
-  if (levels.indexOf(level) <= levels.indexOf("warn")) {
-    console.warn(...message)
+  if (shouldLog("warn")) {
+    console.warn("[WARN]", ...message);
   }
-}
+};
 
 export const error = (...message: any[]) => {
-  if (levels.indexOf(level) <= levels.indexOf("error")) {
-    console.error(...message)
+  if (shouldLog("error")) {
+    console.error("[ERROR]", ...message);
   }
-}
+};
 
-export default {info, warn, error, setLevel}
+export default {info, warn, error, setLevel};

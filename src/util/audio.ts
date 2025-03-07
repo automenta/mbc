@@ -34,15 +34,15 @@ export class AudioController extends EventEmitter {
   }
 
   setProgress = (progress: number) => {
-    this.audio.currentTime = Math.round(this.audio.duration * progress)
+    this.audio.currentTime = this.audio.duration * progress
     this.reportProgress()
   }
 
   play = () => {
     if (!this.interval) {
-      this.audio.play()
+      void this.audio.play() // Use void to indicate we don't need to wait for the promise
       this.emit("play")
-      this.interval = setInterval(this.reportProgress, 30) as unknown as number // Type assertion for setInterval
+      this.interval = setInterval(this.reportProgress, 30)
     }
   }
 

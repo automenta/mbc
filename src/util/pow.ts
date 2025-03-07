@@ -37,7 +37,7 @@ export const makePow = (event: OwnedEvent, difficulty: number): ProofOfWork => {
   return {worker, result}
 }
 
-// Generate a simple pow to estimate the device capacities
+// Generate a simple pow to estimate device capacities
 if (benchmark.get() === 0) {
   const secret = makeSecret()
   const pubkey = getPubkey(secret)

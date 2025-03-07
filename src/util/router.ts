@@ -283,13 +283,11 @@ export class Router {
     return globalHistory.listen(({location, action}) => {
       const {state, pathname, search} = location
       const path = pathname + search
-      const [currentHistory, previousHistory] = get(this.history)
+      const [currentHistory] = get(this.history)
       const key = this.getKey({path: pathname, ...state})
 
       if (action === "POP") {
-        if (previousHistory && path === previousHistory.path && key !== this.getKey(currentHistory)) {
-          this.history.update($history => $history.slice(1))
-        } else if (path !== currentHistory.path) {
+         if (path !== currentHistory?.path) { // Added check to avoid potential undefined access
           this.go({path})
         }
       }
@@ -407,44 +405,35 @@ export class Router {
   // Props etc
 
   decodeQueryString = (path: string) => {
-    const match = pickRoute(this.routes, path)
-    if (!match) return {} // Handle no match case
-
-    const queryParams = parseQueryString(path)
-    const data = {};
-
-    for (const [k, serializer] of Object.entries(match.route.serializers || {})) {
-      const v = queryParams[k]
-      if (v) {
-        try {
-          Object.assign(data, serializer.decode(v))
-        } catch (e) {
-          logger.warn("Query string decoding failed", k, v, e)
-        }
-      }
-    }
-
-    return data
+    return this.decodeParams(path, 'query');
   }
 
   decodeRouteParams = (path: string) => {
-    const {route, params} = this.getMatch(path)
-    const data = {...params}
+    return this.decodeParams(path, 'route');
+  }
 
-    for (const [k, serializer] of Object.entries(route.serializers || {})) {
-      const v = params[k]
 
+  private decodeParams = (path: string, type: 'query' | 'route') => {
+    const match = pickRoute(this.routes, path);
+    if (!match) return {};
+
+    const params = type === 'query' ? parseQueryString(path) : match.params;
+    const serializers = match.route.serializers || {};
+    const data = {};
+
+    for (const [k, serializer] of Object.entries(serializers)) {
+      const v = params[k];
       if (v) {
         try {
-          Object.assign(data, serializer.decode(v))
+          Object.assign(data, serializer.decode(v));
         } catch (e) {
-          logger.warn("Route param decoding failed", k, v, e)
+          logger.warn(`${type} param decoding failed`, k, v, e);
         }
       }
     }
-
-    return data
+    return data;
   }
+
 
   getKey = (item: HistoryItem) => item.key || item.path
 

@@ -4,7 +4,7 @@ export type CurrencyOption = {
   code: string
 }
 
-export const currencyOptions: CurrencyOption[] = [ // Explicit type annotation
+export const currencyOptions: CurrencyOption[] = [
   {name: "Afghan afghani", symbol: "؋‎", code: "AFN"},
   {name: "Albanian lek", symbol: "Lek", code: "ALL"},
   {name: "Algerian dinar", symbol: "DA", code: "DZD"},
@@ -163,7 +163,7 @@ export const currencyOptions: CurrencyOption[] = [ // Explicit type annotation
   {name: "Zambian kwacha", symbol: "K", code: "ZMW"},
 ]
 
-export const defaultCurrencyOption: CurrencyOption = currencyOptions.find(c => c.code === "SAT")! // Added non-null assertion as default should always exist
+export const defaultCurrencyOption: CurrencyOption = currencyOptions.find(c => c.code === "SAT")!
 
-export const getCurrencyOption = (code: string | undefined): CurrencyOption => // Handle undefined code
-  currencyOptions.find(c => c.code === code) || {name: code || 'Unknown', symbol: "$", code: code || 'UNK'} // Provide a fallback and handle undefined code
+export const getCurrencyOption = (code: string | undefined): CurrencyOption =>
+  currencyOptions.find(c => c.code === code) || {name: code || 'Unknown', symbol: "$", code: code || 'UNK'}

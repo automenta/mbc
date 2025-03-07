@@ -87,7 +87,7 @@ export const headerlessKinds = [
   COMMUNITIES,
   CHANNELS,
   TOPICS,
-  GROUPS, // Duplicated GROUPS, removed one instance
+  GROUPS,
 ]
 
 export const appDataKeys = {
@@ -101,13 +101,13 @@ export const isLike = (e: TrustedEvent) =>
 export const isReply = (e: TrustedEvent) =>
   Boolean([NOTE, COMMENT].includes(e.kind) && getParentIdOrAddr(e))
 
-export const decodeToHex = ( string): string | null => {
-  if (data.match(/^[a-fA-F0-9]{64}$/)) {
-    return data
+export const decodeNostrEntityToHex = (entity: string): string | null => {
+  if (entity.match(/^[a-fA-F0-9]{64}$/)) {
+    return entity
   }
 
   try {
-    let key = nip19.decode(data).data
+    let key = nip19.decode(entity).data
 
     if (key instanceof Uint8Array) {
       key = Buffer.from(key).toString("hex")
@@ -125,7 +125,7 @@ export const getRating = (event: TrustedEvent) => {
     return parseJson(last(reviewTag || []))?.quality
   } else {
     const ratingTag = getTags("rating", event.tags).find(t => t.length === 2)
-    return parseInt(ratingTag?.[1] || "") || undefined // Return undefined if not found or invalid
+    return parseInt(ratingTag?.[1] || "") || undefined
   }
 }
 
@@ -135,24 +135,25 @@ export const getAvgRating = (events: TrustedEvent[]) =>
 export const isHex = (x: any): x is string => typeof x === 'string' && x.length === 64 && /^[a-f0-9]{64}$/.test(x)
 
 
-const BAD_DOMAINS = [] as const
+// Consider using these or removing them if not needed
+// const BAD_DOMAINS = [] as const
+// const WARN_TAGS = new Set([])
 
-const WARN_TAGS = new Set([
-
-])
 
 export const getContentWarning = (e: TrustedEvent) => {
-  for (const domain of BAD_DOMAINS) {
-    if (e.content.includes(domain)) {
-      return "This note includes media from untrusted hosts."
-    }
-    if (e.tags.some(tag => tag.some(t => t.includes(domain)))) {
-      return "This note includes media from untrusted hosts."
-    }
-  }
+  // Example usage if BAD_DOMAINS and WARN_TAGS were used:
+  // for (const domain of BAD_DOMAINS) {
+  //   if (e.content.includes(domain)) {
+  //     return "This note includes media from untrusted hosts.";
+  //   }
+  //   if (e.tags.some(tag => tag.some(t => t.includes(domain)))) {
+  //     return "This note includes media from untrusted hosts.";
+  //   }
+  // }
+  // return getTagValue("content-warning", e.tags) ||
+  //        getTopicTagValues(e.tags).find(t => WARN_TAGS.has(t.toLowerCase()));
 
-  return getTagValue("content-warning", e.tags) ||
-         getTopicTagValues(e.tags).find(t => WARN_TAGS.has(t.toLowerCase()))
+  return getTagValue("content-warning", e.tags)
 }
 
 
