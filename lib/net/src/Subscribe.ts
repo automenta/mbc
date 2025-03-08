@@ -67,7 +67,7 @@ export class Subscription extends Emitter {
       this.tracker = request.tracker
     }
 
-    this.setMaxListeners(1000)
+    this.setMaxListeners(100)
     this.executor = ctx.net.getExecutor(request.relays)
   }
 

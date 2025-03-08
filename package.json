@@ -7,9 +7,9 @@
     "lib/*"
   ],
   "scripts": {
-    "dev": "npx run vite --host",
+    "dev": "npx vite --host",
     "test": "npm run test:unit && bun run test:e2e",
-    "test:unit": "npx run vitest --dir=tests/unit --watch=false",
+    "test:unit": "npx vitest --dir=tests/unit --watch=false",
     "test:e2e": "cypress run",
     "release:android": "cap sync && cap build android --androidreleasetype APK --signing-type apksigner",
     "check:es": "eslint 'src/**/*.{js,ts,svelte}' --quiet",
@@ -21,13 +21,13 @@
     "watch": "find src -type f | entr -r",
     "prepare": "husky",
     "clean:workspaces": "npm run clean --workspaces",
+    "clean": "npm run clean:workspaces ; rm -Rf node_modules lib/*/node_modules dist",
     "build:workspaces": "npm run build --workspaces",
+    "build:vite": "npx vite build",
     "build": "npm i --include dev ; npm run build:workspaces ; npm run install:all ; npm run build:vite",
-    "build:vite": "npx run vite build",
-    "build:dist": "rm -rf dist && pwa-assets-generator && npm run build:vite",
-    "clean": "npm run clean:workspaces ; rm -Rf node_modules dist",
     "rebuild": "npm run clean ; npm run build",
-    "install:all": "npm install --workspaces --include-workspace-root",
+    "build:dist": "rm -rf dist && pwa-assets-generator && npm run build:vite",
+    "install:all": "npm install --workspaces ; npm install",
     "deps": "npm list -ws --include-workspace-root ; npx npm-check-updates -ws --root ; npm outdated --ws --include-workspace-root"
   },
   "dependencies": {

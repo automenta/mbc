@@ -37,7 +37,7 @@ export class Connection extends Emitter {
     this.state = new ConnectionState(this)
     this.stats = new ConnectionStats(this)
     this.auth = new ConnectionAuth(this)
-    this.setMaxListeners(1000)
+    this.setMaxListeners(100)
   }
 
   emit = (type: ConnectionEvent, ...args: any[]) => super.emit(type, this, ...args)

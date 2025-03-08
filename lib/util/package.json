@@ -2,7 +2,7 @@
   "name": "@welshman/util",
   "version": "0.0.61",
   "author": "hodlbod",
-  "license": "MIT",
+  "license": "AGPL",
   "description": "A collection of nostr-related utilities.",
   "publishConfig": {
     "access": "public"

@@ -2,7 +2,7 @@
   "name": "@welshman/lib",
   "version": "0.0.41",
   "author": "hodlbod",
-  "license": "MIT",
+  "license": "AGPL",
   "description": "A collection of utilities.",
   "publishConfig": {
     "access": "public"

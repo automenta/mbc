@@ -1,8 +1,8 @@
 {
   "name": "@welshman/dvm",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "author": "hodlbod",
-  "license": "MIT",
+  "license": "AGPL",
   "description": "A collection of utilities for building nostr DVMs.",
   "publishConfig": {
     "access": "public"

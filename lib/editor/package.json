@@ -1,8 +1,8 @@
 {
   "name": "@welshman/editor",
-  "version": "0.0.15",
+  "version": "0.1.0",
   "author": "hodlbod",
-  "license": "MIT",
+  "license": "AGPL",
   "description": "A batteries-included nostr editor.",
   "publishConfig": {
     "access": "public"

@@ -7,7 +7,7 @@ export class Tracker extends Emitter {
   constructor() {
     super()
 
-    this.setMaxListeners(1000)
+    this.setMaxListeners(100)
   }
 
   getIds = (relay: string) => this.idsByRelay.get(relay) || new Set<string>()
@@ -34,7 +34,7 @@ export class Tracker extends Emitter {
     ids.add(eventId)
 
     this.relaysById.set(eventId, relays)
-    this.idsByRelay.set(eventId, relays)
+    this.idsByRelay.set(relay, ids)
 
     this.emit("update")
   }

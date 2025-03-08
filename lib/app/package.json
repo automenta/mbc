@@ -1,8 +1,8 @@
 {
   "name": "@welshman/app",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "author": "hodlbod",
-  "license": "MIT",
+  "license": "AGPL",
   "description": "A collection of svelte stores for use in building nostr client applications.",
   "publishConfig": {
     "access": "public"

@@ -2,7 +2,7 @@
   "name": "@welshman/signer",
   "version": "0.0.20",
   "author": "hodlbod",
-  "license": "MIT",
+  "license": "AGPL",
   "description": "A nostr signer implemenation supporting several login methods.",
   "publishConfig": {
     "access": "public"

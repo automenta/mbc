@@ -2,7 +2,7 @@
   "name": "@welshman/store",
   "version": "0.0.16",
   "author": "hodlbod",
-  "license": "MIT",
+  "license": "AGPL",
   "description": "A collection of utilities based on svelte/store for use with welshman",
   "publishConfig": {
     "access": "public"
