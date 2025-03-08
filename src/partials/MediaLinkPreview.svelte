@@ -42,7 +42,7 @@
 				<small>{ellipsize(description, 140)}</small>
 			</div>
 		{/if}
-	{:catch }
+	{:catch}
 		<p class="mb-1 p-12 text-center text-neutral-300">
 			Unable to load a preview for {url}
 		</p>

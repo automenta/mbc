@@ -53,7 +53,7 @@
 							</button>
 						{/if}
 					</div>
-				{:then }
+				{:then}
 					{formatTimestamp(message.created_at)}
 				{/await}
 			{:else}

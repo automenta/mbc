@@ -157,7 +157,7 @@
 		{/each}
 		{#await loading}
 			<Spinner>Looking for messages...</Spinner>
-		{:then }
+		{:then}
 			<div in:fly={{y: 20}} class="py-20 text-center">End of message history</div>
 		{/await}
 	</div>

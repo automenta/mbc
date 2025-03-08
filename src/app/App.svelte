@@ -370,7 +370,7 @@
 
 {#await ready}
 	<!-- pass -->
-{:then }
+{:then}
 	<div class="text-tinted-200">
 		<Routes />
 		{#key $pubkey}

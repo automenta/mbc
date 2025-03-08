@@ -66,7 +66,7 @@
 {#if scanner}
 	{#await scanner}
 		<Spinner>Loading your camera...</Spinner>
-	{:then }
+	{:then}
 		<span />
 	{/await}
 	<div
