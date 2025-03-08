@@ -73,23 +73,21 @@ export const getReplyTags = (tags: string[][]) => {
 
   const dispatchTags = (thisTags: string[][]) =>
     thisTags.forEach((t: string[], i: number) => {
+      let target;
       if (t[3] === "root") {
-        if (validTags.filter(nthEq(3, "reply")).length === 0) {
-          replies.push(t)
-        } else {
-          roots.push(t)
-        }
+        target = validTags.filter(nthEq(3, "reply")).length === 0 ? replies : roots
       } else if (t[3] === "reply") {
-        replies.push(t)
+        target = replies;
       } else if (t[3] === "mention") {
-        mentions.push(t)
+        target = mentions;
       } else if (i === thisTags.length - 1) {
-        replies.push(t)
+        target = replies;
       } else if (i === 0) {
-        roots.push(t)
+        target = roots;
       } else {
-        mentions.push(t)
+        target = mentions;
       }
+      target.push(t);
     })
 
   // Add different types separately so positional logic works

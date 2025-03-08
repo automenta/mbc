@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it, vi} from "vitest"
-import {cached, LRUCache, simpleCache} from "../src/LRUCache"
+import {cached, LRUCache, simpleCache} from "../src/LRUCache.js"
 
 describe("Caches", () => {
   describe("LRUCache", () => {
@@ -38,16 +38,18 @@ describe("Caches", () => {
         cache.set("b", 2) // keys = [a, b]
         cache.set("c", 3) // keys = [a, b, c]
 
-        cache.get("b") // keys = [a, b, c, b]
-        cache.get("b") // keys = [a, b, c, b, b]
-        cache.get("b") // keys = [a, b, c, b, b, b] size at limit (maxSize * 2 = 6)
-        cache.get("a") // keys = [b, b, a] keys is over limit, only the 3 last are kept
-        cache.set("d", 4) // keys = [b, b, a, d],
+        cache.get("b") // keys = [a, b, c]
+        cache.get("b") // keys = [a, b, c]
+        cache.get("b") // keys = [a, b, c]
+        cache.get("a") // keys = [a, b, c]
+        cache.set("d", 4) // keys = [a, b, d],
 
         // @todo clarify with @staab the intended behavior
         // "a" was recently accessed, it should not be evicted
+        expect(cache.has("b")).toBe(true) // 'a' should be present
         expect(cache.has("a")).toBe(true) // 'a' should be present
-        expect(cache.has("b")).toBe(false) // 'b' should be evicted
+        expect(cache.has("d")).toBe(true) // 'a' should be present
+        expect(cache.has("c")).toBe(false) // 'c' should be evicted
       })
     })
   })

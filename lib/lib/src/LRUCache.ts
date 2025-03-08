@@ -13,18 +13,15 @@ export class LRUCache<T, U> {
     return this.map.has(k)
   }
 
-  get(k: T) {
-    const v = this.map.get(k)
-
-    if (v !== undefined) {
-      this.keys.push(k as T)
-
-      if (this.keys.length > this.maxSize * 2) {
-        this.keys = this.keys.splice(-this.maxSize)
-      }
+  get(key: T): U | undefined {
+    const value = this.map.get(key);
+    if (value !== undefined) {
+      // Move key to end (most recently used)
+      const index = this.keys.indexOf(key);
+      this.keys.splice(index, 1);
+      this.keys.push(key);
     }
-
-    return v
+    return value;
   }
 
   set(k: T, v: U) {
@@ -44,10 +41,10 @@ export class LRUCache<T, U> {
  * @template Args - Function argument types
  */
 export function cached<T, V, Args extends any[]>({
-  maxSize,
-  getKey,
-  getValue,
-}: {
+                                                   maxSize,
+                                                   getKey,
+                                                   getValue,
+                                                 }: {
   maxSize: number
   getKey: (args: Args) => T
   getValue: (args: Args) => V
@@ -56,12 +53,12 @@ export function cached<T, V, Args extends any[]>({
 
   const get = (...args: Args) => {
     const k = getKey(args)
-
     if (!cache.has(k)) {
-      cache.set(k, getValue(args))
-    }
-
-    return cache.get(k)!
+      const v = getValue(args)
+      cache.set(k, v)
+      return v
+    } else
+      return cache.get(k)!
   }
 
   get.cache = cache

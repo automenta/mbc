@@ -1,279 +1,205 @@
-import {inc, memoize, omitVals, max, min, now} from "@welshman/lib"
-import type {TrustedEvent, Filter} from "@welshman/util"
-import {EPOCH, trimFilters, guessFilterDelta} from "@welshman/util"
-import type {Feed, RequestItem, FeedOptions} from "./core.js"
-import {FeedType} from "./core.js"
-import {FeedCompiler} from "./compiler.js"
+import { inc, memoize, omitVals, max, min, now } from "@welshman/lib";
+import type { TrustedEvent } from "@welshman/util";
+import { EPOCH, trimFilters, guessFilterDelta } from "@welshman/util";
+import type { Feed, RequestItem, FeedOptions } from "./core.js";
+import { FeedType } from "./core.js";
+import { FeedCompiler } from "./compiler.js";
 
 export class FeedController {
-  compiler: FeedCompiler
+  private compiler: FeedCompiler;
 
   constructor(readonly options: FeedOptions) {
-    this.compiler = new FeedCompiler(options)
+    this.compiler = new FeedCompiler(options);
   }
 
-  getRequestItems = memoize(async () => {
+  private getRequestItems = memoize(async (): Promise<RequestItem[] | undefined> => {
     return this.compiler.canCompile(this.options.feed)
       ? this.compiler.compile(this.options.feed)
-      : undefined
-  })
+      : undefined;
+  });
 
-  getLoader = memoize(async () => {
-    const [type, ...feed] = this.options.feed
-    const requestItems = await this.getRequestItems()
+  private getLoader = memoize(async () => {
+    const [type, ...feed] = this.options.feed;
+    const requestItems = await this.getRequestItems();
 
     if (requestItems) {
-      return this._getRequestsLoader(requestItems)
+      return this.createRequestsLoader(requestItems);
     }
 
     switch (type) {
       case FeedType.Difference:
-        return this._getDifferenceLoader(feed as Feed[])
+        return this.createDifferenceLoader(feed as Feed[]);
       case FeedType.Intersection:
-        return this._getIntersectionLoader(feed as Feed[])
+        return this.createIntersectionLoader(feed as Feed[]);
       case FeedType.Union:
-        return this._getUnionLoader(feed as Feed[])
+        return this.createUnionLoader(feed as Feed[]);
       default:
-        throw new Error(`Unable to convert feed of type ${type} to loader`)
+        throw new Error(`Unsupported feed type: ${type}`);
     }
-  })
+  });
 
-  load = async (limit: number) => (await this.getLoader())(limit)
+  public load = async (limit: number) => (await this.getLoader())(limit);
 
-  async _getRequestsLoader(requests: RequestItem[], overrides: Partial<FeedOptions> = {}) {
-    const {onEvent, onExhausted} = {...this.options, ...overrides}
-    const seen = new Set()
-    const exhausted = new Set()
+  private async createRequestsLoader(requests: RequestItem[], overrides: Partial<FeedOptions> = {}) {
+    const { onEvent, onExhausted } = { ...this.options, ...overrides };
+    const seen = new Set<string>();
+    const exhausted = new Set<RequestItem>();
     const loaders = await Promise.all(
-      requests.map(request =>
-        this._getRequestLoader(request, {
+      requests.map((request) =>
+        this.createRequestLoader(request, {
           onExhausted: () => exhausted.add(request),
-          onEvent: e => {
-            if (!seen.has(e.id)) {
-              onEvent?.(e)
-              seen.add(e.id)
+          onEvent: (event: TrustedEvent) => {
+            if (!seen.has(event.id)) {
+              seen.add(event.id);
+              onEvent?.(event);
             }
           },
-        }),
-      ),
-    )
+        })
+      )
+    );
 
     return async (limit: number) => {
-      await Promise.all(loaders.map(loader => loader(limit)))
-
-      if (exhausted.size === requests.length) {
-        onExhausted?.()
-      }
-    }
+      await Promise.all(loaders.map((loader) => loader(limit)));
+      if (exhausted.size === requests.length) onExhausted?.();
+    };
   }
 
-  async _getRequestLoader({relays, filters}: RequestItem, overrides: Partial<FeedOptions> = {}) {
-    const {useWindowing, onEvent, onExhausted, request} = {...this.options, ...overrides}
+  private async createRequestLoader({ relays, filters }: RequestItem, overrides: Partial<FeedOptions> = {}) {
+    const { useWindowing, onEvent, onExhausted, request } = { ...this.options, ...overrides };
+    const effectiveFilters = filters?.length ? filters : [{}];
+    const untils = effectiveFilters.flatMap((f) => (f.until ? [f.until] : []));
+    const sinces = effectiveFilters.flatMap((f) => (f.since ? [f.since] : []));
+    const maxUntil = untils.length === effectiveFilters.length ? max(untils) : now();
+    const minSince = sinces.length === effectiveFilters.length ? min(sinces) : EPOCH;
 
-    // Make sure we have some kind of filter to send if we've been given an empty one, as happens with relay feeds
-    if (!filters || filters.length === 0) {
-      filters = [{}]
-    }
-
-    const untils = filters.flatMap((filter: Filter) => (filter.until ? [filter.until] : []))
-    const sinces = filters.flatMap((filter: Filter) => (filter.since ? [filter.since] : []))
-    const maxUntil = untils.length === filters.length ? max(untils) : now()
-    const minSince = sinces.length === filters.length ? min(sinces) : EPOCH
-    const initialDelta = guessFilterDelta(filters)
-
-    let loading = false
-    let delta = initialDelta
-    let since = useWindowing ? maxUntil - delta : minSince
-    let until = maxUntil
+    let loading = false;
+    let delta = guessFilterDelta(effectiveFilters);
+    let since = useWindowing ? maxUntil - delta : minSince;
+    let until = maxUntil;
 
     return async (limit: number) => {
-      if (loading) {
-        return
+      if (loading) return;
+      loading = true;
+
+      const requestFilters = effectiveFilters
+        .filter((f) => (f.since || minSince) < until && (f.until || maxUntil) > since)
+        .map((f) => ({ ...f, until, limit, since }));
+
+      if (!requestFilters.length) {
+        onExhausted?.();
+        loading = false;
+        return;
       }
 
-      loading = true
-
-      const requestFilters = filters!
-        // Remove filters that don't fit our window
-        .filter((filter: Filter) => {
-          const filterSince = filter.since || minSince
-          const filterUntil = filter.until || maxUntil
-
-          return filterSince < until && filterUntil > since
-        })
-        // Modify the filters to define our window
-        .map((filter: Filter) => ({...filter, until, limit, since}))
-
-      if (requestFilters.length === 0) {
-        return onExhausted?.()
-      }
-
-      let count = 0
-
+      let count = 0;
       await request(
         omitVals([undefined], {
           relays,
           filters: trimFilters(requestFilters),
           onEvent: (event: TrustedEvent) => {
-            count += 1
-            until = Math.min(until, event.created_at - 1)
-            onEvent?.(event)
+            count++;
+            until = Math.min(until, event.created_at - 1);
+            onEvent?.(event);
           },
-        }),
-      )
+        })
+      );
 
       if (useWindowing) {
-        if (since === minSince) {
-          onExhausted?.()
-        }
-
-        // Relays can't be relied upon to return events in descending order, do exponential
-        // windowing to ensure we get the most recent stuff on first load, but eventually find it all
+        if (since === minSince) onExhausted?.();
         if (count < limit) {
-          delta = delta * Math.round(100 * (2 - inc(count) / inc(limit)))
-          until = since
+          delta *= Math.round(100 * (2 - inc(count) / inc(limit)));
+          until = since;
         }
-
-        since = Math.max(minSince, until - delta)
+        since = Math.max(minSince, until - delta);
       } else if (count === 0) {
-        onExhausted?.()
+        onExhausted?.();
       }
 
-      loading = false
-    }
+      loading = false;
+    };
   }
 
-  async _getDifferenceLoader(feeds: Feed[], overrides: Partial<FeedOptions> = {}) {
-    const {onEvent, onExhausted, ...options} = {...this.options, ...overrides}
-    const exhausted = new Set<number>()
-    const skip = new Set<string>()
-    const events: TrustedEvent[] = []
-    const seen = new Set()
+  private async createDifferenceLoader(feeds: Feed[], overrides: Partial<FeedOptions> = {}) {
+    const { onEvent, onExhausted, ...options } = { ...this.options, ...overrides };
+    const exhausted = new Set<number>();
+    const skip = new Set<string>();
+    const events: TrustedEvent[] = [];
+    const seen = new Set<string>();
 
-    const controllers = await Promise.all(
-      feeds.map(
-        (thisFeed: Feed, i: number) =>
-          new FeedController({
-            ...options,
-            feed: thisFeed,
-            onExhausted: () => exhausted.add(i),
-            onEvent: (event: TrustedEvent) => {
-              if (i === 0) {
-                events.push(event)
-              } else {
-                skip.add(event.id)
-              }
-            },
-          }),
-      ),
-    )
+    const controllers = await this.createControllers(feeds, options, (i, event) => {
+      if (i === 0) events.push(event);
+      else skip.add(event.id);
+    }, exhausted);
 
     return async (limit: number) => {
-      await Promise.all(
-        controllers.map(async (controller: FeedController, i: number) => {
-          if (exhausted.has(i)) {
-            return
-          }
-
-          await controller.load(limit)
-        }),
-      )
-
+      await Promise.all(controllers.map((c, i) => !exhausted.has(i) && c.load(limit)));
       for (const event of events.splice(0)) {
         if (!skip.has(event.id) && !seen.has(event.id)) {
-          onEvent?.(event)
-          seen.add(event.id)
+          seen.add(event.id);
+          onEvent?.(event);
         }
       }
-
-      if (exhausted.size === controllers.length) {
-        onExhausted?.()
-      }
-    }
+      if (exhausted.size === controllers.length) onExhausted?.();
+    };
   }
 
-  async _getIntersectionLoader(feeds: Feed[], overrides: Partial<FeedOptions> = {}) {
-    const {onEvent, onExhausted, ...options} = {...this.options, ...overrides}
-    const exhausted = new Set<number>()
-    const counts = new Map<string, number>()
-    const events: TrustedEvent[] = []
-    const seen = new Set()
+  private async createIntersectionLoader(feeds: Feed[], overrides: Partial<FeedOptions> = {}) {
+    const { onEvent, onExhausted, ...options } = { ...this.options, ...overrides };
+    const exhausted = new Set<number>();
+    const counts = new Map<string, number>();
+    const events: TrustedEvent[] = [];
+    const seen = new Set<string>();
 
-    const controllers = await Promise.all(
-      feeds.map(
-        (thisFeed: Feed, i: number) =>
-          new FeedController({
-            ...options,
-            feed: thisFeed,
-            onExhausted: () => exhausted.add(i),
-            onEvent: (event: TrustedEvent) => {
-              events.push(event)
-              counts.set(event.id, inc(counts.get(event.id)))
-            },
-          }),
-      ),
-    )
+    const controllers = await this.createControllers(feeds, options, (_, event) => {
+      events.push(event);
+      counts.set(event.id, inc(counts.get(event.id)));
+    }, exhausted);
 
     return async (limit: number) => {
-      await Promise.all(
-        controllers.map(async (controller: FeedController, i: number) => {
-          if (exhausted.has(i)) {
-            return
-          }
-
-          await controller.load(limit)
-        }),
-      )
-
+      await Promise.all(controllers.map((c, i) => !exhausted.has(i) && c.load(limit)));
       for (const event of events.splice(0)) {
         if (counts.get(event.id) === controllers.length && !seen.has(event.id)) {
-          onEvent?.(event)
-          seen.add(event.id)
+          seen.add(event.id);
+          onEvent?.(event);
         }
       }
-
-      if (exhausted.size === controllers.length) {
-        onExhausted?.()
-      }
-    }
+      if (exhausted.size === controllers.length) onExhausted?.();
+    };
   }
 
-  async _getUnionLoader(feeds: Feed[], overrides: Partial<FeedOptions> = {}) {
-    const {onEvent, onExhausted, ...options} = {...this.options, ...overrides}
-    const exhausted = new Set<number>()
-    const seen = new Set()
+  private async createUnionLoader(feeds: Feed[], overrides: Partial<FeedOptions> = {}) {
+    const { onEvent, onExhausted, ...options } = { ...this.options, ...overrides };
+    const exhausted = new Set<number>();
+    const seen = new Set<string>();
 
-    const controllers = await Promise.all(
-      feeds.map(
-        (thisFeed: Feed, i: number) =>
-          new FeedController({
-            ...options,
-            feed: thisFeed,
-            onExhausted: () => exhausted.add(i),
-            onEvent: (event: TrustedEvent) => {
-              if (!seen.has(event.id)) {
-                onEvent?.(event)
-                seen.add(event.id)
-              }
-            },
-          }),
-      ),
-    )
+    const controllers = await this.createControllers(feeds, options, (_, event) => {
+      if (!seen.has(event.id)) {
+        seen.add(event.id);
+        onEvent?.(event);
+      }
+    }, exhausted);
 
     return async (limit: number) => {
-      await Promise.all(
-        controllers.map(async (controller: FeedController, i: number) => {
-          if (exhausted.has(i)) {
-            return
-          }
+      await Promise.all(controllers.map((c, i) => !exhausted.has(i) && c.load(limit)));
+      if (exhausted.size === controllers.length) onExhausted?.();
+    };
+  }
 
-          await controller.load(limit)
-        }),
+  private async createControllers(
+    feeds: Feed[],
+    options: Omit<FeedOptions, "feed" | "onEvent" | "onExhausted">,
+    onEvent: (i: number, event: TrustedEvent) => void,
+    exhausted: Set<number>
+  ) {
+    return Promise.all(
+      feeds.map((feed, i) =>
+        new FeedController({
+          ...options,
+          feed,
+          onExhausted: () => exhausted.add(i),
+          onEvent: (event) => onEvent(i, event),
+        })
       )
-
-      if (exhausted.size === controllers.length) {
-        onExhausted?.()
-      }
-    }
+    );
   }
 }

@@ -4,11 +4,8 @@ import type {Repository} from "./Repository.js"
 import type {Filter} from "./Filters.js"
 import type {HashedEvent, TrustedEvent} from "./Events.js"
 
-// Constants and types
-
 export const LOCAL_RELAY_URL = "local://welshman.relay/"
-
-export const BOGUS_RELAY_URL = "bogus://welshman.relay/"
+//export const BOGUS_RELAY_URL = "bogus://welshman.relay/"
 
 export type RelayProfile = {
   url: string
@@ -46,11 +43,10 @@ export const isRelayUrl = (url: string) => {
 
   try {
     new URL(url)
+    return true
   } catch (e) {
     return false
   }
-
-  return true
 }
 
 export const isOnionUrl = (url: string) => Boolean(stripProtocol(url).match(/^[a-z2-7]{56}.onion/))

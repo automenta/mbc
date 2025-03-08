@@ -6,7 +6,7 @@ import {
   mergeSubscriptions,
   Subscription,
   SubscriptionEvent,
-} from "../../src/Subscribe"
+} from "../../src/index.js"
 
 describe("Subscription optimization", () => {
   let mockExecutor: any
@@ -22,7 +22,7 @@ describe("Subscription optimization", () => {
     ctx.net = {
       ...ctx.net,
       optimizeSubscriptions: vi.fn(subs =>
-        subs.map(sub => ({
+        subs.map((sub: {request: {relays: any; filters: any}}) => ({
           relays: sub.request.relays,
           filters: sub.request.filters,
         })),

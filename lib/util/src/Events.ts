@@ -152,18 +152,16 @@ export const getParentIds = (event: EventTemplate) => {
     ids => ids.filter(id => !Address.isAddress(id)),
     getAncestors(event),
   )
-
   return replies.length > 0 ? replies : roots
 }
 
-export const getParentId = (event: EventTemplate) => first(getParentIds(event))
+//export const getParentId = (event: EventTemplate) => first(getParentIds(event))
 
 export const getParentAddrs = (event: EventTemplate) => {
   const {roots, replies} = mapVals(
     ids => ids.filter(id => Address.isAddress(id)),
     getAncestors(event),
   )
-
   return replies.length > 0 ? replies : roots
 }
 
@@ -171,6 +169,5 @@ export const getParentAddr = (event: EventTemplate) => first(getParentAddrs(even
 
 export const isChildOf = (child: EventTemplate, parent: HashedEvent) => {
   const idsAndAddrs = getParentIdsAndAddrs(child)
-
   return getIdAndAddress(parent).some(x => idsAndAddrs.includes(x))
 }

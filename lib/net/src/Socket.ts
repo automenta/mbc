@@ -78,9 +78,8 @@ export class Socket {
   send = async (message: Message) => {
     await this.open()
 
-    if (!this.ws) {
+    if (!this.ws)
       throw new Error(`No websocket available when sending to ${this.cxn.url}`)
-    }
 
     this.cxn.emit(ConnectionEvent.Send, message)
     this.ws.send(JSON.stringify(message))
@@ -88,8 +87,8 @@ export class Socket {
 
   #init = () => {
     try {
-      this.ws = new WebSocket(this.cxn.url)
       this.status = SocketStatus.Opening
+      this.ws = new WebSocket(this.cxn.url)
 
       this.ws.onopen = () => {
         this.status = SocketStatus.Open
@@ -103,9 +102,7 @@ export class Socket {
       }
 
       this.ws.onclose = () => {
-        if (this.status !== SocketStatus.Error) {
-          this.status = SocketStatus.Closed
-        }
+        if (this.status !== SocketStatus.Error) this.status = SocketStatus.Closed
 
         this.cxn.emit(ConnectionEvent.Close)
       }
@@ -115,16 +112,14 @@ export class Socket {
 
         try {
           const message = JSON.parse(data)
-
           if (Array.isArray(message)) {
             this.worker.push(message as Message)
-          } else {
-            this.cxn.emit(ConnectionEvent.InvalidMessage, data)
+            return;
           }
-        } catch (e) {
-          this.cxn.emit(ConnectionEvent.InvalidMessage, data)
-        }
+        } catch { /* empty */ }
+        this.cxn.emit(ConnectionEvent.InvalidMessage, data)
       }
+
     } catch (e) {
       this.lastError = Date.now()
       this.status = SocketStatus.Invalid
