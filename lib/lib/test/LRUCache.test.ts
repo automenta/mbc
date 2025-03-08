@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it, vi} from "vitest"
-import {cached, LRUCache, simpleCache} from "../src/LRUCache.js"
+import {cached, LRUCache, simpleCache} from "../src/LRUCache"
 
 describe("Caches", () => {
   describe("LRUCache", () => {

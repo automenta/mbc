@@ -1,145 +1,162 @@
-import {remove} from "./Tools.js"
+import { remove } from "./Tools.js";
 
-/** Symbol used to identify global handlers */
-const ANY = Symbol("worker/ANY")
+// Symbol for global handlers
+const ANY = Symbol("worker/ANY");
 
-/** Configuration options for Worker */
-export type WorkerOpts<T> = {
-  /** Function to get key for message routing */
-  getKey?: (x: T) => any
-  /** Function to determine if message processing should be deferred */
-  shouldDefer?: (x: T) => boolean
-  /** Maximum number of messages to process in one batch */
-  chunkSize?: number
-  /** Milliseconds to wait between processing batches */
-  delay?: number
-}
+// Configuration options for Worker
+export type WorkerOptions<T> = {
+  getKey?: (message: T) => unknown;
+  shouldDefer?: (message: T) => boolean;
+  chunkSize?: number;
+  delay?: number;
+};
 
 /**
- * Worker for processing messages in batches with throttling
- * @template T - Type of messages to process
+ * Worker for processing messages in batches with throttling.
+ * Optimized for CPU and memory efficiency.
+ * @template T The type of messages to process.
  */
 export class Worker<T> {
-  buffer: T[] = []
-  handlers: Map<any, Array<(x: T) => void>> = new Map()
-  #timeout: number | undefined
-  #paused = false
+  private buffer: T[] = [];
+  private handlers: Map<unknown, Array<(message: T) => void>> = new Map();
+  private timeoutId: NodeJS.Timeout | undefined;
+  private isPaused = false;
+  private readonly chunkSize: number;
+  private readonly delay: number;
 
-  constructor(readonly opts: WorkerOpts<T> = {}) {}
-
-  /**
-   * Adds a message to the processing queue
-   * @param message - Message to process
-   */
-  push = (message: T) => {
-    this.buffer.push(message)
-    this.#enqueueWork()
+  constructor(options: WorkerOptions<T> = {}) {
+    // Set defaults in constructor to avoid runtime checks
+    this.chunkSize = options.chunkSize ?? 50;
+    this.delay = options.delay ?? 50;
+    this.getKey = options.getKey; // Direct assignment to avoid closure overhead
+    this.shouldDefer = options.shouldDefer;
   }
 
-  /**
-   * Adds a handler for messages with specific key
-   * @param k - Key to handle
-   * @param handler - Function to process matching messages
-   */
-  addHandler = (k: any, handler: (message: T) => void) => {
-    this.handlers.set(k, (this.handlers.get(k) || []).concat(handler))
+  // Cache option functions as instance methods to avoid property lookup overhead
+  private readonly getKey?: (message: T) => unknown;
+  private readonly shouldDefer?: (message: T) => boolean;
+
+  // Public API
+
+  /** Adds a message to the processing queue. */
+  push(message: T): void {
+    this.buffer.push(message);
+    if (!this.isPaused && !this.timeoutId) {
+      this.timeoutId = setTimeout(() => this.processBatch(), this.delay);
+    }
   }
 
-  /**
-   * Removes a handler for messages with specific key
-   * @param k - Key to handle
-   * @param handler - Function to process matching messages
-   */
-  removeHandler = (k: any, handler: (message: T) => void) => {
-    const newHandlers = remove(handler, this.handlers.get(k) || [])
-
-    if (newHandlers.length > 0) {
-      this.handlers.set(k, newHandlers)
+  /** Adds a handler for messages with a specific key. */
+  addHandler(key: unknown, handler: (message: T) => void): void {
+    const currentHandlers = this.handlers.get(key);
+    if (currentHandlers) {
+      currentHandlers.push(handler); // Mutate existing array to avoid allocation
     } else {
-      this.handlers.delete(k)
+      this.handlers.set(key, [handler]); // Minimal allocation for new key
     }
   }
 
-  /**
-   * Adds a handler for all messages
-   * @param handler - Function to process all messages
-   */
-  addGlobalHandler = (handler: (message: T) => void) => {
-    this.addHandler(ANY, handler)
+  /** Removes a handler for messages with a specific key. */
+  removeHandler(key: unknown, handler: (message: T) => void): void {
+    const currentHandlers = this.handlers.get(key);
+    if (!currentHandlers) return;
+
+    const updatedHandlers = remove(handler, currentHandlers);
+    if (updatedHandlers.length > 0) {
+      this.handlers.set(key, updatedHandlers);
+    } else {
+      this.handlers.delete(key); // Free memory by removing empty handler lists
+    }
   }
 
-  /**
-   * Removes a handler for all messages
-   * @param handler - Function to process all messages
-   */
-  removeGlobalHandler = (handler: (message: T) => void) => {
-    this.removeHandler(ANY, handler)
+  /** Adds a handler for all messages. */
+  addGlobalHandler(handler: (message: T) => void): void {
+    this.addHandler(ANY, handler);
   }
 
-  /** Removes all pending messages from the queue */
-  clear() {
-    this.buffer = []
+  /** Removes a handler for all messages. */
+  removeGlobalHandler(handler: (message: T) => void): void {
+    this.removeHandler(ANY, handler);
   }
 
-  /** Pauses message processing */
-  pause() {
-    clearTimeout(this.#timeout)
-
-    this.#paused = true
-    this.#timeout = undefined
+  /** Removes all pending messages from the queue. */
+  clear(): void {
+    this.buffer.length = 0; // Faster than reassignment, reuses array
   }
 
-  /** Resumes message processing */
-  resume() {
-    this.#paused = false
-    this.#enqueueWork()
+  /** Pauses message processing. */
+  pause(): void {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = undefined;
+    }
+    this.isPaused = true;
   }
 
-  #doWork = async () => {
-    const {chunkSize = 50} = this.opts
+  /** Resumes message processing. */
+  resume(): void {
+    this.isPaused = false;
+    if (!this.timeoutId && this.buffer.length > 0) {
+      this.timeoutId = setTimeout(() => this.processBatch(), this.delay);
+    }
+  }
 
-    for (let i = 0; i < chunkSize; i++) {
-      if (this.buffer.length === 0) {
-        break
+  // Private Methods
+
+  private async processBatch(): Promise<void> {
+    // Use local variables to minimize property lookups in hot path
+    const buffer = this.buffer;
+    const chunkSize = this.chunkSize;
+    const shouldDefer = this.shouldDefer;
+    const getKey = this.getKey;
+    const handlers = this.handlers;
+
+    // Process up to chunkSize messages or until buffer is empty
+    let processed = 0;
+    while (processed < chunkSize && buffer.length > 0) {
+      const message = buffer.shift()!;
+
+      if (shouldDefer?.(message)) {
+        buffer.push(message);
+        processed++;
+        continue;
       }
 
-      // Pop the buffer one at a time so handle can modify the queue
-      const [message] = this.buffer.splice(0, 1)
+      // Process global handlers
+      const globalHandlers = handlers.get(ANY);
+      if (globalHandlers) {
+        await this.executeHandlers(globalHandlers, message);
+      }
 
-      if (this.opts.shouldDefer?.(message)) {
-        this.buffer.push(message)
-      } else {
-        for (const handler of this.handlers.get(ANY) || []) {
-          try {
-            await handler(message)
-          } catch (e) {
-            console.error(e)
-          }
-        }
-
-        if (this.opts.getKey) {
-          const k = this.opts.getKey(message)
-
-          for (const handler of this.handlers.get(k) || []) {
-            try {
-              await handler(message)
-            } catch (e) {
-              console.error(e)
-            }
-          }
+      // Process key-specific handlers
+      if (getKey) {
+        const key = getKey(message);
+        const specificHandlers = handlers.get(key);
+        if (specificHandlers) {
+          await this.executeHandlers(specificHandlers, message);
         }
       }
+
+      processed++;
     }
 
-    this.#timeout = undefined
-    this.#enqueueWork()
+    this.timeoutId = undefined;
+    if (!this.isPaused && buffer.length > 0) {
+      this.timeoutId = setTimeout(() => this.processBatch(), this.delay);
+    }
   }
 
-  #enqueueWork = () => {
-    const {delay = 50} = this.opts
-
-    if (!this.#paused && !this.#timeout && this.buffer.length > 0) {
-      this.#timeout = setTimeout(this.#doWork, delay) as unknown as number
+  private async executeHandlers(
+    handlers: Array<(message: T) => void>,
+    message: T
+  ): Promise<void> {
+    // Use for loop with index to avoid iterator overhead
+    for (let i = 0, len = handlers.length; i < len; i++) {
+      try {
+        await handlers[i](message);
+      } catch (error) {
+        console.error("Handler error:", error);
+      }
     }
   }
 }
