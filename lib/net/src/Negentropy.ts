@@ -17,12 +17,12 @@ class WrappedBuffer {
     this.length = buffer ? buffer.length : 0
   }
 
-  unwrap() {
-    return this._raw.subarray(0, this.length)
-  }
-
   get capacity() {
     return this._raw.byteLength
+  }
+
+  unwrap() {
+    return this._raw.subarray(0, this.length)
   }
 
   extend(buf) {

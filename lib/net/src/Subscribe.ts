@@ -1,12 +1,12 @@
-import {ctx, Emitter, max, chunk, randomId, once, groupBy, uniq} from "@welshman/lib"
+import {chunk, ctx, Emitter, groupBy, max, once, randomId, uniq} from "@welshman/lib"
+import type {Filter} from "@welshman/util"
 import {
   LOCAL_RELAY_URL,
   matchFilters,
   normalizeRelayUrl,
-  unionFilters,
   TrustedEvent,
+  unionFilters,
 } from "@welshman/util"
-import type {Filter} from "@welshman/util"
 import {Tracker} from "./Tracker.js"
 import {Executor} from "./Executor.js"
 import {Connection} from "./Connection.js"

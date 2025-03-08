@@ -27,54 +27,6 @@ export class Worker<T> {
 
   constructor(readonly opts: WorkerOpts<T> = {}) {}
 
-  #doWork = async () => {
-    const {chunkSize = 50} = this.opts
-
-    for (let i = 0; i < chunkSize; i++) {
-      if (this.buffer.length === 0) {
-        break
-      }
-
-      // Pop the buffer one at a time so handle can modify the queue
-      const [message] = this.buffer.splice(0, 1)
-
-      if (this.opts.shouldDefer?.(message)) {
-        this.buffer.push(message)
-      } else {
-        for (const handler of this.handlers.get(ANY) || []) {
-          try {
-            await handler(message)
-          } catch (e) {
-            console.error(e)
-          }
-        }
-
-        if (this.opts.getKey) {
-          const k = this.opts.getKey(message)
-
-          for (const handler of this.handlers.get(k) || []) {
-            try {
-              await handler(message)
-            } catch (e) {
-              console.error(e)
-            }
-          }
-        }
-      }
-    }
-
-    this.#timeout = undefined
-    this.#enqueueWork()
-  }
-
-  #enqueueWork = () => {
-    const {delay = 50} = this.opts
-
-    if (!this.#paused && !this.#timeout && this.buffer.length > 0) {
-      this.#timeout = setTimeout(this.#doWork, delay) as unknown as number
-    }
-  }
-
   /**
    * Adds a message to the processing queue
    * @param message - Message to process
@@ -141,5 +93,53 @@ export class Worker<T> {
   resume() {
     this.#paused = false
     this.#enqueueWork()
+  }
+
+  #doWork = async () => {
+    const {chunkSize = 50} = this.opts
+
+    for (let i = 0; i < chunkSize; i++) {
+      if (this.buffer.length === 0) {
+        break
+      }
+
+      // Pop the buffer one at a time so handle can modify the queue
+      const [message] = this.buffer.splice(0, 1)
+
+      if (this.opts.shouldDefer?.(message)) {
+        this.buffer.push(message)
+      } else {
+        for (const handler of this.handlers.get(ANY) || []) {
+          try {
+            await handler(message)
+          } catch (e) {
+            console.error(e)
+          }
+        }
+
+        if (this.opts.getKey) {
+          const k = this.opts.getKey(message)
+
+          for (const handler of this.handlers.get(k) || []) {
+            try {
+              await handler(message)
+            } catch (e) {
+              console.error(e)
+            }
+          }
+        }
+      }
+    }
+
+    this.#timeout = undefined
+    this.#enqueueWork()
+  }
+
+  #enqueueWork = () => {
+    const {delay = 50} = this.opts
+
+    if (!this.#paused && !this.#timeout && this.buffer.length > 0) {
+      this.#timeout = setTimeout(this.#doWork, delay) as unknown as number
+    }
   }
 }

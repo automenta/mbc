@@ -54,8 +54,11 @@ export const stripExifData = async (
   }
 }
 
-export const listenForFile = (input: HTMLInputElement, onChange: (files: FileList | null) => void) => {
-  input.addEventListener("change",  (e) => {
+export const listenForFile = (
+  input: HTMLInputElement,
+  onChange: (files: FileList | null) => void,
+) => {
+  input.addEventListener("change", e => {
     const target = e.target as HTMLInputElement
     onChange(target.files)
   })
@@ -69,7 +72,8 @@ export const blobToString = async (blob: Blob): Promise<string | ArrayBuffer | n
     reader.readAsDataURL(blob)
   })
 
-export const blobToFile = (blob: Blob, name?: string) => new File([blob], name || "file", {type: blob.type}) // Default name
+export const blobToFile = (blob: Blob, name?: string) =>
+  new File([blob], name || "file", {type: blob.type}) // Default name
 
 export const stripHtml = (html: string): string => {
   const doc = new DOMParser().parseFromString(html, "text/html")
@@ -83,7 +87,7 @@ export const escapeHtml = (html: string): string => {
 }
 
 export const isMobile =
-  localStorage.mobile === 'true' || window.navigator.maxTouchPoints > 1 || window.innerWidth < 400
+  localStorage.mobile === "true" || window.navigator.maxTouchPoints > 1 || window.innerWidth < 400
 
 export const parseHex = (hex: string): number[] | null => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)

@@ -582,7 +582,7 @@ export const equals = (a: any, b: any) => {
   return false
 }
 
-// Curried utils
+// Curried util
 
 /** Returns a function that gets the nth element of an array */
 export const nth =

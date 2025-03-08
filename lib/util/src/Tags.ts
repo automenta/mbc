@@ -1,4 +1,4 @@
-import {uniqBy, mapVals, nth, nthEq, ensurePlural} from "@welshman/lib"
+import {ensurePlural, mapVals, nth, nthEq, uniqBy} from "@welshman/lib"
 import {isRelayUrl} from "./Relay.js"
 import {Address} from "./Address.js"
 

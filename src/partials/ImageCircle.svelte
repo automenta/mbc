@@ -1,10 +1,10 @@
 <script lang="ts">
-  import cx from "classnames"
-  import {imgproxy} from "src/engine"
+	import cx from "classnames"
+	import {imgproxy} from "src/engine"
 
-  export let src: string
+	export let src: string
 
-  const url = imgproxy(src, {w: 280, h: 280})
+	const url = imgproxy(src, {w: 280, h: 280})
 </script>
 
 <div

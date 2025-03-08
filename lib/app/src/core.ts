@@ -1,6 +1,6 @@
 import {throttle} from "@welshman/lib"
-import {Repository, Relay} from "@welshman/util"
 import type {TrustedEvent} from "@welshman/util"
+import {Relay, Repository} from "@welshman/util"
 import {Tracker} from "@welshman/net"
 import {custom} from "@welshman/store"
 

@@ -1,17 +1,17 @@
 <script lang="ts">
-  import {estimateWork} from "src/util/pow"
+	import {estimateWork} from "src/util/pow"
 
-  export let difficulty
+	export let difficulty
 
-  $: ms = estimateWork(difficulty)
+	$: ms = estimateWork(difficulty)
 </script>
 
 {#if ms === 0}
-  Calculating...
+	Calculating...
 {:else if ms < 1000}
-  ~{ms} ms
+	~{ms} ms
 {:else if ms < 60 * 3 * 1000}
-  ~{Math.ceil(ms / 1000)} seconds
+	~{Math.ceil(ms / 1000)} seconds
 {:else}
-  ~{Math.ceil(ms / 1000 / 60)} minutes
+	~{Math.ceil(ms / 1000 / 60)} minutes
 {/if}

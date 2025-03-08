@@ -166,4 +166,8 @@ export const currencyOptions: CurrencyOption[] = [
 export const defaultCurrencyOption: CurrencyOption = currencyOptions.find(c => c.code === "SAT")!
 
 export const getCurrencyOption = (code: string | undefined): CurrencyOption =>
-  currencyOptions.find(c => c.code === code) || {name: code || 'Unknown', symbol: "$", code: code || 'UNK'}
+  currencyOptions.find(c => c.code === code) || {
+    name: code || "Unknown",
+    symbol: "$",
+    code: code || "UNK",
+  }

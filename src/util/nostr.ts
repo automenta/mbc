@@ -48,7 +48,8 @@ export const nsecEncode = (secret: string) => nip19.nsecEncode(hexToBytes(secret
 export const nsecDecode = (nsec: string) => {
   const {type, data} = nip19.decode(nsec)
 
-  if (type !== "nsec") { // Use curly braces for multi-line if
+  if (type !== "nsec") {
+    // Use curly braces for multi-line if
     throw new Error(`Invalid nsec: ${nsec}`)
   }
 
@@ -108,7 +109,8 @@ export const decodeNostrEntityToHex = (entity: string): string | null => {
   try {
     let key = nip19.decode(entity).data
 
-    if (key instanceof Uint8Array) { // Use curly braces for multi-line if
+    if (key instanceof Uint8Array) {
+      // Use curly braces for multi-line if
       key = Buffer.from(key).toString("hex")
     }
 
@@ -131,17 +133,17 @@ export const getRating = (event: TrustedEvent) => {
 export const getAvgRating = (events: TrustedEvent[]) =>
   avg(events.map(getRating).filter(rating => rating !== undefined))
 
-export const isHex = (x: any): x is string => typeof x === 'string' && x.length === 64 && /^[a-f0-9]{64}$/.test(x)
-
+export const isHex = (x: any): x is string =>
+  typeof x === "string" && x.length === 64 && /^[a-f0-9]{64}$/.test(x)
 
 export const getContentWarning = (e: TrustedEvent) => {
   return getTagValue("content-warning", e.tags)
 }
 
-
 export const parseAnything = async (entity: string) => {
   if (entity.includes("@")) {
-    try { // Added try-catch for nip05.queryProfile
+    try {
+      // Added try-catch for nip05.queryProfile
       const profile = await nip05.queryProfile(entity)
       if (profile) {
         return {type: "npub", pubkey: profile.pubkey}
@@ -157,11 +159,13 @@ export const parseAnything = async (entity: string) => {
 export const parseAnythingSync = (entity: string) => {
   const normalizedEntity = fromNostrURI(entity)
 
-  if (Address.isAddress(normalizedEntity)) { // Use curly braces for multi-line if
+  if (Address.isAddress(normalizedEntity)) {
+    // Use curly braces for multi-line if
     return nip19.decode(Address.from(normalizedEntity).toNaddr())
   }
 
-  if (isHex(normalizedEntity)) { // Use curly braces for multi-line if
+  if (isHex(normalizedEntity)) {
+    // Use curly braces for multi-line if
     return {type: "npub", pubkey: normalizedEntity}
   }
 
@@ -177,7 +181,6 @@ export const parsePubkey = async (entity: string) => {
   return result?.type === "npub" || result?.type === "nprofile" ? result.data : undefined
 }
 
-
 export async function extractPrivateKey(input: string): Promise<string | null> {
   // Try decoding as NSEC
   try {
@@ -187,19 +190,19 @@ export async function extractPrivateKey(input: string): Promise<string | null> {
   }
 
   // Try as hex
-  if (isHex(input)) { // Use curly braces for multi-line if
+  if (isHex(input)) {
+    // Use curly braces for multi-line if
     return input
   }
-
 
   // Try as JSON
   try {
     const json = JSON.parse(input)
     const privateKey = json?.privateKey || json?.sec
-    if (typeof privateKey === 'string') { // Use curly braces for multi-line if
+    if (typeof privateKey === "string") {
+      // Use curly braces for multi-line if
       return privateKey
     }
-
   } catch (e) {
     // Not a valid JSON, try next
   }

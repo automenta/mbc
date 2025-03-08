@@ -79,4 +79,5 @@ const connectionTypeDisplayStrings = {
   [ConnectionType.UnstableConnection]: "Unstable connection",
 }
 
-export const displayConnectionType = (type: ConnectionType) => connectionTypeDisplayStrings[type] || "Unknown";
+export const displayConnectionType = (type: ConnectionType) =>
+  connectionTypeDisplayStrings[type] || "Unknown"

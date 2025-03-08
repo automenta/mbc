@@ -1,6 +1,6 @@
 import {sleep} from "@welshman/lib"
+import type {Filter, SignedEvent} from "@welshman/util"
 import {AUTH_JOIN} from "@welshman/util"
-import type {SignedEvent, Filter} from "@welshman/util"
 import type {Message} from "./Socket.js"
 import type {Connection} from "./Connection.js"
 import {ConnectionEvent} from "./ConnectionEvent.js"

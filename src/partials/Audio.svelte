@@ -1,68 +1,68 @@
 <script lang="ts">
-  import {onDestroy, onMount} from "svelte"
+	import {onDestroy, onMount} from "svelte"
 
-  export let controller
-  export let autoPlay = false
-  export let autoCleanup = true
+	export let controller
+	export let autoPlay = false
+	export let autoCleanup = true
 
-  let visualizer
-  let playing = Boolean(controller.interval)
+	let visualizer
+	let playing = Boolean(controller.interval)
 
-  const setAudioPosition = ({clientX}) => {
-    const {left, width} = visualizer.getBoundingClientRect()
+	const setAudioPosition = ({clientX}) => {
+		const {left, width} = visualizer.getBoundingClientRect()
 
-    controller.setProgress((clientX - left) / width)
-  }
+		controller.setProgress((clientX - left) / width)
+	}
 
-  const onProgress = p => {
-    visualizer.childNodes[0].style = `width: ${p * 100}%;`
-  }
+	const onProgress = p => {
+		visualizer.childNodes[0].style = `width: ${p * 100}%;`
+	}
 
-  const onPlay = () => {
-    playing = true
-  }
+	const onPlay = () => {
+		playing = true
+	}
 
-  const onPause = () => {
-    playing = false
-  }
+	const onPause = () => {
+		playing = false
+	}
 
-  onMount(() => {
-    onProgress(controller.progress)
+	onMount(() => {
+		onProgress(controller.progress)
 
-    controller.on("progress", onProgress)
-    controller.on("play", onPlay)
-    controller.on("pause", onPause)
+		controller.on("progress", onProgress)
+		controller.on("play", onPlay)
+		controller.on("pause", onPause)
 
-    if (autoPlay) {
-      controller.play()
-    }
-  })
+		if (autoPlay) {
+			controller.play()
+		}
+	})
 
-  onDestroy(() => {
-    if (autoCleanup) {
-      controller.cleanup()
-    } else {
-      controller.off("progress", onProgress)
-      controller.off("play", onPlay)
-      controller.off("pause", onPause)
-    }
-  })
+	onDestroy(() => {
+		if (autoCleanup) {
+			controller.cleanup()
+		} else {
+			controller.off("progress", onProgress)
+			controller.off("play", onPlay)
+			controller.off("pause", onPause)
+		}
+	})
 </script>
 
 <div class="flex items-center gap-2" on:click|stopPropagation>
-  <div
-    class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-accent"
-    on:click={controller.toggle}>
-    {#if playing}
-      <i class="fa fa-pause" />
-    {:else}
-      <i class="fa fa-play ml-1" />
-    {/if}
-  </div>
-  <div
-    class="flex h-2 flex-grow cursor-pointer overflow-hidden rounded-full bg-neutral-600"
-    bind:this={visualizer}
-    on:click={setAudioPosition}>
-    <div class="inline-block h-2 bg-accent" />
-  </div>
+	<div
+	  class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-accent"
+	  on:click={controller.toggle}>
+		{#if playing}
+			<i class="fa fa-pause" />
+		{:else}
+			<i class="fa fa-play ml-1" />
+		{/if}
+	</div>
+	<div
+	  bind:this={visualizer}
+	  class="flex h-2 flex-grow cursor-pointer overflow-hidden rounded-full bg-neutral-600"
+	  on:click={setAudioPosition}>
+		<div class="inline-block h-2 bg-accent" />
+	</div>
 </div>

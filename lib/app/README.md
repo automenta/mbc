@@ -8,24 +8,24 @@ import {getNip07} from '@welshman/signer'
 import {throttled} from '@welshman/store'
 import {createEvent, NOTE} from '@welshman/util'
 import {
-  getDefaultNetContext,
-  getDefaultAppContext,
-  signer,
-  pubkey,
-  publishThunk,
-  load,
-  initStorage,
-  storageAdapters,
-  freshness,
-  plaintext,
-  repository,
-  tracker,
+	getDefaultNetContext,
+	getDefaultAppContext,
+	signer,
+	pubkey,
+	publishThunk,
+	load,
+	initStorage,
+	storageAdapters,
+	freshness,
+	plaintext,
+	repository,
+	tracker,
 } from '@welshman/app'
 
 // Set up app config
 setContext({
-  net: getDefaultNetContext(),
-  app: getDefaultAppContext(),
+	net: getDefaultNetContext(),
+	app: getDefaultAppContext(),
 })
 
 // Log in via NIP 07
@@ -45,9 +45,9 @@ const router = ctx.app.router
 // Publish is done using thunks, which optimistically publish to the local database, deferring
 // signing and publishing for instant user feedback. Progress is reported as relays accept/reject the event
 const thunk = publishThunk({
-  relays: router.FromUser().getUrls(),
-  event: createEvent(NOTE, {content: "hi"}),
-  delay: 3000,
+	relays: router.FromUser().getUrls(),
+	event: createEvent(NOTE, {content: "hi"}),
+	delay: 3000,
 })
 
 // Thunks can be aborted until after `delay`, allowing for soft-undo
@@ -64,10 +64,10 @@ const thunk = follow('97c70a44366a6535c145b333f973ea86dfdc2d7a99da618c40c64705ad
 // plaintext maps encrypted events to their decrypted content, repository and tracker hold events and
 // event/relay mappings, respectively.
 const ready = initStorage("my-db", 1, {
-  relays: {keyPath: "url", store: throttled(3000, relays)},
-  handles: {keyPath: "nip05", store: throttled(3000, handles)},
-  freshness: storageAdapters.fromObjectStore(freshness, {throttle: 3000}),
-  plaintext: storageAdapters.fromObjectStore(plaintext, {throttle: 3000}),
-  events: storageAdapters.fromRepositoryAndTracker(repository, tracker, {throttle: 3000}),
+	relays: {keyPath: "url", store: throttled(3000, relays)},
+	handles: {keyPath: "nip05", store: throttled(3000, handles)},
+	freshness: storageAdapters.fromObjectStore(freshness, {throttle: 3000}),
+	plaintext: storageAdapters.fromObjectStore(plaintext, {throttle: 3000}),
+	events: storageAdapters.fromRepositoryAndTracker(repository, tracker, {throttle: 3000}),
 })
 ```

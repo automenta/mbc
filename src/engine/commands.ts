@@ -391,34 +391,26 @@ export const setInboxPolicy = (url: string, enabled: boolean) => {
 export const setOutboxPolicy = (url: string, read: boolean, write: boolean) => {
   setOutboxPolicies($tags => {
     let filteredTags = $tags.filter(t => normalizeRelayUrl(t[1]) !== url)
-    if (read && write)
-      return filteredTags.concat([["r", url]])
-    else if (read)
-      return filteredTags.concat([["r", url, "read"]])
-    else if (write)
-      return filteredTags.concat([["r", url, "write"]])
-    else
-      return filteredTags
+    if (read && write) return filteredTags.concat([["r", url]])
+    else if (read) return filteredTags.concat([["r", url, "read"]])
+    else if (write) return filteredTags.concat([["r", url, "write"]])
+    else return filteredTags
   })
 }
 
 export const leaveRelay = async (url: string) => {
   await Promise.all([setInboxPolicy(url, false), setOutboxPolicy(url, false, false)])
-  if (pubkey.get())
-    broadcastUserData([url])
+  if (pubkey.get()) broadcastUserData([url])
 }
 
 export const joinRelay = async (url: string, claim?: string) => {
   url = normalizeRelayUrl(url)
 
-  if (claim && signer.get())
-    await requestRelayAccess(url, claim)
+  if (claim && signer.get()) await requestRelayAccess(url, claim)
 
   setOutboxPolicy(url, true, true)
 
-  if (pubkey.get())
-    broadcastUserData([url])
-
+  if (pubkey.get()) broadcastUserData([url])
 }
 
 const DIRECT_MESSAGE_KIND = 14
@@ -486,8 +478,7 @@ export const loginWithNip46 = async ({
     const handler = {relays, pubkey: signerPubkey}
     addSession({method: "nip46", pubkey: publicKey, secret: clientSecret, handler})
     return true
-  } else
-    return false
+  } else return false
 }
 
 export const logoutPubkey = (publicKey: string) => {

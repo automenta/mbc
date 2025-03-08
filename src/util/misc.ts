@@ -152,7 +152,8 @@ export const stringToHue = (value: string) => {
 export const hsl = (hue: number, {saturation = 100, lightness = 50, opacity = 1} = {}) =>
   `hsl(${hue}, ${saturation}%, ${lightness}%, ${opacity})`
 
-export const parseJson = <T>(json: string | null | undefined): T | null => { // Added generic type and handles undefined
+export const parseJson = <T>(json: string | null | undefined): T | null => {
+  // Added generic type and handles undefined
   if (!json) return null
   try {
     return JSON.parse(json) as T
@@ -191,8 +192,7 @@ export const toTitle = (str: string) =>
     .map(([firstChar = "", ...rest]) => `${firstChar.toUpperCase()}${rest.join("")}`) // More concise
     .join(" ")
 
-export const commaFormat = (x: string | number) =>
-  String(x).replace(/\B(?=(\d{3})+(?!\d))/g, ",") // Using regex for comma formatting
+export const commaFormat = (x: string | number) => String(x).replace(/\B(?=(\d{3})+(?!\d))/g, ",") // Using regex for comma formatting
 
 export const pluralize = (n: number, label: string, pluralLabel?: string) =>
   n === 1 ? label : pluralLabel || `${label}s`
@@ -201,13 +201,15 @@ export const quantify = (n: number, label: string, pluralLabel?: string) =>
   `${commaFormat(n)} ${pluralize(n, label, pluralLabel)}`
 
 export const race = <T>(threshold: number, promises: Promise<T>[]) => {
-  if (threshold <= 0 || promises.length === 0) { // Early exit for efficiency
+  if (threshold <= 0 || promises.length === 0) {
+    // Early exit for efficiency
     return Promise.resolve()
   }
 
   let count = 0
   return new Promise<void>((resolve, reject) => {
-    for (const p of promises) { // Using for...of loop for better readability
+    for (const p of promises) {
+      // Using for...of loop for better readability
       p.then(() => {
         count++
         if (count >= threshold * promises.length) {
@@ -242,17 +244,24 @@ export const parseQueryString = (path: string): Record<string, string> => {
 }
 
 export const joinPath = (...parts: string[]) => {
-  return parts.map(part => part.endsWith("/") ? part : `${part}/`).join("").slice(0, -1) || "" // More concise and handles empty parts
+  return (
+    parts
+      .map(part => (part.endsWith("/") ? part : `${part}/`))
+      .join("")
+      .slice(0, -1) || ""
+  ) // More concise and handles empty parts
 }
 
-export const updateIn = <T, K extends keyof T>(k: K, f: (x: T[K]) => T[K]) => (x: T) => ({...x, [k]: f(x[k])})
+export const updateIn =
+  <T, K extends keyof T>(k: K, f: (x: T[K]) => T[K]) =>
+  (x: T) => ({...x, [k]: f(x[k])})
 
 export const pickVals = <T, K extends keyof T>(ks: K[], x: T): Array<T[K]> => ks.map(k => x[k])
 
 export const getStringWidth = (text: string): number => {
   const span = document.createElement("span")
   span.style.visibility = "hidden" // More performant than height: 0
-  span.style.whiteSpace = 'nowrap' // Ensure single line width calculation
+  span.style.whiteSpace = "nowrap" // Ensure single line width calculation
   span.textContent = text
   document.body.appendChild(span)
   const {width} = span.getBoundingClientRect()
@@ -260,9 +269,12 @@ export const getStringWidth = (text: string): number => {
   return width
 }
 
-export const fuzzy = <T, U extends keyof T>(data:T[], opts: IFuseOptions<T> = {},): ((q: string) => T[]) => {
+export const fuzzy = <T, U extends keyof T>(
+  data: T[],
+  opts: IFuseOptions<T> = {},
+): ((q: string) => T[]) => {
   const fuse = new Fuse(data, opts)
-  return (q: string) => q ? fuse.search(q.slice(0, 32)).map(result => result.item) : data
+  return (q: string) => (q ? fuse.search(q.slice(0, 32)).map(result => result.item) : data)
 }
 
 export class SearchHelper<T, V> {
@@ -271,16 +283,6 @@ export class SearchHelper<T, V> {
   private _search?: (term: string) => T[] // Made private
 
   constructor(readonly options: T[]) {}
-
-  private _setup() { // Made private
-    if (!this._search) {
-      for (const option of this.options) {
-        this._optionsByValue.set(this.getValue(option), option)
-      }
-      this._search = this.getSearch()
-    }
-    return this
-  }
 
   getSearch = () => fuzzy<T, keyof T>(this.options, this.config)
 
@@ -295,6 +297,17 @@ export class SearchHelper<T, V> {
   searchOptions = (term: string) => this._setup()._search(term)
 
   searchValues = (term: string) => this.searchOptions(term).map(this.getValue)
+
+  private _setup() {
+    // Made private
+    if (!this._search) {
+      for (const option of this.options) {
+        this._optionsByValue.set(this.getValue(option), option)
+      }
+      this._search = this.getSearch()
+    }
+    return this
+  }
 }
 
 export const fromCsv = (s: string | null | undefined) => (s || "").split(",").filter(identity)

@@ -49,7 +49,12 @@ export const CUSTOM_LIST_KINDS = [
   TOPICS,
 ] as const
 
-export const EDITABLE_LIST_KINDS = [NAMED_PEOPLE, NAMED_RELAYS, NAMED_CURATIONS, NAMED_TOPICS] as const
+export const EDITABLE_LIST_KINDS = [
+  NAMED_PEOPLE,
+  NAMED_RELAYS,
+  NAMED_CURATIONS,
+  NAMED_TOPICS,
+] as const
 
 export type UserList = {
   kind: number
@@ -68,7 +73,6 @@ export type PublishedFeedUserList = Omit<UserList, "list"> & {
   event: TrustedEvent
   list: PublishedUserList
 }
-
 
 export const makeUserList = (list: Partial<UserList> = {}): UserList => ({
   kind: NAMED_PEOPLE,
@@ -102,7 +106,6 @@ export const createUserListPayload = ({kind, title, description, identifier, tag
   return {kind, tags: tags.filter(t => !data[t[0]]).concat(Object.entries(data))}
 }
 
-
 const userListDisplayNames = {
   [FOLLOWS]: "[follows list]",
   [NAMED_PEOPLE]: "[named people list]",
@@ -132,7 +135,6 @@ export const displayUserList = (list?: UserList) => {
   }
   return userListDisplayNames[list?.kind] || "[no name]"
 }
-
 
 export class UserListSearch extends SearchHelper<UserList, string> {
   config = {keys: ["title", "description", "identifier"]}

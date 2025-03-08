@@ -1,10 +1,10 @@
-import {writable, derived} from "svelte/store"
+import {derived, writable} from "svelte/store"
 import {withGetter} from "@welshman/store"
-import {ctx, groupBy, indexBy, batch, now, ago, uniq, batcher, postJson} from "@welshman/lib"
+import {ago, batch, batcher, ctx, groupBy, indexBy, now, postJson, uniq} from "@welshman/lib"
 import type {RelayProfile} from "@welshman/util"
-import {normalizeRelayUrl, displayRelayUrl, displayRelayProfile} from "@welshman/util"
-import {ConnectionEvent} from "@welshman/net"
+import {displayRelayProfile, displayRelayUrl, normalizeRelayUrl} from "@welshman/util"
 import type {Connection, Message} from "@welshman/net"
+import {ConnectionEvent} from "@welshman/net"
 import {collection} from "./collection.js"
 
 export type RelayStats = {

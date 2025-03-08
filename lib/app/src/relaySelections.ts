@@ -1,15 +1,15 @@
 import {uniq} from "@welshman/lib"
+import type {List, PublishedList, TrustedEvent} from "@welshman/util"
 import {
-  INBOX_RELAYS,
-  RELAYS,
-  normalizeRelayUrl,
   asDecryptedEvent,
-  readList,
   getListTags,
   getRelayTags,
   getRelayTagValues,
+  INBOX_RELAYS,
+  normalizeRelayUrl,
+  readList,
+  RELAYS,
 } from "@welshman/util"
-import type {TrustedEvent, PublishedList, List} from "@welshman/util"
 import type {SubscribeRequestWithHandlers} from "@welshman/net"
 import {deriveEventsMapped} from "@welshman/store"
 import {repository} from "./core.js"

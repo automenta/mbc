@@ -1,5 +1,5 @@
 import {Emitter} from "@welshman/lib"
-import {Relay, LOCAL_RELAY_URL} from "@welshman/util"
+import {LOCAL_RELAY_URL, Relay} from "@welshman/util"
 import type {Message} from "../Socket.js"
 
 export class Local extends Emitter {

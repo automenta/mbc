@@ -1,6 +1,6 @@
-import {ctx, noop} from "@welshman/lib"
 import type {Emitter} from "@welshman/lib"
-import type {SignedEvent, TrustedEvent, Filter} from "@welshman/util"
+import {ctx, noop} from "@welshman/lib"
+import type {Filter, SignedEvent, TrustedEvent} from "@welshman/util"
 import type {Message} from "./Socket.js"
 import type {Connection} from "./Connection.js"
 import {Negentropy, NegentropyStorageVector} from "./Negentropy.js"
@@ -103,8 +103,7 @@ export class Executor {
     const storage = new NegentropyStorageVector()
     const neg = new Negentropy(storage, 50_000)
 
-    for (const event of events)
-      storage.insert(event.created_at, event.id)
+    for (const event of events) storage.insert(event.created_at, event.id)
 
     storage.seal()
 

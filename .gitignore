@@ -30,7 +30,7 @@ scratch.md
 psql-tmux.json
 sandbox.sql
 
-cypress/screenshots
+test/integration/screenshots
 
 # Generated on build
 public/icons

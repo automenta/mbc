@@ -1,11 +1,11 @@
 import type {Filter} from "@welshman/util"
 import {isSignedEvent} from "@welshman/util"
 import {
-  push as basePush,
   pull as basePull,
-  sync as baseSync,
-  pushWithoutNegentropy,
   pullWithoutNegentropy,
+  push as basePush,
+  pushWithoutNegentropy,
+  sync as baseSync,
   syncWithoutNegentropy,
 } from "@welshman/net"
 import {repository} from "./core.js"

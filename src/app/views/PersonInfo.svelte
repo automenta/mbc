@@ -1,45 +1,45 @@
 <script lang="ts">
-  import {nip19} from "nostr-tools"
-  import {ctx} from "@welshman/lib"
-  import {deriveHandleForPubkey, deriveProfile, displayHandle} from "@welshman/app"
-  import CopyValue from "src/partials/CopyValue.svelte"
-  import RelayCard from "src/app/shared/RelayCard.svelte"
+	import {nip19} from "nostr-tools"
+	import {ctx} from "@welshman/lib"
+	import {deriveHandleForPubkey, deriveProfile, displayHandle} from "@welshman/app"
+	import CopyValue from "src/partials/CopyValue.svelte"
+	import RelayCard from "src/app/shared/RelayCard.svelte"
 
-  export let pubkey
+	export let pubkey
 
-  const profile = deriveProfile(pubkey)
-  const handle = deriveHandleForPubkey(pubkey)
-  const relays = ctx.app.router.FromPubkeys([pubkey]).getUrls()
+	const profile = deriveProfile(pubkey)
+	const handle = deriveHandleForPubkey(pubkey)
+	const relays = ctx.app.router.FromPubkeys([pubkey]).getUrls()
 
-  $: lightningAddress = $profile?.lud16 || $profile?.lud06
+	$: lightningAddress = $profile?.lud16 || $profile?.lud06
 </script>
 
 <h1 class=" text-2xl">Details</h1>
 <CopyValue label="Link" value={nip19.nprofileEncode({pubkey, relays})} />
-<CopyValue label="Public Key" encode={nip19.npubEncode} value={pubkey} />
+<CopyValue encode={nip19.npubEncode} label="Public Key" value={pubkey} />
 {#if $handle}
-  {@const display = displayHandle($handle)}
-  <CopyValue label="Nostr Address" value={display} />
-  <strong>Nostr Address Relays</strong>
-  {#each $handle.relays || [] as url}
-    <RelayCard {url} />
-  {:else}
-    <p class="flex gap-2 items-center">
-      <i class="fa fa-info-circle" />
-      No relays are advertised at {display}.
-    </p>
-  {/each}
+	{@const display = displayHandle($handle)}
+	<CopyValue label="Nostr Address" value={display} />
+	<strong>Nostr Address Relays</strong>
+	{#each $handle.relays || [] as url}
+		<RelayCard {url} />
+	{:else}
+		<p class="flex gap-2 items-center">
+			<i class="fa fa-info-circle" />
+			No relays are advertised at {display}.
+		</p>
+	{/each}
 {:else}
-  <p>
-    <i class="fa-solid fa-info-circle" />
-    No Nostr address found.
-  </p>
+	<p>
+		<i class="fa-solid fa-info-circle" />
+		No Nostr address found.
+	</p>
 {/if}
 {#if lightningAddress}
-  <CopyValue label="Lightning Address" value={lightningAddress} />
+	<CopyValue label="Lightning Address" value={lightningAddress} />
 {:else}
-  <p>
-    <i class="fa-solid fa-info-circle" />
-    No lightning address found.
-  </p>
+	<p>
+		<i class="fa-solid fa-info-circle" />
+		No lightning address found.
+	</p>
 {/if}

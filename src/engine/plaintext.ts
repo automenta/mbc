@@ -1,22 +1,8 @@
-import {
-  getSession,
-  getSigner,
-  getPlaintext, // moved getPlaintext import here
-  repository,
-  setPlaintext,
-  tracker,
-} from "@welshman/app"
+import {getPlaintext, getSession, getSigner, repository, setPlaintext, tracker} from "@welshman/app"
 import {Worker} from "@welshman/lib"
 import {Nip59} from "@welshman/signer"
 import type {SignedEvent, TrustedEvent} from "@welshman/util"
-import {
-  APP_DATA,
-  FOLLOWS,
-  getTagValue,
-  isHashedEvent,
-  MUTES,
-  WRAP,
-} from "@welshman/util"
+import {APP_DATA, FOLLOWS, getTagValue, isHashedEvent, MUTES, WRAP} from "@welshman/util"
 
 import logger from "src/util/logger"
 import {canDecrypt} from "./state"
@@ -98,7 +84,7 @@ unwrapper.addGlobalHandler(async (event: TrustedEvent) => {
 
 const autoDecryptKinds = [APP_DATA, FOLLOWS, MUTES]
 
-repository.on("update", ({added}: { added: TrustedEvent[] }) => {
+repository.on("update", ({added}: {added: TrustedEvent[]}) => {
   for (const event of added) {
     if (autoDecryptKinds.includes(event.kind) && event.content && !getPlaintext(event)) {
       unwrapper.push(event)

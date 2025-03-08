@@ -1,21 +1,21 @@
 <script lang="ts">
-  export let url
+	export let url
 
-  const onLoad = () => {
-    loaded = true
-  }
+	const onLoad = () => {
+		loaded = true
+	}
 
-  let loaded = false
+	let loaded = false
 </script>
 
 <video
-  controls
-  src={url}
-  on:loadeddata={onLoad}
-  on:click|stopPropagation
+  class="max-h-96 object-contain object-center"
   class:hidden={!loaded}
-  class="max-h-96 object-contain object-center" />
+  controls
+  on:click|stopPropagation
+  on:loadeddata={onLoad}
+  src={url} />
 
 {#if !loaded}
-  <div class="shimmer h-64 w-96" />
+	<div class="shimmer h-64 w-96" />
 {/if}

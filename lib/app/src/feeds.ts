@@ -1,13 +1,13 @@
-import {ctx, nthEq, now} from "@welshman/lib"
+import {ctx, now, nthEq} from "@welshman/lib"
 import {createEvent, getPubkeyTagValues} from "@welshman/util"
-import {Scope, FeedController} from "@welshman/feeds"
-import type {RequestOpts, FeedOptions, DVMOpts, Feed} from "@welshman/feeds"
-import {makeDvmRequest, DVMEvent} from "@welshman/dvm"
+import type {DVMOpts, Feed, FeedOptions, RequestOpts} from "@welshman/feeds"
+import {FeedController, Scope} from "@welshman/feeds"
+import {DVMEvent, makeDvmRequest} from "@welshman/dvm"
 import {makeSecret, Nip01Signer} from "@welshman/signer"
 import {pubkey, signer} from "./session.js"
 import {getFilterSelections} from "./router.js"
 import {loadRelaySelections} from "./relaySelections.js"
-import {wotGraph, maxWot, getFollows, getNetwork, getFollowers} from "./wot.js"
+import {getFollowers, getFollows, getNetwork, maxWot, wotGraph} from "./wot.js"
 import {load} from "./subscribe.js"
 
 export const request = async ({filters = [{}], relays = [], onEvent}: RequestOpts) => {

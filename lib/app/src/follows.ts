@@ -1,5 +1,10 @@
-import {FOLLOWS, asDecryptedEvent, readList} from "@welshman/util"
-import {type TrustedEvent, type PublishedList} from "@welshman/util"
+import {
+  asDecryptedEvent,
+  FOLLOWS,
+  type PublishedList,
+  readList,
+  type TrustedEvent,
+} from "@welshman/util"
 import {type SubscribeRequestWithHandlers} from "@welshman/net"
 import {deriveEventsMapped} from "@welshman/store"
 import {repository} from "./core.js"

@@ -1,5 +1,5 @@
 import {derived, writable} from "svelte/store"
-import {max, throttle, addToMapKey, inc, dec} from "@welshman/lib"
+import {addToMapKey, dec, inc, max, throttle} from "@welshman/lib"
 import {getListTags, getPubkeyTagValues} from "@welshman/util"
 import {throttled, withGetter} from "@welshman/store"
 import {pubkey} from "./session.js"

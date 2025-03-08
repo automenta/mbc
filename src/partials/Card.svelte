@@ -1,62 +1,62 @@
 <script lang="ts">
-  import cx from "classnames"
-  import {createEventDispatcher} from "svelte"
-  import AltColor from "src/partials/AltColor.svelte"
+	import cx from "classnames"
+	import {createEventDispatcher} from "svelte"
+	import AltColor from "src/partials/AltColor.svelte"
 
-  export let noPad = false
-  export let interactive = false
-  export let stopPropagation = false
+	export let noPad = false
+	export let interactive = false
+	export let stopPropagation = false
 
-  let click
+	let click
 
-  const dispatch = createEventDispatcher()
+	const dispatch = createEventDispatcher()
 
-  const getClick = e => {
-    const t = Date.now()
+	const getClick = e => {
+		const t = Date.now()
 
-    if (e.touches?.[0]) {
-      return {x: e.touches[0].clientX, y: e.touches[0].clientY, t}
-    }
+		if (e.touches?.[0]) {
+			return {x: e.touches[0].clientX, y: e.touches[0].clientY, t}
+		}
 
-    if (e.x || e.y) {
-      return {x: e.x, y: e.y, t}
-    }
+		if (e.x || e.y) {
+			return {x: e.x, y: e.y, t}
+		}
 
-    return null
-  }
+		return null
+	}
 
-  const startClick = e => {
-    click = getClick(e)
-  }
+	const startClick = e => {
+		click = getClick(e)
+	}
 
-  const onClick = e => {
-    if (stopPropagation) {
-      e.stopPropagation()
-    }
+	const onClick = e => {
+		if (stopPropagation) {
+			e.stopPropagation()
+		}
 
-    const newClick = getClick(e)
+		const newClick = getClick(e)
 
-    if (newClick && click) {
-      const {x, y, t} = newClick
-      const h = Math.sqrt(Math.pow(click.x - x, 2) + Math.pow(click.y - y, 2))
+		if (newClick && click) {
+			const {x, y, t} = newClick
+			const h = Math.sqrt(Math.pow(click.x - x, 2) + Math.pow(click.y - y, 2))
 
-      if (t - click.t < 1000 && h < 20) {
-        dispatch("click", e)
-      }
-    } else {
-      dispatch("click", e)
-    }
-  }
+			if (t - click.t < 1000 && h < 20) {
+				dispatch("click", e)
+			}
+		} else {
+			dispatch("click", e)
+		}
+	}
 </script>
 
-<div on:mousedown={startClick} on:touchstart={startClick} on:click={onClick}>
-  <AltColor
-    background
-    class={cx($$props.class, "rounded text-neutral-100", {
+<div on:click={onClick} on:mousedown={startClick} on:touchstart={startClick}>
+	<AltColor
+	  background
+	  class={cx($$props.class, "rounded text-neutral-100", {
       "px-7 py-5": !noPad,
       "cursor-pointer border-r-4 border-transparent transition-colors hover:border-neutral-600":
         interactive,
     })}>
-    <slot />
-  </AltColor>
+		<slot />
+	</AltColor>
 </div>

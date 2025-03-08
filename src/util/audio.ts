@@ -17,43 +17,46 @@ export class AudioController extends EventEmitter {
         this.hls = new Hls()
         this.hls.loadSource(this.url)
         this.hls.attachMedia(this.audio)
-        this.hls.on(Hls.Events.ERROR, (event, data) => { // Added error handling for HLS
+        this.hls.on(Hls.Events.ERROR, (event, data) => {
+          // Added error handling for HLS
           logger.warn("HLS error:", event, data)
           this.emit("error", data) // Emit error event for component to handle
-        });
+        })
       } else {
         logger.warn("HLS is not supported in this browser, falling back to native audio.")
-        this.audio.src = url; // Fallback to native if HLS not supported
+        this.audio.src = url // Fallback to native if HLS not supported
       }
     } else {
       this.audio.src = url
     }
 
-    this.audio.addEventListener('error', (event) => { // Added general audio error listener
-      logger.warn("Audio element error:", event, this.audio.error);
-      this.emit("error", this.audio.error); // Emit error event
-    });
+    this.audio.addEventListener("error", event => {
+      // Added general audio error listener
+      logger.warn("Audio element error:", event, this.audio.error)
+      this.emit("error", this.audio.error) // Emit error event
+    })
   }
 
-
   reportProgress = () => {
-    if (this.audio.duration) { // Check if duration is available to avoid NaN
+    if (this.audio.duration) {
+      // Check if duration is available to avoid NaN
       this.progress = this.audio.currentTime / this.audio.duration
     } else {
-      this.progress = 0; // Default to 0 if duration is not available
+      this.progress = 0 // Default to 0 if duration is not available
     }
-
 
     this.emit("progress", this.progress)
 
-    if (this.progress >= 0.999 && !this.completed) { // Using >= 0.999 for more reliable completion
+    if (this.progress >= 0.999 && !this.completed) {
+      // Using >= 0.999 for more reliable completion
       this.completed = true
       this.emit("completed")
     }
   }
 
   setProgress = (progress: number) => {
-    if (this.audio.duration) { // Check duration before setting currentTime
+    if (this.audio.duration) {
+      // Check duration before setting currentTime
       this.audio.currentTime = this.audio.duration * progress
       this.reportProgress()
     }
@@ -61,7 +64,8 @@ export class AudioController extends EventEmitter {
 
   play = () => {
     if (!this.interval) {
-      void this.audio.play().catch(e => { // Catch play promise rejection
+      void this.audio.play().catch(e => {
+        // Catch play promise rejection
         logger.warn("Audio play failed:", e)
         this.emit("error", e) // Emit error event if play fails
       })

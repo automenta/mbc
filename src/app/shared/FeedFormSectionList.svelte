@@ -1,34 +1,34 @@
 <script lang="ts">
-  import {makeListFeed} from "@welshman/feeds"
-  import {displayProfileByPubkey, repository} from "@welshman/app"
-  import Anchor from "src/partials/Anchor.svelte"
-  import SearchSelect from "src/partials/SearchSelect.svelte"
-  import {listSearch} from "src/engine"
-  import {router} from "src/app/util"
+	import {makeListFeed} from "@welshman/feeds"
+	import {displayProfileByPubkey, repository} from "@welshman/app"
+	import Anchor from "src/partials/Anchor.svelte"
+	import SearchSelect from "src/partials/SearchSelect.svelte"
+	import {listSearch} from "src/engine"
+	import {router} from "src/app/util"
 
-  export let feed
-  export let onChange
+	export let feed
+	export let onChange
 
-  const onAddressesChange = addresses => onChange(makeListFeed({addresses}))
+	const onAddressesChange = addresses => onChange(makeListFeed({addresses}))
 
-  const displayAddress = address => {
-    const event = repository.getEvent(address)
+	const displayAddress = address => {
+		const event = repository.getEvent(address)
 
-    return event
-      ? `${$listSearch.displayValue(address)} by ${displayProfileByPubkey(event.pubkey)}`
-      : $listSearch.displayValue(address)
-  }
+		return event
+		  ? `${$listSearch.displayValue(address)} by ${displayProfileByPubkey(event.pubkey)}`
+		  : $listSearch.displayValue(address)
+	}
 
-  $: addresses = feed.slice(1).flatMap(it => it.addresses)
+	$: addresses = feed.slice(1).flatMap(it => it.addresses)
 </script>
 
 <span class=" text-lg">Which lists would you like to use?</span>
 <SearchSelect
   multiple
-  value={addresses}
+  onChange={onAddressesChange}
   search={$listSearch.searchValues}
-  onChange={onAddressesChange}>
-  <span slot="item" let:item let:context>
+  value={addresses}>
+  <span let:context let:item slot="item">
     {#if context === "option"}
       {displayAddress(item)}
     {:else}

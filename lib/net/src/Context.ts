@@ -1,17 +1,17 @@
-import {ctx, randomInt, uniq, noop, always} from "@welshman/lib"
+import {always, ctx, noop, randomInt, uniq} from "@welshman/lib"
+import type {Filter, SignedEvent, StampedEvent, TrustedEvent} from "@welshman/util"
 import {
+  hasValidSignature,
+  isSignedEvent,
   LOCAL_RELAY_URL,
   matchFilters,
   unionFilters,
-  isSignedEvent,
-  hasValidSignature,
 } from "@welshman/util"
-import type {StampedEvent, SignedEvent, Filter, TrustedEvent} from "@welshman/util"
 import {Pool} from "./Pool.js"
 import {Executor} from "./Executor.js"
 import {AuthMode} from "./ConnectionAuth.js"
 import {Relays} from "./target/Relays.js"
-import type {Subscription, RelaysAndFilters} from "./Subscribe.js"
+import type {RelaysAndFilters, Subscription} from "./Subscribe.js"
 
 export type NetContext = {
   pool: Pool

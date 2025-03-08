@@ -1,5 +1,5 @@
 import {filterVals, first, identity, mergeLeft, randomId} from "@welshman/lib"
-import {derived, get, writable, type Readable} from "svelte/store"
+import {derived, get, type Readable, writable} from "svelte/store"
 import logger from "src/util/logger"
 import {buildQueryString, parseQueryString, updateIn} from "src/util/misc"
 import {globalHistory} from "src/util/history"
@@ -54,7 +54,8 @@ const pickRoute = (routes: Route[], uri: string) => {
     let missed = false
 
     if (route.default) {
-      defaultMatch = { // Use defaultMatch here
+      defaultMatch = {
+        // Use defaultMatch here
         route,
         params: {},
         uri,
@@ -175,7 +176,8 @@ class RouterExtension {
 
   of = (...args: any[]) => this.at(this.getId(...args))
 
-  clone = (params: Partial<RouterExtensionParams>) => new RouterExtension(this.router, {...this.params, ...params}, this.getId)
+  clone = (params: Partial<RouterExtensionParams>) =>
+    new RouterExtension(this.router, {...this.params, ...params}, this.getId)
 
   at = (path: string) => this.clone({path: asPath(this.path, path)})
 
@@ -196,14 +198,17 @@ class RouterExtension {
     return this.clone({queryParams: data})
   }
 
-  cx = (context: Record<string, any>) => this.clone(updateIn("context", c => mergeLeft(context, c))(this.params))
+  cx = (context: Record<string, any>) =>
+    this.clone(updateIn("context", c => mergeLeft(context, c))(this.params))
 
-  cg = (config: Record<string, any>) => this.clone(updateIn("config", c => mergeLeft(config, c))(this.params))
+  cg = (config: Record<string, any>) =>
+    this.clone(updateIn("config", c => mergeLeft(config, c))(this.params))
 
   toString = () => {
     let path = this.path
 
-    if (this.queryParams && Object.keys(this.queryParams).length > 0) { // Check if queryParams is not empty
+    if (this.queryParams && Object.keys(this.queryParams).length > 0) {
+      // Check if queryParams is not empty
       const qs = buildQueryString(this.queryParams)
       path += qs
     }
@@ -229,16 +234,23 @@ class RouterExtension {
 
   replace = (config: Record<string, any> = {}) => this.go({...config, replace: true})
 
-  replaceModal = (config: Record<string, any> = {}) => this.go({...config, replace: true, modal: true})
+  replaceModal = (config: Record<string, any> = {}) =>
+    this.go({...config, replace: true, modal: true})
 }
 
 export class Router {
   routes: Route[] = []
   extensions: Record<string, RouterExtension> = {}
   history = writable<HistoryItem[]>([])
-  nonVirtual: Readable<HistoryItem[]> = derived(this.history, $history => $history.filter(h => !h.virtual))
-  pages: Readable<HistoryItem[]> = derived(this.nonVirtual, $nonVirtual => $nonVirtual.filter(h => !h.modal))
-  page: Readable<HistoryItem | undefined> = derived(this.nonVirtual, $nonVirtual => $nonVirtual.find((h: HistoryItem) => !h.modal))
+  nonVirtual: Readable<HistoryItem[]> = derived(this.history, $history =>
+    $history.filter(h => !h.virtual),
+  )
+  pages: Readable<HistoryItem[]> = derived(this.nonVirtual, $nonVirtual =>
+    $nonVirtual.filter(h => !h.modal),
+  )
+  page: Readable<HistoryItem | undefined> = derived(this.nonVirtual, $nonVirtual =>
+    $nonVirtual.find((h: HistoryItem) => !h.modal),
+  )
   modals: Readable<HistoryItem[]> = derived(this.nonVirtual, $nonVirtual => {
     const modals: HistoryItem[] = []
     for (const h of $nonVirtual) {
@@ -250,8 +262,13 @@ export class Router {
     }
     return modals
   })
-  modal: Readable<HistoryItem | undefined> = derived(this.nonVirtual, $nonVirtual => $nonVirtual.find((h: HistoryItem) => h.modal))
-  current: Readable<HistoryItem | undefined> = derived(this.nonVirtual, $nonVirtual => $nonVirtual[0])
+  modal: Readable<HistoryItem | undefined> = derived(this.nonVirtual, $nonVirtual =>
+    $nonVirtual.find((h: HistoryItem) => h.modal),
+  )
+  current: Readable<HistoryItem | undefined> = derived(
+    this.nonVirtual,
+    $nonVirtual => $nonVirtual[0],
+  )
 
   init() {
     this.at(window.location.pathname + window.location.search).push()
@@ -269,7 +286,7 @@ export class Router {
       const currentHistory = get(this.history)[0]
 
       if (action === "POP") {
-         if (path !== currentHistory?.path) {
+        if (path !== currentHistory?.path) {
           this.go({path, virtual: currentHistory?.virtual}) // Preserve virtual state on POP
         }
       }
@@ -281,7 +298,15 @@ export class Router {
     component: any,
     {serializers, requireUser, requireSigner, required, default: isDefaultRoute}: RegisterOpts = {},
   ) => {
-    this.routes.push({path, component, required, serializers, requireUser, requireSigner, default: isDefaultRoute})
+    this.routes.push({
+      path,
+      component,
+      required,
+      serializers,
+      requireUser,
+      requireSigner,
+      default: isDefaultRoute,
+    })
   }
 
   getMatch(path: string): {route: Route; params: Record<string, string>} {
@@ -294,7 +319,8 @@ export class Router {
     return match
   }
 
-  go({replace, virtual, ...state}: HistoryItem) { // Added virtual to go function
+  go({replace, virtual, ...state}: HistoryItem) {
+    // Added virtual to go function
     if (!state.path) {
       throw new Error("router.go called without a path")
     }
@@ -323,7 +349,7 @@ export class Router {
   }
 
   back(times: number) {
-    if (times <= 0) return; // Prevent invalid calls
+    if (times <= 0) return // Prevent invalid calls
 
     let count = 0
     const popListener = () => {
@@ -337,7 +363,6 @@ export class Router {
     window.addEventListener("popstate", popListener)
     this.pop()
   }
-
 
   remove(key: string) {
     this.history.update($history => $history.filter($item => $item.key !== key))
@@ -378,9 +403,8 @@ export class Router {
   }
 
   fromCurrent() {
-    return this.from(get(this.current) || {path: '/'})
+    return this.from(get(this.current) || {path: "/"})
   }
-
 
   virtual() {
     return this.fromCurrent().cg({virtual: true})
@@ -389,19 +413,26 @@ export class Router {
   // Props etc
 
   decodeQueryString = (path: string) => {
-    return this.decodeParams(path, 'query')
+    return this.decodeParams(path, "query")
   }
 
   decodeRouteParams = (path: string) => {
-    return this.decodeParams(path, 'route')
+    return this.decodeParams(path, "route")
   }
 
+  getKey = (item: HistoryItem) => item.key || item.path
 
-  private decodeParams = (path: string, type: 'query' | 'route') => {
+  getProps = (item: HistoryItem) => ({
+    ...this.decodeQueryString(item.path),
+    ...this.decodeRouteParams(item.path),
+    ...item.context,
+  })
+
+  private decodeParams = (path: string, type: "query" | "route") => {
     const match = pickRoute(this.routes, path)
     if (!match) return {}
 
-    const params = type === 'query' ? parseQueryString(path) : match.params
+    const params = type === "query" ? parseQueryString(path) : match.params
     const serializers = match.route.serializers || {}
     const data: Record<string, any> = {} // Explicit type annotation
 
@@ -417,13 +448,4 @@ export class Router {
     }
     return data
   }
-
-
-  getKey = (item: HistoryItem) => item.key || item.path
-
-  getProps = (item: HistoryItem) => ({
-    ...this.decodeQueryString(item.path),
-    ...this.decodeRouteParams(item.path),
-    ...item.context,
-  })
 }

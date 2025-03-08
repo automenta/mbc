@@ -1,12 +1,12 @@
-import {ctx, uniq, remove, nthEq} from "@welshman/lib"
+import {ctx, nthEq, remove, uniq} from "@welshman/lib"
+import type {TrustedEvent} from "@welshman/util"
 import {
   getAddress,
-  isReplaceable,
-  getReplyTags,
   getPubkeyTagValues,
+  getReplyTags,
+  isReplaceable,
   isReplaceableKind,
 } from "@welshman/util"
-import type {TrustedEvent} from "@welshman/util"
 import {displayProfileByPubkey} from "./profiles.js"
 import {pubkey} from "./session.js"
 

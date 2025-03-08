@@ -1,13 +1,13 @@
 <script lang="ts">
-  import Input from "src/partials/Input.svelte"
+	import Input from "src/partials/Input.svelte"
 
-  export let value
-  export let onChange = null
-  export let dark = false
+	export let value
+	export let onChange = null
+	export let dark = false
 </script>
 
-<Input type="select" dark={dark} {...$$props} bind:value={value} on:change={() => onChange && onChange(value)}>
-  <slot />
-  <slot slot="before" name="before" />
-  <slot slot="after" name="after" />
+<Input {...$$props} bind:value={value} dark={dark} on:change={() => onChange && onChange(value)} type="select">
+	<slot />
+	<slot name="before" slot="before" />
+	<slot name="after" slot="after" />
 </Input>

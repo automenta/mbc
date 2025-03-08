@@ -1,9 +1,9 @@
-import {parseJson, nthEq} from "@welshman/lib"
+import {nthEq, parseJson} from "@welshman/lib"
 import {Address} from "./Address.js"
 import {uniqTags} from "./Tags.js"
 import {isRelayUrl} from "./Relay.js"
-import {Encryptable, DecryptedEvent} from "./Encryptable.js"
 import type {EncryptableUpdates} from "./Encryptable.js"
+import {DecryptedEvent, Encryptable} from "./Encryptable.js"
 
 export type ListParams = {
   kind: number

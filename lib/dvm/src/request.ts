@@ -1,7 +1,7 @@
 import {Emitter, now} from "@welshman/lib"
-import type {TrustedEvent, SignedEvent, Filter} from "@welshman/util"
-import {subscribe, publish, SubscriptionEvent} from "@welshman/net"
-import type {Subscription, Publish} from "@welshman/net"
+import type {Filter, SignedEvent, TrustedEvent} from "@welshman/util"
+import type {Publish, Subscription} from "@welshman/net"
+import {publish, subscribe, SubscriptionEvent} from "@welshman/net"
 
 export enum DVMEvent {
   Progress = "progress",

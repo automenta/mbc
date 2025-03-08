@@ -268,7 +268,7 @@ export const userFollowList = derived([followsByPubkey, pubkey, anonymous], ([$m
 
 export const userFollows = derived(
   userFollowList,
-  list => new Set(getPubkeyTagValues(getListTags(list)))
+  list => new Set(getPubkeyTagValues(getListTags(list))),
 )
 
 //export const userNetwork = derived(userFollowList, list => getNetwork(list.event.pubkey))
@@ -277,14 +277,14 @@ export const userMuteList = derived([mutesByPubkey, pubkey], ([$m, $pk]) => $m.g
 
 export const userMutes = derived(
   userMuteList,
-  list => new Set(getTagValues(["p", "e"], getListTags(list)))
+  list => new Set(getTagValues(["p", "e"], getListTags(list))),
 )
 
 export const userPinList = derived([pinsByPubkey, pubkey], ([$m, $pk]) => $m.get($pk))
 
 export const userPins = derived(
   userPinList,
-  list => new Set(getTagValues(["e"], getListTags(list)))
+  list => new Set(getTagValues(["e"], getListTags(list))),
 )
 
 const EVENT_MUTE_CACHE_SIZE = 5000

@@ -1,53 +1,53 @@
 <script lang="ts">
-  import {tryCatch} from "@welshman/lib"
-  import Card from "src/partials/Card.svelte"
-  import Textarea from "src/partials/Textarea.svelte"
-  import FlexColumn from "src/partials/FlexColumn.svelte"
+	import {tryCatch} from "@welshman/lib"
+	import Card from "src/partials/Card.svelte"
+	import Textarea from "src/partials/Textarea.svelte"
+	import FlexColumn from "src/partials/FlexColumn.svelte"
 
-  export let feed
-  export let onChange
+	export let feed
+	export let onChange
 
-  const onInput = async e => {
-    const newFeed = await tryCatch(() => JSON.parse(e.target.value))
+	const onInput = async e => {
+		const newFeed = await tryCatch(() => JSON.parse(e.target.value))
 
-    if (newFeed) {
-      onChange(newFeed)
-    }
+		if (newFeed) {
+			onChange(newFeed)
+		}
 
-    isValid = Boolean(newFeed)
-  }
+		isValid = Boolean(newFeed)
+	}
 
-  const onFocus = () => {
-    isFocused = true
-  }
+	const onFocus = () => {
+		isFocused = true
+	}
 
-  const onBlur = () => {
-    if (isValid) {
-      json = JSON.stringify(feed, null, 2)
-    }
+	const onBlur = () => {
+		if (isValid) {
+			json = JSON.stringify(feed, null, 2)
+		}
 
-    isFocused = false
-  }
+		isFocused = false
+	}
 
-  let isValid = true
-  let isFocused = false
-  let json = JSON.stringify(feed, null, 2)
+	let isValid = true
+	let isFocused = false
+	let json = JSON.stringify(feed, null, 2)
 </script>
 
 <Card>
-  <FlexColumn>
-    <span class=" text-lg">Enter your custom feed below</span>
-    <Textarea
-      class="h-72 whitespace-pre-wrap"
-      value={json}
-      on:input={onInput}
-      on:focus={onFocus}
-      on:blur={onBlur} />
-    {#if !isValid && !isFocused}
-      <p>
-        <i class="fa fa-triangle-exclamation" />
-        Your feed is currently invalid. Please double check that it is valid JSON.
-      </p>
-    {/if}
-  </FlexColumn>
+	<FlexColumn>
+		<span class=" text-lg">Enter your custom feed below</span>
+		<Textarea
+		  class="h-72 whitespace-pre-wrap"
+		  on:blur={onBlur}
+		  on:focus={onFocus}
+		  on:input={onInput}
+		  value={json} />
+		{#if !isValid && !isFocused}
+			<p>
+				<i class="fa fa-triangle-exclamation" />
+				Your feed is currently invalid. Please double check that it is valid JSON.
+			</p>
+		{/if}
+	</FlexColumn>
 </Card>

@@ -1,6 +1,5 @@
 import type {Session} from "@welshman/app"
-import type {Publish} from "@welshman/net"
-import type {TrustedEvent, Zapper as WelshmanZapper} from "@welshman/util"
+import type {TrustedEvent} from "@welshman/util"
 
 // export type Zapper = WelshmanZapper & {
 //   lnurl: string

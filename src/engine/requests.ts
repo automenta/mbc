@@ -114,7 +114,10 @@ export const pullConservatively = ({relays, filters}: AppSyncOpts) => {
 //   return {promise, loading, stop: onExhausted}
 // }
 
-export const loadEvent = async (eventIdOrAddress: string, request: Partial<MySubscribeRequest> = {}) =>
+export const loadEvent = async (
+  eventIdOrAddress: string,
+  request: Partial<MySubscribeRequest> = {},
+) =>
   first(
     await load({
       ...request,
@@ -124,7 +127,10 @@ export const loadEvent = async (eventIdOrAddress: string, request: Partial<MySub
     }),
   )
 
-export const deriveEvent = (eventIdOrAddress: string, request: Partial<MySubscribeRequest> = {}) => {
+export const deriveEvent = (
+  eventIdOrAddress: string,
+  request: Partial<MySubscribeRequest> = {},
+) => {
   let attempted = false
   const filters = getIdFilters([eventIdOrAddress])
 
@@ -241,7 +247,6 @@ export const createFeedController = ({forcePlatform = true, ...options}: FeedCon
   })
 }
 
-
 export const getNotificationKinds = () =>
   without(env.ENABLE_ZAPS ? [] : [9735], [...noteKinds, ...reactionKinds])
 
@@ -255,7 +260,6 @@ const liveNotificationFilters = () => {
   return [addSinceToFilter(filter)]
 }
 
-
 export const loadNotifications = () => {
   if (notificationSubscription) {
     notificationSubscription.close()
@@ -268,14 +272,13 @@ export const loadNotifications = () => {
 }
 
 export const listenForNotifications = () => {
-  if (notificationSubscription)
-    notificationSubscription.close()
+  if (notificationSubscription) notificationSubscription.close()
 
-  return notificationSubscription = subscribe({
+  return (notificationSubscription = subscribe({
     skipCache: true,
     relays: ctx.app.router.ForUser().getUrls(),
     filters: liveNotificationFilters(),
-  })
+  }))
 }
 
 export const loadLabels = (authors: string[]) =>
@@ -314,7 +317,6 @@ export const loadMessages = () =>
       {kinds: [DEPRECATED_DIRECT_MESSAGE, WRAP], "#p": [pubkey.get()]},
     ],
   })
-
 
 export const listenForMessages = (pubkeys: string[]) => {
   const allPubkeys = uniq([pubkey.get(), ...pubkeys])

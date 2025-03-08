@@ -19,13 +19,17 @@ export const setChecked = (path: string, timestamp = now()) =>
   checked.update(state => ({...state, [path]: timestamp}))
 
 // Main Notifications
-const notificationFilter = (pubkey) => ({
+const notificationFilter = pubkey => ({
   kinds: noteKinds,
   "#p": [pubkey],
 })
 
 export const mainNotifications = derived(
-  [pubkey, isEventMuted, deriveEvents(repository, {throttle: 800, filters: [notificationFilter(get(pubkey))]})],
+  [
+    pubkey,
+    isEventMuted,
+    deriveEvents(repository, {throttle: 800, filters: [notificationFilter(get(pubkey))]}),
+  ],
   ([$pubkey, $isEventMuted, $events]) =>
     sortEventsDesc(
       $events.filter(
@@ -61,7 +65,7 @@ export const hasNewNotifications = derived(
 )
 
 // Reaction Notifications
-const reactionNotificationFilter = (pubkey) => ({
+const reactionNotificationFilter = pubkey => ({
   kinds: reactionKinds,
   "#p": [pubkey],
 })

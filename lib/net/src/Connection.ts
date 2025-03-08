@@ -1,7 +1,7 @@
 import {Emitter} from "@welshman/lib"
 import {normalizeRelayUrl} from "@welshman/util"
-import {Socket} from "./Socket.js"
 import type {Message} from "./Socket.js"
+import {Socket} from "./Socket.js"
 import {ConnectionEvent} from "./ConnectionEvent.js"
 import {ConnectionState} from "./ConnectionState.js"
 import {ConnectionStats} from "./ConnectionStats.js"

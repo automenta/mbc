@@ -9,16 +9,16 @@ import type {Publish, Subscription} from '@welshman/net'
 import {makeDvmRequest, DVMEvent} from '@welshman/dvm'
 
 const req = makeDvmRequest({
-  // Create and sign a dvm request event, including any desired tags
-  event: createAndSign({kind: 5300}),
-  // Publish and subscribe to these relays
-  relays: ['wss://relay.damus.io', 'wss://dvms.f7z.io'],
-  // Timeout defaults to 30 seconds
-  timeout: 30_000,
-  // Auto close on first result (defaults to true)
-  autoClose: true,
-  // Listen for and emit `progress` events
-  reportProgress: true,
+	// Create and sign a dvm request event, including any desired tags
+	event: createAndSign({kind: 5300}),
+	// Publish and subscribe to these relays
+	relays: ['wss://relay.damus.io', 'wss://dvms.f7z.io'],
+	// Timeout defaults to 30 seconds
+	timeout: 30_000,
+	// Auto close on first result (defaults to true)
+	autoClose: true,
+	// Listen for and emit `progress` events
+	reportProgress: true,
 })
 
 // Listen for progress, result, etc
@@ -44,38 +44,38 @@ const tags = []
 
 // Populate the tags with music by Ainsley Costello
 const sub = subscribe({
-  timeout: 30_000,
-  relays: ["wss://relay.wavlake.com"],
-  filters: [{
-    kinds: [31337],
-    '#p': ['8806372af51515bf4aef807291b96487ea1826c966a5596bca86697b5d8b23bc'],
-  }],
+	timeout: 30_000,
+	relays: ["wss://relay.wavlake.com"],
+	filters: [{
+		kinds: [31337],
+		'#p': ['8806372af51515bf4aef807291b96487ea1826c966a5596bca86697b5d8b23bc'],
+	}],
 })
 
 // Push event ids to our suggestions
 sub.on('event', (url, e) => tags.push(["e", e.id, url]))
 
 const dvm = new DVM({
-  // The private key used to sign events
-  sk: hexPrivateKey,
-  // Relays that the DVM will listen on
-  relays: ['wss://relay.damus.io', 'wss://dvms.f7z.io'],
-  // Only listen to requests tagging our dvm
-  requireMention: true,
-  // Expire results after 1 hour (the default)
-  expireAfter: 60 * 60,
-  // Handlers for various kinds
-  handlers: {
-    5300: dvm => ({
-      handleEvent: async function* (event) {
-        // DVM responses are stringified into the content
-        const content = JSON.stringify(tags)
+	// The private key used to sign events
+	sk: hexPrivateKey,
+	// Relays that the DVM will listen on
+	relays: ['wss://relay.damus.io', 'wss://dvms.f7z.io'],
+	// Only listen to requests tagging our dvm
+	requireMention: true,
+	// Expire results after 1 hour (the default)
+	expireAfter: 60 * 60,
+	// Handlers for various kinds
+	handlers: {
+		5300: dvm => ({
+			handleEvent: async function* (event) {
+				// DVM responses are stringified into the content
+				const content = JSON.stringify(tags)
 
-        // Yield our response. Kind 7000 can be used for partial results too
-        yield createEvent(event.kind + 1000, {content})
-      },
-    }),
-  }
+				// Yield our response. Kind 7000 can be used for partial results too
+				yield createEvent(event.kind + 1000, {content})
+			},
+		}),
+	}
 })
 
 // Enable logging

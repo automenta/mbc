@@ -1,15 +1,15 @@
 import {partition} from "@welshman/lib"
+import type {NetContext, RelaysAndFilters, Subscription} from "@welshman/net"
 import {
   defaultOptimizeSubscriptions,
   getDefaultNetContext as originalGetDefaultNetContext,
 } from "@welshman/net"
-import type {Subscription, RelaysAndFilters, NetContext} from "@welshman/net"
-import {LOCAL_RELAY_URL, isEphemeralKind, isDVMKind, unionFilters} from "@welshman/util"
-import type {TrustedEvent, StampedEvent} from "@welshman/util"
-import {tracker, repository} from "./core.js"
-import {makeRouter, getFilterSelections} from "./router.js"
-import {signer} from "./session.js"
+import type {StampedEvent, TrustedEvent} from "@welshman/util"
+import {isDVMKind, isEphemeralKind, LOCAL_RELAY_URL, unionFilters} from "@welshman/util"
+import {repository, tracker} from "./core.js"
 import type {Router} from "./router.js"
+import {getFilterSelections, makeRouter} from "./router.js"
+import {signer} from "./session.js"
 
 export type AppContext = {
   router: Router

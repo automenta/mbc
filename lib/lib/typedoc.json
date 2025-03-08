@@ -1,4 +1,8 @@
 {
-  "exclude": ["normalize-url/*"],
-  "entryPoints": ["src/index.ts"]
+	"exclude": [
+		"normalize-url/*"
+	],
+	"entryPoints": [
+		"src/index.ts"
+	]
 }

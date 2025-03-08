@@ -1,4 +1,4 @@
-import {Emitter, addToMapKey} from "@welshman/lib"
+import {addToMapKey, Emitter} from "@welshman/lib"
 
 export class Tracker extends Emitter {
   relaysById = new Map<string, Set<string>>()

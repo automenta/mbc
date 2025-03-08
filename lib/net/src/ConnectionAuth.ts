@@ -33,35 +33,6 @@ export class ConnectionAuth {
     this.cxn.on(ConnectionEvent.Receive, this.#onReceive)
   }
 
-  #onReceive = (cxn: Connection, [verb, ...extra]: Message) => {
-    if (verb === "OK") {
-      const [id, ok, message] = extra
-
-      if (id === this.request) {
-        this.message = message
-        this.status = ok ? Ok : Forbidden
-      }
-    }
-
-    if (verb === "AUTH" && extra[0] !== this.challenge) {
-      this.challenge = extra[0]
-      this.request = undefined
-      this.message = undefined
-      this.status = Requested
-
-      if (ctx.net.authMode === AuthMode.Implicit) {
-        this.respond()
-      }
-    }
-  }
-
-  #onClose = (cxn: Connection) => {
-    this.challenge = undefined
-    this.request = undefined
-    this.message = undefined
-    this.status = None
-  }
-
   waitFor = async (condition: () => boolean, timeout = 300) => {
     const start = Date.now()
 
@@ -116,5 +87,34 @@ export class ConnectionAuth {
     }
 
     await this.waitForResolution(Math.ceil(timeout / 2))
+  }
+
+  #onReceive = (cxn: Connection, [verb, ...extra]: Message) => {
+    if (verb === "OK") {
+      const [id, ok, message] = extra
+
+      if (id === this.request) {
+        this.message = message
+        this.status = ok ? Ok : Forbidden
+      }
+    }
+
+    if (verb === "AUTH" && extra[0] !== this.challenge) {
+      this.challenge = extra[0]
+      this.request = undefined
+      this.message = undefined
+      this.status = Requested
+
+      if (ctx.net.authMode === AuthMode.Implicit) {
+        this.respond()
+      }
+    }
+  }
+
+  #onClose = (cxn: Connection) => {
+    this.challenge = undefined
+    this.request = undefined
+    this.message = undefined
+    this.status = None
   }
 }

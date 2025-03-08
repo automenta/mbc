@@ -1,74 +1,74 @@
 <script lang="ts">
-  import {fromPairs, identity} from "@welshman/lib"
-  import {
-    DVM_REQUEST_DISCOVER_CONTENT,
-    DVM_REQUEST_DISCOVER_PEOPLE,
-    DVM_REQUEST_SEARCH_CONTENT,
-    DVM_REQUEST_SEARCH_PEOPLE,
-    getAddress
-  } from "@welshman/util"
-  import type {DVMFeed} from "@welshman/feeds"
-  import {getFeedArgs, makeDVMFeed} from "@welshman/feeds"
-  import SearchSelect from "src/partials/SearchSelect.svelte"
-  import Field from "src/partials/Field.svelte"
-  import Input from "src/partials/Input.svelte"
-  import HandlerSummary from "src/app/shared/HandlerSummary.svelte"
-  import {HandlerSearch} from "src/domain"
-  import {handlersByKind} from "src/engine"
+	import {fromPairs, identity} from "@welshman/lib"
+	import {
+		DVM_REQUEST_DISCOVER_CONTENT,
+		DVM_REQUEST_DISCOVER_PEOPLE,
+		DVM_REQUEST_SEARCH_CONTENT,
+		DVM_REQUEST_SEARCH_PEOPLE,
+		getAddress
+	} from "@welshman/util"
+	import type {DVMFeed} from "@welshman/feeds"
+	import {getFeedArgs, makeDVMFeed} from "@welshman/feeds"
+	import SearchSelect from "src/partials/SearchSelect.svelte"
+	import Field from "src/partials/Field.svelte"
+	import Input from "src/partials/Input.svelte"
+	import HandlerSummary from "src/app/shared/HandlerSummary.svelte"
+	import {HandlerSearch} from "src/domain"
+	import {handlersByKind} from "src/engine"
 
-  export let feed: DVMFeed
-  export let onChange
+	export let feed: DVMFeed
+	export let onChange
 
-  const onAddressesChange = addresses => {
-    onChange(
-      makeDVMFeed(
-        ...addresses.map(address => {
-          const handler = handlerSearch.getOption(address)
-          const dvmItem = {
-            kind: handler.kind,
-            tags: [["p", handler.event.pubkey]],
-          }
+	const onAddressesChange = addresses => {
+		onChange(
+		  makeDVMFeed(
+			...addresses.map(address => {
+				const handler = handlerSearch.getOption(address)
+				const dvmItem = {
+					kind: handler.kind,
+					tags: [["p", handler.event.pubkey]]
+				}
 
-          if (searchTerm) {
-            dvmItem.tags.push(["i", searchTerm])
-          }
+				if (searchTerm) {
+					dvmItem.tags.push(["i", searchTerm])
+				}
 
-          return dvmItem
-        }),
-      ),
-    )
-  }
+				return dvmItem
+			})
+		  )
+		)
+	}
 
-  const discoverKinds = [DVM_REQUEST_DISCOVER_CONTENT, DVM_REQUEST_DISCOVER_PEOPLE]
+	const discoverKinds = [DVM_REQUEST_DISCOVER_CONTENT, DVM_REQUEST_DISCOVER_PEOPLE]
 
-  const searchKinds = [DVM_REQUEST_SEARCH_CONTENT, DVM_REQUEST_SEARCH_PEOPLE]
+	const searchKinds = [DVM_REQUEST_SEARCH_CONTENT, DVM_REQUEST_SEARCH_PEOPLE]
 
-  const allKinds = [...discoverKinds, ...searchKinds]
+	const allKinds = [...discoverKinds, ...searchKinds]
 
-  const handlerSearch = new HandlerSearch(allKinds.flatMap(k => $handlersByKind.get(k) || []))
+	const handlerSearch = new HandlerSearch(allKinds.flatMap(k => $handlersByKind.get(k) || []))
 
-  const addresses = getFeedArgs(feed).flatMap(item => {
-    const handlers = $handlersByKind.get(item.kind) || []
-    const pubkey = fromPairs(item.tags || []).p
+	const addresses = getFeedArgs(feed).flatMap(item => {
+		const handlers = $handlersByKind.get(item.kind) || []
+		const pubkey = fromPairs(item.tags || []).p
 
-    return handlers
-      .filter(handler => handler.event.pubkey === pubkey)
-      .map(handler => getAddress(handler.event))
-  })
+		return handlers
+		  .filter(handler => handler.event.pubkey === pubkey)
+		  .map(handler => getAddress(handler.event))
+	})
 
-  let searchTerm =
-    getFeedArgs(feed)
-      .map(item => fromPairs(item.tags || []).i)
-      .find(identity) || ""
+	let searchTerm =
+	  getFeedArgs(feed)
+		.map(item => fromPairs(item.tags || []).i)
+		.find(identity) || ""
 </script>
 
 <span class=" text-lg">Which DVMs would you like to request notes from?</span>
 <SearchSelect
   multiple
-  value={addresses}
+  onChange={onAddressesChange}
   search={handlerSearch.searchValues}
-  onChange={onAddressesChange}>
-  <span slot="item" let:item let:context>
+  value={addresses}>
+  <span let:context let:item slot="item">
     {#if context === "value"}
       {handlerSearch.displayValue(item)}
     {:else}
@@ -77,7 +77,7 @@
   </span>
 </SearchSelect>
 <Field label="Search term (optional)">
-  <Input bind:value={searchTerm}>
-    <i slot="before" class="fa fa-search" />
-  </Input>
+	<Input bind:value={searchTerm}>
+		<i class="fa fa-search" slot="before" />
+	</Input>
 </Field>

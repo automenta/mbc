@@ -1,7 +1,7 @@
 <script lang="ts">
-  export let value
+	export let value
 </script>
 
 {#each value as _}
-  <br />
+	<br />
 {/each}

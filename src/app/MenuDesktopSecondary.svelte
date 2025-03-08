@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {slide} from "src/util/transition"
+	import {slide} from "src/util/transition"
 
-  export let onEscape
+	export let onEscape
 </script>
 
 <svelte:body
@@ -14,11 +14,11 @@
 <div class="fixed inset-0 cursor-pointer" on:click={onEscape} />
 
 <div
-  style="bottom: 4.5rem"
   class="absolute left-0 w-72 pr-px"
-  transition:slide|local={{duration: 300}}
-  on:click={onEscape}>
-  <div class="overflow-hidden rounded-t-xl bg-neutral-800">
-    <slot />
-  </div>
+  on:click={onEscape}
+  style="bottom: 4.5rem"
+  transition:slide|local={{duration: 300}}>
+	<div class="overflow-hidden rounded-t-xl bg-neutral-800">
+		<slot />
+	</div>
 </div>

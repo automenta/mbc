@@ -1,4 +1,4 @@
-import {now, int, DAY, HOUR, MINUTE} from "@welshman/lib"
+import {DAY, HOUR, int, MINUTE, now} from "@welshman/lib"
 
 export const LOCALE = new Intl.DateTimeFormat().resolvedOptions().locale
 

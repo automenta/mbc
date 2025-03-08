@@ -1,11 +1,11 @@
-import {openDB, deleteDB} from "idb"
 import type {IDBPDatabase} from "idb"
-import {writable} from "svelte/store"
+import {deleteDB, openDB} from "idb"
 import type {Unsubscriber, Writable} from "svelte/store"
-import {indexBy, equals, throttle, fromPairs} from "@welshman/lib"
-import type {TrustedEvent, Repository} from "@welshman/util"
+import {writable} from "svelte/store"
+import {equals, fromPairs, indexBy, throttle} from "@welshman/lib"
+import type {Repository, TrustedEvent} from "@welshman/util"
 import type {Tracker} from "@welshman/net"
-import {withGetter, adapter, throttled, custom} from "@welshman/store"
+import {adapter, custom, throttled, withGetter} from "@welshman/store"
 
 export type StorageAdapterOptions = {
   throttle?: number
@@ -142,7 +142,7 @@ export const clearStorage = async () => {
   if (db) {
     await closeStorage()
     await deleteDB(db.name)
-    db = undefined // force initStorage to run again in tests
+    db = undefined // force initStorage to run again in test
   }
 }
 

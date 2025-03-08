@@ -1,7 +1,7 @@
-import {Worker, complement, spec} from "@welshman/lib"
+import {complement, spec, Worker} from "@welshman/lib"
 import {AUTH_JOIN} from "@welshman/util"
-import {SocketStatus} from "./Socket.js"
 import type {Message} from "./Socket.js"
+import {SocketStatus} from "./Socket.js"
 import type {Connection} from "./Connection.js"
 import {AuthStatus} from "./ConnectionAuth.js"
 

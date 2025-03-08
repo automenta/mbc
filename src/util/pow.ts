@@ -26,7 +26,8 @@ export const makePow = (event: OwnedEvent, difficulty: number): ProofOfWork => {
       worker.terminate()
     }
 
-    worker.onerror = (e) => { // Corrected type for error event
+    worker.onerror = e => {
+      // Corrected type for error event
       reject(e)
       worker.terminate()
     }
@@ -45,9 +46,12 @@ if (benchmark.get() === 0) {
   const pow = makePow(event, defaultBenchmarkDifficulty)
   const start = Date.now()
 
-  pow.result.then(() => {
-    benchmark.set(Date.now() - start)
-  }).catch(e => { // Added catch to prevent unhandled promise rejection
-    console.error("Benchmark POW failed", e)
-  })
+  pow.result
+    .then(() => {
+      benchmark.set(Date.now() - start)
+    })
+    .catch(e => {
+      // Added catch to prevent unhandled promise rejection
+      console.error("Benchmark POW failed", e)
+    })
 }

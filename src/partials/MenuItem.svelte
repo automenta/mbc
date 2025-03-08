@@ -1,9 +1,9 @@
 <script lang="ts">
-  import cx from "classnames"
-  import Anchor from "src/partials/Anchor.svelte"
+	import cx from "classnames"
+	import Anchor from "src/partials/Anchor.svelte"
 
-  export let inert = false
-  export let active = false
+	export let inert = false
+	export let active = false
 </script>
 
 <Anchor
@@ -13,5 +13,5 @@
     "transition-all hover:bg-accent hover:text-neutral-100": !inert,
   })}
   on:click>
-  <slot />
+	<slot />
 </Anchor>
