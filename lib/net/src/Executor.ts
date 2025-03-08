@@ -11,10 +11,10 @@ export type Target = Emitter & {
   cleanup: () => void
 }
 
-export type NegentropyMessage = {
-  have: string[]
-  need: string[]
-}
+// export type NegentropyMessage = {
+//   have: string[]
+//   need: string[]
+// }
 
 type EventCallback = (url: string, event: TrustedEvent) => void
 type EoseCallback = (url: string) => void
@@ -103,9 +103,8 @@ export class Executor {
     const storage = new NegentropyStorageVector()
     const neg = new Negentropy(storage, 50_000)
 
-    for (const event of events) {
+    for (const event of events)
       storage.insert(event.created_at, event.id)
-    }
 
     storage.seal()
 
