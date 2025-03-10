@@ -23,17 +23,20 @@ vi.mock(import("@welshman/lib"), async importOriginal => ({
   },
 }))
 
-vi.mock(import("../src/session"), async importOriginal => ({
-  ...(await importOriginal()),
-  nip44EncryptToSelf: vi.fn().mockImplementation(text => `encrypted:${text}`),
-  pubkey: {
-    get: () => "ee".repeat(32),
-    subscribe: run => {
-      run("ee".repeat(32))
-      return () => null
+vi.mock(import("../src/session"), async importOriginal => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    nip44EncryptToSelf: vi.fn().mockImplementation(text => `encrypted:${text}`),
+    pubkey: {
+      get: () => "ee".repeat(32),
+      subscribe: run => {
+        run("ee".repeat(32))
+        return () => null
+      },
     },
-  },
-}))
+  }
+})
 
 describe("commands", () => {
   const pubkey1 = "aa".repeat(32)
