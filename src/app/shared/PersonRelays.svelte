@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {uniq} from "@welshman/lib"
+	import {uniq} from "src/lib"
 	import FlexColumn from "src/partials/FlexColumn.svelte"
 	import RelayCard from "src/app/shared/RelayCard.svelte"
 

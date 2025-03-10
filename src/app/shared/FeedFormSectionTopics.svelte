@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {identity} from "@welshman/lib"
-	import {FeedType} from "@welshman/feeds"
-	import {topicSearch} from "@welshman/app"
+	import {identity} from "src/lib"
+	import {FeedType} from "src/feeds"
+	import {topicSearch} from "src/app"
 	import SearchSelect from "src/partials/SearchSelect.svelte"
 
 	export let feed

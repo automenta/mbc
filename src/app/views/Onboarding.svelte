@@ -1,11 +1,11 @@
 <script lang="ts">
 	import {get, writable} from "svelte/store"
 	import {extractPrivateKey, isKeyValid} from "src/util/nostr"
-	import {addSession, getWriteRelayUrls, userRelaySelections} from "@welshman/app"
-	import {getPubkey, makeSecret} from "@welshman/signer"
+	import {addSession, getWriteRelayUrls, userRelaySelections} from "src/app"
+	import {getPubkey, makeSecret} from "src/signer"
 	import {router} from "src/app/util"
 	import {createAndPublish, env, setOutboxPolicies} from "src/engine"
-	import {PROFILE} from "@welshman/util"
+	import {PROFILE} from "src/util"
 	import Input from "src/partials/Input.svelte"
 
 	let keyPairInput = ""

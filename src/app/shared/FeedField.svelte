@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {identity, partition} from "@welshman/lib"
+	import {identity, partition} from "src/lib"
 	import {
 		FeedType,
 		getFeedArgs,
@@ -19,7 +19,7 @@
 		makeScopeFeed,
 		makeTagFeed,
 		Scope
-	} from "@welshman/feeds"
+	} from "src/feeds"
 	import {toSpliced} from "src/util/misc"
 	import Icon from "src/partials/Icon.svelte"
 	import SelectButton from "src/partials/SelectButton.svelte"

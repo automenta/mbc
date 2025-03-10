@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {ctx, equals, identity} from "@welshman/lib"
-	import {MUTES} from "@welshman/util"
-	import {tagPubkey, topicSearch} from "@welshman/app"
+	import {ctx, equals, identity} from "src/lib"
+	import {MUTES} from "src/util"
+	import {tagPubkey, topicSearch} from "src/app"
 	import {appName} from "src/partials/state"
 	import {showInfo} from "src/partials/Toast.svelte"
 	import Input from "src/partials/Input.svelte"

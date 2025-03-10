@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {onMount} from "svelte"
-	import {nth} from "@welshman/lib"
-	import {getTags, getTagValue, zapFromEvent} from "@welshman/util"
-	import {deriveZapperForPubkey, loadZapper} from "@welshman/app"
+	import {nth} from "src/lib"
+	import {getTags, getTagValue, zapFromEvent} from "src/util"
+	import {deriveZapperForPubkey, loadZapper} from "src/app"
 	import {formatSats} from "src/util/misc"
 	import PersonLink from "src/app/shared/PersonLink.svelte"
 	import NoteContentLinks from "src/app/shared/NoteContentLinks.svelte"

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {deriveProfile} from "@welshman/app"
+	import {deriveProfile} from "src/app"
 	import NoteContentKind1 from "src/app/shared/NoteContentKind1.svelte"
 
 	export let pubkey

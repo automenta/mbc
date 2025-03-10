@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {isMobile} from "src/util/html"
 	import {fly} from "src/util/transition"
-	import {getIdOrAddress} from "@welshman/util"
+	import {getIdOrAddress} from "src/util"
 	import Spinner from "src/partials/Spinner.svelte"
 	import FeedItem from "src/app/shared/FeedItem.svelte"
 	import {deriveEvent} from "src/engine"

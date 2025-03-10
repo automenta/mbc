@@ -4,23 +4,15 @@
   "compilerOptions": {
     "baseUrl": ".",
     "module": "esnext",
+    "moduleResolution": "bundler",
     "target": "ESNext",
     "paths": {
-      "src/*": ["src/*"],
-      "lib/app/src/*": ["lib/util/src/*"],
-      "lib/content/src/*": ["lib/content/src/*"],
-      "lib/dvm/src/*": ["lib/dvm/src/*"],
-      "lib/editor/src/*": ["lib/editor/src/*"],
-      "lib/feeds/src/*": ["lib/feeds/src/*"],
-      "lib/lib/src/*": ["lib/lib/src/*"],
-      "lib/net/src/*": ["lib/net/src/*"],
-      "lib/signer/src/*": ["lib/signer/src/*"],
-      "lib/store/src/*": ["lib/store/src/*"],
-      "lib/util/src/*": ["lib/util/src/*"]
+      "src/*": ["src/*"]
     },
     "isolatedModules": true,
     "noImplicitAny": false,
     "strictPropertyInitialization": false,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "outDir": "build"
   }
 }

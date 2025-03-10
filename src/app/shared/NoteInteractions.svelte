@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {pubkey} from "@welshman/app"
-	import {max, pluck, uniq} from "@welshman/lib"
-	import type {TrustedEvent} from "@welshman/util"
+	import {pubkey} from "src/app"
+	import {max, pluck, uniq} from "src/lib"
+	import type {TrustedEvent} from "src/util"
 	import {formatTimestamp} from "src/util/misc"
 	import PeopleAction from "./PeopleAction.svelte"
 

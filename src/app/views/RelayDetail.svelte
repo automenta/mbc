@@ -1,8 +1,8 @@
 <script lang="ts">
-	import {displayRelayUrl, normalizeRelayUrl} from "@welshman/util"
-	import {feedFromFilter, makeRelayFeed} from "@welshman/feeds"
-	import {deriveEvents} from "@welshman/store"
-	import {deriveRelay, repository} from "@welshman/app"
+	import {displayRelayUrl, normalizeRelayUrl} from "src/util"
+	import {feedFromFilter, makeRelayFeed} from "src/feeds"
+	import {deriveEvents} from "src/store"
+	import {deriveRelay, repository} from "src/app"
 	import {getAvgRating} from "src/util/nostr"
 	import Feed from "src/app/shared/Feed.svelte"
 	import Tabs from "src/partials/Tabs.svelte"

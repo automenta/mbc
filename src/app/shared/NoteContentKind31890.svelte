@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {getAddress} from "@welshman/util"
+	import {getAddress} from "src/util"
 	import FeedCard from "src/app/shared/FeedCard.svelte"
 
 	export let note

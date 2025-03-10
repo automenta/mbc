@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {tweened} from "svelte/motion"
-	import {getListTags, getPubkeyTagValues} from "@welshman/util"
-	import {deriveFollows, getFollowers} from "@welshman/app"
+	import {getListTags, getPubkeyTagValues} from "src/util"
+	import {deriveFollows, getFollowers} from "src/app"
 	import {numberFmt} from "src/util/misc"
 	import {router} from "src/app/util/router"
 

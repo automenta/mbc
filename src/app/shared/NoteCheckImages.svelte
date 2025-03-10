@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {onMount} from "svelte"
-	import {postJson} from "@welshman/lib"
-	import {pubkey} from "@welshman/app"
+	import {postJson} from "src/lib"
+	import {pubkey} from "src/app"
 	import Anchor from "src/partials/Anchor.svelte"
 	import {dufflepud, getSetting, userFollows} from "src/engine"
 

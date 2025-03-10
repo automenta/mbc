@@ -1,11 +1,11 @@
-import {getPlaintext, getSession, getSigner, repository, setPlaintext, tracker} from "@welshman/app"
-import {Worker} from "@welshman/lib"
-import {Nip59} from "@welshman/signer"
-import type {SignedEvent, TrustedEvent} from "@welshman/util"
-import {APP_DATA, FOLLOWS, getTagValue, isHashedEvent, MUTES, WRAP} from "@welshman/util"
+import {getPlaintext, getSession, getSigner, repository, setPlaintext, tracker} from "src/app"
+import {Worker} from "src/lib"
+import {Nip59} from "src/signer"
+import type {SignedEvent, TrustedEvent} from "src/util"
+import {APP_DATA, FOLLOWS, getTagValue, isHashedEvent, MUTES, WRAP} from "src/util"
 
 import logger from "src/util/logger"
-import {canDecrypt} from "./state"
+import {canDecrypt} from "./state.js"
 
 export const ensureMessagePlaintext = async (event: TrustedEvent) => {
   if (!event.content) {

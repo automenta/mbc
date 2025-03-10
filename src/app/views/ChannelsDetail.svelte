@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {derived} from "svelte/store"
 	import {onDestroy, onMount} from "svelte"
-	import {deriveEvents} from "@welshman/store"
-	import {DIRECT_MESSAGE, isShareableRelayUrl} from "@welshman/util"
+	import {deriveEvents} from "src/store"
+	import {DIRECT_MESSAGE, isShareableRelayUrl} from "src/util"
 	import {
 		displayProfileByPubkey,
 		getRelayUrls,
@@ -10,7 +10,7 @@
 		loadInboxRelaySelections,
 		repository,
 		session
-	} from "@welshman/app"
+	} from "src/app"
 	import Anchor from "src/partials/Anchor.svelte"
 	import Channel from "src/app/shared/Channel.svelte"
 	import PersonCircles from "src/app/shared/PersonCircles.svelte"

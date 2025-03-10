@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {getTagValue} from "@welshman/util"
+	import {getTagValue} from "src/util"
 	import FlexColumn from "src/partials/FlexColumn.svelte"
 	import RelayCard from "src/app/shared/RelayCard.svelte"
 	import NoteContentLabel from "src/app/shared/NoteContentLabel.svelte"

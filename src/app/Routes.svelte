@@ -1,6 +1,6 @@
 <script lang="ts">
 	import cx from "classnames"
-	import {pubkey, signer} from "@welshman/app"
+	import {pubkey, signer} from "src/app"
 	import logger from "src/util/logger"
 	import {isMobile} from "src/util/html"
 	import Modal from "src/partials/Modal.svelte"

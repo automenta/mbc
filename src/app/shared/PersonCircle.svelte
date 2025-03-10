@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {deriveProfile} from "@welshman/app"
+	import {deriveProfile} from "src/app"
 	import ImageCircle from "src/partials/ImageCircle.svelte"
 	import PlaceholderCircle from "src/app/shared/PlaceholderCircle.svelte"
 

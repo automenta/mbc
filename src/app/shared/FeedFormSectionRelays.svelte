@@ -1,8 +1,8 @@
 <script lang="ts">
-	import {identity} from "@welshman/lib"
-	import {FeedType} from "@welshman/feeds"
-	import {relaySearch} from "@welshman/app"
-	import {displayRelayUrl} from "@welshman/util"
+	import {identity} from "src/lib"
+	import {FeedType} from "src/feeds"
+	import {relaySearch} from "src/app"
+	import {displayRelayUrl} from "src/util"
 	import SearchSelect from "src/partials/SearchSelect.svelte"
 
 	export let feed

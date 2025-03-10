@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {onMount} from "svelte"
-	import {ctx} from "@welshman/lib"
+	import {ctx} from "src/lib"
 	import Popover from "src/partials/Popover.svelte"
 	import {ConnectionType, displayConnectionType, getConnectionStatus} from "src/domain/connection"
 

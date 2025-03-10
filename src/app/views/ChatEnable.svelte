@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {WRAP} from "@welshman/util"
-	import {repository} from "@welshman/app"
+	import {WRAP} from "src/util"
+	import {repository} from "src/app"
 	import {canDecrypt, ensureUnwrapped, env} from "src/engine"
 	import {router} from "src/app/util"
 	import Anchor from "src/partials/Anchor.svelte"

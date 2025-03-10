@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {ctx} from "@welshman/lib"
+	import {ctx} from "src/lib"
 	import {parseJson} from "src/util/misc"
 	import {themeBackgroundGradient} from "src/partials/state"
 	import Card from "src/partials/Card.svelte"

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import cx from "classnames"
-	import {fromNostrURI} from "@welshman/util"
-	import type {ParsedLinkValue} from "@welshman/content"
+	import {fromNostrURI} from "src/util"
+	import type {ParsedLinkValue} from "src/content"
 	import {
 		isAddress,
 		isCashu,
@@ -20,7 +20,7 @@
 		reduceLinks,
 		renderAsHtml,
 		truncate
-	} from "@welshman/content"
+	} from "src/content"
 	import QRCode from "src/partials/QRCode.svelte"
 	import Anchor from "src/partials/Anchor.svelte"
 	import NoteContentNewline from "src/app/shared/NoteContentNewline.svelte"

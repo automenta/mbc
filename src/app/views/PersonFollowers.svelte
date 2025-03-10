@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type {TrustedEvent} from "@welshman/util"
-	import {batch, pluck, uniq} from "@welshman/lib"
+	import type {TrustedEvent} from "src/util"
+	import {batch, pluck, uniq} from "src/lib"
 	import PersonList from "src/app/shared/PersonList.svelte"
 	import {subscribe} from "src/engine"
 	import Spinner from "src/partials/Spinner.svelte"

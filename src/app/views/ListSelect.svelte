@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {first} from "@welshman/lib"
-	import {getAddress, getTags} from "@welshman/util"
-	import {defaultTagFeedMappings} from "@welshman/feeds"
+	import {first} from "src/lib"
+	import {getAddress, getTags} from "src/util"
+	import {defaultTagFeedMappings} from "src/feeds"
 	import Subheading from "src/partials/Subheading.svelte"
 	import Anchor from "src/partials/Anchor.svelte"
 	import Card from "src/partials/Card.svelte"

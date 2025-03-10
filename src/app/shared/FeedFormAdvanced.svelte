@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {tryCatch} from "@welshman/lib"
+	import {tryCatch} from "src/lib"
 	import Card from "src/partials/Card.svelte"
 	import Textarea from "src/partials/Textarea.svelte"
 	import FlexColumn from "src/partials/FlexColumn.svelte"

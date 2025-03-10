@@ -1,7 +1,7 @@
 <script lang="ts">
 	import cx from "classnames"
 	import {onMount} from "svelte"
-	import {equals, identity, uniq} from "@welshman/lib"
+	import {equals, identity, uniq} from "src/lib"
 	import Input from "src/partials/Input.svelte"
 	import Popover2 from "src/partials/Popover2.svelte"
 	import Suggestions from "src/partials/Suggestions.svelte"

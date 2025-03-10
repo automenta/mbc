@@ -2,10 +2,10 @@
 	import {nip19} from "nostr-tools"
 	import {tweened} from "svelte/motion"
 	import {derived} from "svelte/store"
-	import {ctx, nthEq, pluck, prop, remove, spec, sum, uniqBy} from "@welshman/lib"
-	import {repository} from "@welshman/app"
-	import type {Handler, TrustedEvent} from "@welshman/util"
-	import {Address, getPubkeyTagValues, isReplaceable, LOCAL_RELAY_URL, toNostrURI, ZAP_RESPONSE} from "@welshman/util"
+	import {ctx, nthEq, pluck, prop, remove, spec, sum, uniqBy} from "src/lib"
+	import {repository} from "src/app"
+	import type {Handler, TrustedEvent} from "src/util"
+	import {Address, getPubkeyTagValues, isReplaceable, LOCAL_RELAY_URL, toNostrURI, ZAP_RESPONSE} from "src/util"
 	import {fly} from "src/util/transition"
 	import {copyToClipboard} from "src/util/html"
 	import {isLike, noteKinds} from "src/util/nostr"
@@ -18,9 +18,10 @@
 	import PersonBadge from "src/app/shared/PersonBadge.svelte"
 	import HandlerCard from "src/app/shared/HandlerCard.svelte"
 	import RelayCard from "src/app/shared/RelayCard.svelte"
-	import {deriveValidZaps} from "src/app/util"
+
 	import {env, sortEventsDesc, trackerStore} from "src/engine"
 	import {displayHandler, getHandlerKey, readHandlers} from "src/domain"
+	import {deriveValidZaps} from "src/app/util/zaps"
 
 	export let event: TrustedEvent
 	export let children: TrustedEvent[] = []

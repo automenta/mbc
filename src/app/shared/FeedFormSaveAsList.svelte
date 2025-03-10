@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {getAddress, NAMED_PEOPLE, NAMED_RELAYS, NAMED_TOPICS} from "@welshman/util"
-	import {tagPubkey} from "@welshman/app"
-	import {isAuthorFeed, isRelayFeed, makeListFeed} from "@welshman/feeds"
+	import {getAddress, NAMED_PEOPLE, NAMED_RELAYS, NAMED_TOPICS} from "src/util"
+	import {tagPubkey} from "src/app"
+	import {isAuthorFeed, isRelayFeed, makeListFeed} from "src/feeds"
 	import Card from "src/partials/Card.svelte"
 	import Anchor from "src/partials/Anchor.svelte"
 	import Popover2 from "src/partials/Popover2.svelte"

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {ellipsize, postJson} from "@welshman/lib"
+	import {ellipsize, postJson} from "src/lib"
 	import {dufflepud, imgproxy} from "src/engine"
 
 	export let url: string

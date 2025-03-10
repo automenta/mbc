@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {last} from "@welshman/lib"
+	import {last} from "src/lib"
 
 	export let url
 

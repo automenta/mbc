@@ -1,8 +1,8 @@
 <script lang="ts">
-	import {batch, flatten, sortBy, uniqBy} from "@welshman/lib"
-	import type {TrustedEvent} from "@welshman/util"
-	import {FEED, FEEDS, getAddress, getAddressTagValues, getIdFilters, NAMED_BOOKMARKS} from "@welshman/util"
-	import {repository} from "@welshman/app"
+	import {batch, flatten, sortBy, uniqBy} from "src/lib"
+	import type {TrustedEvent} from "src/util"
+	import {FEED, FEEDS, getAddress, getAddressTagValues, getIdFilters, NAMED_BOOKMARKS} from "src/util"
+	import {repository} from "src/app"
 	import {onMount} from "svelte"
 	import {createScroller} from "src/util/misc"
 	import {fly} from "src/util/transition"

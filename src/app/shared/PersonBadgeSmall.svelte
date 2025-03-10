@@ -1,6 +1,6 @@
 <script lang="ts">
 	import cx from "classnames"
-	import {deriveProfileDisplay} from "@welshman/app"
+	import {deriveProfileDisplay} from "src/app"
 	import Anchor from "src/partials/Anchor.svelte"
 	import PersonCircle from "src/app/shared/PersonCircle.svelte"
 	import {router} from "src/app/util/router"

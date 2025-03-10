@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {onDestroy} from "svelte"
-	import {ctx} from "@welshman/lib"
-	import {NOTE} from "@welshman/util"
+	import {ctx} from "src/lib"
+	import {NOTE} from "src/util"
 	import EditorContent from "src/app/editor/EditorContent.svelte"
 	import {createAndPublish} from "src/engine"
 	import Anchor from "src/partials/Anchor.svelte"

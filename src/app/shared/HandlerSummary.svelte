@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {pluck, uniq} from "@welshman/lib"
-	import {getAddress} from "@welshman/util"
+	import {pluck, uniq} from "src/lib"
+	import {getAddress} from "src/util"
 	import FlexColumn from "src/partials/FlexColumn.svelte"
 	import ImageCircle from "src/partials/ImageCircle.svelte"
 	import PeopleAction from "src/app/shared/PeopleAction.svelte"

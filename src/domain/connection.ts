@@ -1,5 +1,5 @@
-import {getRelayQuality, type ThunkStatus} from "@welshman/app"
-import {AuthStatus, Connection, PublishStatus, SocketStatus} from "@welshman/net"
+import {getRelayQuality, type ThunkStatus} from "src/app"
+import {AuthStatus, Connection, PublishStatus, SocketStatus} from "src/net"
 import {derived, writable} from "svelte/store"
 
 export type PublishNotice = {

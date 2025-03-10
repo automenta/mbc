@@ -1,7 +1,7 @@
 import Bowser from "bowser";
 import { derived, get, writable } from "svelte/store";
-import { fromPairs } from "@welshman/lib";
-import { synced } from "@welshman/store";
+import { fromPairs } from "src/lib";
+import { synced } from "src/store";
 import { parseHex } from "src/util/html";
 
 // Browser detection

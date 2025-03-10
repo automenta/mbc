@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {ctx} from "@welshman/lib"
-	import {Address} from "@welshman/util"
-	import {deriveProfileDisplay} from "@welshman/app"
+	import {ctx} from "src/lib"
+	import {Address} from "src/util"
+	import {deriveProfileDisplay} from "src/app"
 	import {headerlessKinds} from "src/util/nostr"
 	import Anchor from "src/partials/Anchor.svelte"
 	import Card from "src/partials/Card.svelte"

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {onMount} from "svelte"
 	import {derived} from "svelte/store"
-	import {signer} from "@welshman/app"
-	import {now} from "@welshman/lib"
+	import {signer} from "src/app"
+	import {now} from "src/lib"
 	import {createScroller, toTitle} from "src/util/misc"
 	import Tabs from "src/partials/Tabs.svelte"
 	import Anchor from "src/partials/Anchor.svelte"

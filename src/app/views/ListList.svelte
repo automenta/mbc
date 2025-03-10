@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {getAddress} from "@welshman/util"
-	import {pubkey} from "@welshman/app"
+	import {getAddress} from "src/util"
+	import {pubkey} from "src/app"
 	import {onMount} from "svelte"
 	import {createScroller} from "src/util/misc"
 	import {fly} from "src/util/transition"

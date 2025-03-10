@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {derived} from "svelte/store"
-	import {uniq} from "@welshman/lib"
-	import {profileSearch} from "@welshman/app"
+	import {uniq} from "src/lib"
+	import {profileSearch} from "src/app"
 	import {parseAnything} from "src/util/nostr"
 	import SearchSelect from "src/partials/SearchSelect.svelte"
 	import PersonBadge from "src/app/shared/PersonBadge.svelte"

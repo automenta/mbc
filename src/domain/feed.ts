@@ -1,17 +1,17 @@
-import {fromPairs, randomId} from "@welshman/lib"
-import type {TrustedEvent} from "@welshman/util"
-import {Address, FEED} from "@welshman/util"
-import type {Feed as IFeed} from "@welshman/feeds"
+import {fromPairs, randomId} from "src/lib"
+import type {TrustedEvent} from "src/util"
+import {Address, FEED} from "src/util"
+import type {Feed as IFeed} from "src/feeds"
 import {
   feedFromTags,
   hasSubFeeds,
   isAuthorFeed,
   isScopeFeed,
   isTagFeed,
-  makeIntersectionFeed,
-} from "@welshman/feeds"
+  makeIntersectionFeed
+} from "src/feeds/utils"
 import {parseJson} from "src/util/misc"
-import type {PublishedUserList} from "./list"
+import type {PublishedUserList} from "./list.js"
 
 export type Feed = {
   title: string

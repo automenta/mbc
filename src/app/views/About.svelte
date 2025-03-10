@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {tagZapSplit} from "@welshman/app"
+	import {tagZapSplit} from "src/app"
 	import Popover from "src/partials/Popover.svelte"
 	import Anchor from "src/partials/Anchor.svelte"
 	import FlexColumn from "src/partials/FlexColumn.svelte"

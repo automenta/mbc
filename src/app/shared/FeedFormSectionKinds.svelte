@@ -86,8 +86,8 @@
 		WIKI,
 		ZAP_GOAL,
 		ZAP_RESPONSE
-	} from "@welshman/util"
-	import {FeedType} from "@welshman/feeds"
+	} from "src/util"
+	import {FeedType} from "src/feeds"
 	import SearchSelect from "src/partials/SearchSelect.svelte"
 	import {KindSearch} from "src/domain"
 

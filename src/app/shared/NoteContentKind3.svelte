@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {take} from "@welshman/lib"
-	import {getPubkeyTagValues} from "@welshman/util"
+	import {take} from "src/lib"
+	import {getPubkeyTagValues} from "src/util"
 	import FlexColumn from "src/partials/FlexColumn.svelte"
 	import PersonBadgeSmall from "src/app/shared/PersonBadgeSmall.svelte"
 	import NoteContentEllipsis from "src/app/shared/NoteContentEllipsis.svelte"

@@ -1,9 +1,9 @@
 import {derived, get} from "svelte/store"
 
-import {pubkey, repository} from "@welshman/app"
-import {now, without} from "@welshman/lib"
-import {deriveEvents} from "@welshman/store"
-import type {TrustedEvent} from "@welshman/util"
+import {pubkey, repository} from "src/app"
+import {now, without} from "src/lib"
+import {deriveEvents} from "src/store"
+import type {TrustedEvent} from "src/util"
 
 import {OnboardingTask} from "src/engine/model"
 import {sortEventsDesc} from "src/engine/utils"

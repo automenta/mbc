@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {session} from "@welshman/app"
-	import {normalizeRelayUrl} from "@welshman/util"
+	import {session} from "src/app"
+	import {normalizeRelayUrl} from "src/util"
 	import PersonList from "src/app/shared/PersonList.svelte"
 	import RelayCard from "src/app/shared/RelayCard.svelte"
 	import Onboarding from "src/app/views/Onboarding.svelte"

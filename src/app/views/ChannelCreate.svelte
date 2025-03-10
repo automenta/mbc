@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {derived} from "svelte/store"
-	import {uniq} from "@welshman/lib"
-	import {isShareableRelayUrl} from "@welshman/util"
-	import {displayProfileByPubkey, getRelayUrls, inboxRelaySelectionsByPubkey, pubkey} from "@welshman/app"
+	import {uniq} from "src/lib"
+	import {isShareableRelayUrl} from "src/util"
+	import {displayProfileByPubkey, getRelayUrls, inboxRelaySelectionsByPubkey, pubkey} from "src/app"
 	import Field from "src/partials/Field.svelte"
 	import FlexColumn from "src/partials/FlexColumn.svelte"
 	import Anchor from "src/partials/Anchor.svelte"

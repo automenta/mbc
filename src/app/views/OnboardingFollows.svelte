@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {append, ctx, fromPairs, nth, nthNe, remove, uniq, without} from "@welshman/lib"
-	import {FOLLOWS, getAddress, getPubkeyTagValues} from "@welshman/util"
-	import {profileSearch, relaySearch, tagPubkey} from "@welshman/app"
+	import {append, ctx, fromPairs, nth, nthNe, remove, uniq, without} from "src/lib"
+	import {FOLLOWS, getAddress, getPubkeyTagValues} from "src/util"
+	import {profileSearch, relaySearch, tagPubkey} from "src/app"
 	import Card from "src/partials/Card.svelte"
 	import Input from "src/partials/Input.svelte"
 	import Modal from "src/partials/Modal.svelte"

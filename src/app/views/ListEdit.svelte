@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {nth, uniqBy} from "@welshman/lib"
+	import {nth, uniqBy} from "src/lib"
 	import Subheading from "src/partials/Subheading.svelte"
 	import ListForm from "src/app/shared/ListForm.svelte"
 	import {router} from "src/app/util"

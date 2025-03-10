@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {displayRelayUrl} from "@welshman/util"
+	import {displayRelayUrl} from "src/util"
 	import {hsl, stringToHue} from "src/util/misc"
 	import Rating from "src/partials/Rating.svelte"
 	import Anchor from "src/partials/Anchor.svelte"

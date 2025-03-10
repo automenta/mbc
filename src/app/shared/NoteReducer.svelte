@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {addToMapKey, ctx, insert, parseJson} from "@welshman/lib"
-	import type {TrustedEvent} from "@welshman/util"
+	import {addToMapKey, ctx, insert, parseJson} from "src/lib"
+	import type {TrustedEvent} from "src/util"
 	import {
 		getIdFilters,
 		getIdOrAddress,
@@ -8,8 +8,8 @@
 		getParentIdsAndAddrs,
 		hasValidSignature,
 		ZAP_RESPONSE
-	} from "@welshman/util"
-	import {load, repository} from "@welshman/app"
+	} from "src/util"
+	import {load, repository} from "src/app"
 	import {reactionKinds, repostKinds} from "src/util/nostr"
 	import {isEventMuted} from "src/engine"
 	import {getValidZap} from "src/app/util"

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import cx from "classnames"
-	import {abortThunk, session, type Thunk, thunks} from "@welshman/app"
+	import {abortThunk, session, type Thunk, thunks} from "src/app"
 	import {fly} from "svelte/transition"
 	import {formatTimestamp, timestamp1} from "src/util/misc"
 	import Modal from "src/partials/Modal.svelte"

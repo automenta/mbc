@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {ago, groupBy, HOUR, int} from "@welshman/lib"
+	import {ago, groupBy, HOUR, int} from "src/lib"
 	import {onMount} from "svelte"
 	import {mainNotifications, setChecked} from "src/engine"
 	import NotificationItem from "src/app/shared/NotificationItem.svelte"

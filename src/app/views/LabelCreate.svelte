@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {ctx, identity} from "@welshman/lib"
-	import {pubkey, topicSearch} from "@welshman/app"
+	import {ctx, identity} from "src/lib"
+	import {pubkey, topicSearch} from "src/app"
 	import {showInfo, showWarning} from "src/partials/Toast.svelte"
 	import Heading from "src/partials/Heading.svelte"
 	import FlexColumn from "src/partials/FlexColumn.svelte"

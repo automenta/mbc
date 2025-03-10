@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {isShareableRelayUrl} from "@welshman/util"
+	import {isShareableRelayUrl} from "src/util"
 	import MediaGrid from "src/app/shared/MediaGrid.svelte"
 	import MediaLink from "src/app/shared/MediaLink.svelte"
 	import {router} from "src/app/util/router"

@@ -1,5 +1,5 @@
-import {nth} from "@welshman/lib"
-import type {TrustedEvent} from "@welshman/util"
+import {nth} from "src/lib"
+import type {TrustedEvent} from "src/util"
 import {SearchHelper} from "src/util/misc"
 
 export type Collection = {

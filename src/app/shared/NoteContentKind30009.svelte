@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {fromPairs} from "@welshman/lib"
-	import type {TrustedEvent} from "@welshman/util"
+	import {fromPairs} from "src/lib"
+	import type {TrustedEvent} from "src/util"
 	import NoteContentLinks from "src/app/shared/NoteContentLinks.svelte"
 
 	export let note: TrustedEvent

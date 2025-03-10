@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {clearStorage} from "@welshman/app"
+	import {clearStorage} from "src/app"
 	import {fly} from "src/util/transition"
 	import Content from "src/partials/Content.svelte"
 

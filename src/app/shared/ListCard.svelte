@@ -1,8 +1,8 @@
 <script lang="ts">
-	import {first} from "@welshman/lib"
-	import {Address, getTags, toNostrURI} from "@welshman/util"
-	import {defaultTagFeedMappings} from "@welshman/feeds"
-	import {formatTimestamp, repository} from "@welshman/app"
+	import {first} from "src/lib"
+	import {Address, getTags, toNostrURI} from "src/util"
+	import {defaultTagFeedMappings} from "src/feeds"
+	import {formatTimestamp, repository} from "src/app"
 	import {slide} from "src/util/transition"
 	import {boolCtrl} from "src/partials/utils"
 	import FlexColumn from "src/partials/FlexColumn.svelte"

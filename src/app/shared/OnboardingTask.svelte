@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {append} from "@welshman/lib"
-	import {pubkey, updateSession} from "@welshman/app"
+	import {append} from "src/lib"
+	import {pubkey, updateSession} from "src/app"
 	import {updateIn} from "src/util/misc"
 	import {slide} from "src/util/transition"
 	import Card from "src/partials/Card.svelte"

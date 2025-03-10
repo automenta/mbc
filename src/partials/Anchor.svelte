@@ -2,7 +2,7 @@
 	import cx from "classnames"
 	import {createEventDispatcher} from "svelte"
 	import {router} from "src/app/util/router"
-	import {randomId} from "@welshman/lib"
+	import {randomId} from "src/lib"
 
 	export let stopPropagation = false
 	export let randomizeKey = false

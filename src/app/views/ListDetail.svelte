@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {pubkey} from "@welshman/app"
+	import {pubkey} from "src/app"
 	import Anchor from "src/partials/Anchor.svelte"
 	import ListCard from "src/app/shared/ListCard.svelte"
 	import {router} from "src/app/util"

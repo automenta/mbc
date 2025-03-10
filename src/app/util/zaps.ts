@@ -1,8 +1,8 @@
 import {writable} from "svelte/store"
-import {identity} from "@welshman/lib"
-import type {TrustedEvent, Zap} from "@welshman/util"
-import {getLnUrl, getTagValues, zapFromEvent} from "@welshman/util"
-import {loadProfile, loadZapper} from "@welshman/app"
+import {identity} from "src/lib"
+import type {TrustedEvent, Zap} from "src/util"
+import {getLnUrl, getTagValues, zapFromEvent} from "src/util"
+import {loadProfile, loadZapper} from "src/app"
 
 export const getLnUrlsForEvent = async (event: TrustedEvent) => {
   const lnurls = getTagValues("zap", event.tags).map(getLnUrl)

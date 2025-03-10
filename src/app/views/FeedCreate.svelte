@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {makeIntersectionFeed, makeScopeFeed, Scope} from "@welshman/feeds"
+	import {makeIntersectionFeed, makeScopeFeed, Scope} from "src/feeds"
 	import {makeFeed} from "src/domain"
 	import FeedForm from "src/app/shared/FeedForm.svelte"
 	import {router} from "src/app/util"

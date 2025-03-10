@@ -14,9 +14,9 @@
 		isScopeFeed,
 		isSearchFeed,
 		isTagFeed
-	} from "@welshman/feeds"
-	import {displayRelayUrl} from "@welshman/util"
-	import {displayProfileByPubkey} from "@welshman/app"
+	} from "src/feeds"
+	import {displayRelayUrl} from "src/util"
+	import {displayProfileByPubkey} from "src/app"
 	import {displayList, formatTimestampAsDate, pluralize, quantify} from "src/util/misc"
 	import Chip from "src/partials/Chip.svelte"
 

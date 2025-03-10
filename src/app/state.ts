@@ -1,6 +1,6 @@
 import {get, writable} from "svelte/store"
-import {uniq} from "@welshman/lib"
-import {APP_DATA, FEEDS, getAddressTagValues, getIdFilters, getListTags} from "@welshman/util"
+import {uniq} from "src/lib"
+import {APP_DATA, FEEDS, getAddressTagValues, getIdFilters, getListTags} from "src/util"
 import {
   getFollows,
   getRelayUrls,
@@ -12,7 +12,7 @@ import {
   loadRelaySelections,
   loadZapper,
   pubkey,
-} from "@welshman/app"
+} from "src/app"
 import {appDataKeys} from "src/util/nostr"
 import {router} from "src/app/util/router"
 import {

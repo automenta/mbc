@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type {TrustedEvent} from "@welshman/util"
-	import {isTrustedEvent} from "@welshman/util"
-	import {repository} from "@welshman/app"
+	import type {TrustedEvent} from "src/util"
+	import {isTrustedEvent} from "src/util"
+	import {repository} from "src/app"
 	import {error} from "src/util/logger"
 	import {appName} from "src/partials/state"
 	import {showInfo, showWarning} from "src/partials/Toast.svelte"

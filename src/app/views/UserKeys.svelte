@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type {Nip46Signer} from "@welshman/signer"
-	import {session, signer} from "@welshman/app"
+	import type {Nip46Signer} from "src/signer"
+	import {session, signer} from "src/app"
 	import {nip19} from "nostr-tools"
 	import Anchor from "src/partials/Anchor.svelte"
 	import CopyValue from "src/partials/CopyValue.svelte"

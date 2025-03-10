@@ -8,7 +8,7 @@
 		profilesByPubkey,
 		session,
 		tagZapSplit
-	} from "@welshman/app"
+	} from "src/app"
 	import {userFollows} from "src/engine"
 	import Anchor from "src/partials/Anchor.svelte"
 	import Popover from "src/partials/Popover.svelte"
@@ -17,7 +17,7 @@
 	import PersonAbout from "src/app/shared/PersonAbout.svelte"
 	import {router} from "src/app/util"
 	import {ensureProto, formatTimestampRelative} from "src/util/misc"
-	import {stripProtocol} from "@welshman/lib"
+	import {stripProtocol} from "src/lib"
 	import CopyValueSimple from "src/partials/CopyValueSimple.svelte"
 	import {nip19} from "nostr-tools"
 

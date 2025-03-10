@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {relaySearch} from "@welshman/app"
-	import {identity, without} from "@welshman/lib"
-	import {displayRelayUrl} from "@welshman/util"
+	import {relaySearch} from "src/app"
+	import {identity, without} from "src/lib"
+	import {displayRelayUrl} from "src/util"
 	import PersonSelect from "src/app/shared/PersonSelect.svelte"
 	import {router} from "src/app/util/router"
 	import Anchor from "src/partials/Anchor.svelte"

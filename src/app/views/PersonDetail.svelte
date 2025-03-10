@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {stripProtocol} from "@welshman/lib"
+	import {stripProtocol} from "src/lib"
 	import {
 		FOLLOWS,
 		getIdFilters,
@@ -12,8 +12,8 @@
 		PROFILE,
 		REACTION,
 		RELAYS
-	} from "@welshman/util"
-	import {feedFromFilter} from "@welshman/feeds"
+	} from "src/util"
+	import {feedFromFilter} from "src/feeds"
 	import {
 		deriveFollows,
 		deriveHandleForPubkey,
@@ -31,8 +31,8 @@
 		session,
 		tagPubkey,
 		tagZapSplit
-	} from "@welshman/app"
-	import {deriveEvents} from "@welshman/store"
+	} from "src/app"
+	import {deriveEvents} from "src/store"
 	import {ensureProto, toTitle} from "src/util/misc"
 	import AltColor from "src/partials/AltColor.svelte"
 	import {themeBackgroundGradient} from "src/partials/state"
@@ -53,13 +53,16 @@
 	import PersonFollows from "src/app/views/PersonFollows.svelte"
 	import {makeFeed} from "src/domain"
 	import {follow, imgproxy, load, unfollow, userFollows, userMutes} from "src/engine"
-	import {router} from "src/app/util"
+
 	import {nip19} from "nostr-tools"
 	import {tweened} from "svelte/motion"
 	import {derived} from "svelte/store"
 	import WotScore from "src/partials/WotScore.svelte"
 	import FeedItem from "../shared/FeedItem.svelte"
 	import {fly} from "svelte/transition"
+	import {router} from "src/app/util"
+
+
 
 	export let pubkey
 	export let relays = []

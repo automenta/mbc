@@ -15,11 +15,11 @@
 </style>
 
 <script lang="ts">
-	import type {Thunk} from "@welshman/app"
-	import {abortThunk, thunks} from "@welshman/app"
-	import {PublishStatus} from "@welshman/net"
-	import {now} from "@welshman/signer"
-	import {LOCAL_RELAY_URL, type TrustedEvent} from "@welshman/util"
+	import type {Thunk} from "src/app"
+	import {abortThunk, thunks} from "src/app"
+	import {PublishStatus} from "src/net"
+	import {now} from "src/signer"
+	import {LOCAL_RELAY_URL, type TrustedEvent} from "src/util"
 	import {tweened} from "svelte/motion"
 	import {userSettings} from "src/engine"
 	import Anchor from "src/partials/Anchor.svelte"

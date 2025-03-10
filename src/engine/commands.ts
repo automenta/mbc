@@ -1,7 +1,7 @@
 import crypto from "crypto"
 import {get} from "svelte/store"
 
-import type {Session} from "@welshman/app"
+import type {Session} from "src/app"
 import {
   follow as baseFollow,
   getRelayUrls,
@@ -17,8 +17,8 @@ import {
   unfollow as baseUnfollow,
   userInboxRelaySelections,
   userRelaySelections,
-} from "@welshman/app"
-import {DVMEvent, type DVMRequestOptions} from "@welshman/dvm"
+} from "src/app"
+import {DVMEvent, type DVMRequestOptions} from "src/dvm"
 import {
   append,
   assoc,
@@ -37,10 +37,10 @@ import {
   sleep,
   tryCatch,
   uniq,
-} from "@welshman/lib"
-import {SubscriptionEvent} from "@welshman/net"
-import {makeSecret, Nip01Signer, Nip46Broker, Nip59} from "@welshman/signer"
-import type {Filter, Profile, StampedEvent, TrustedEvent} from "@welshman/util"
+} from "src/lib"
+import {SubscriptionEvent} from "src/net"
+import {makeSecret, Nip01Signer, Nip46Broker, Nip59} from "src/signer"
+import type {Filter, Profile, StampedEvent, TrustedEvent} from "src/util"
 import {
   Address,
   addToListPublicly,
@@ -60,7 +60,7 @@ import {
   RELAYS,
   removeFromList,
   uniqTags,
-} from "@welshman/util"
+} from "src/util"
 
 import {
   addClientTags,

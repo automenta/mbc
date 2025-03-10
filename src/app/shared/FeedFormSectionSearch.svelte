@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {FeedType} from "@welshman/feeds"
+	import {FeedType} from "src/feeds"
 	import Input from "src/partials/Input.svelte"
 
 	export let feed

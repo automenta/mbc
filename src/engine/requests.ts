@@ -1,7 +1,7 @@
 import {debounce} from "throttle-debounce"
 import {derived, writable} from "svelte/store"
-import type {Feed, RequestOpts} from "@welshman/feeds"
-import {FeedController} from "@welshman/feeds"
+import type {Feed, RequestOpts} from "src/feeds"
+import {FeedController} from "src/feeds"
 import {
   always,
   assoc,
@@ -18,8 +18,8 @@ import {
   uniq,
   WEEK,
   without,
-} from "@welshman/lib"
-import type {TrustedEvent} from "@welshman/util"
+} from "src/lib"
+import type {TrustedEvent} from "src/util"
 import {
   Address,
   DELETE,
@@ -33,10 +33,10 @@ import {
   LABEL,
   NAMED_BOOKMARKS,
   WRAP,
-} from "@welshman/util"
-import {Tracker} from "@welshman/net"
-import {deriveEvents} from "@welshman/store"
-import type {AppSyncOpts} from "@welshman/app"
+} from "src/util"
+import {Tracker} from "src/net"
+import {deriveEvents} from "src/store"
+import type {AppSyncOpts} from "src/app"
 import {
   getFilterSelections,
   getFollows,
@@ -50,7 +50,7 @@ import {
   pull,
   repository,
   requestDVM,
-} from "@welshman/app"
+} from "src/app"
 import {noteKinds, reactionKinds} from "src/util/nostr"
 import {race} from "src/util/misc"
 import {CUSTOM_LIST_KINDS} from "src/domain"

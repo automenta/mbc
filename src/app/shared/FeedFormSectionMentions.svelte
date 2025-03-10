@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {FeedType} from "@welshman/feeds"
-	import {displayProfileByPubkey, profileSearch} from "@welshman/app"
+	import {FeedType} from "src/feeds"
+	import {displayProfileByPubkey, profileSearch} from "src/app"
 	import Anchor from "src/partials/Anchor.svelte"
 	import SearchSelect from "src/partials/SearchSelect.svelte"
 	import PersonBadge from "src/app/shared/PersonBadge.svelte"

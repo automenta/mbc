@@ -1,5 +1,5 @@
 import {get, writable} from "svelte/store"
-import {assoc} from "@welshman/lib"
+import {assoc} from "src/lib"
 
 export const formCtrl = ({submit}) => {
   const store = writable({

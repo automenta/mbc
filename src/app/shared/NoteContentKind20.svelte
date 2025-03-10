@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {fromPairs} from "@welshman/lib"
-	import {getTags, getTagValue, tagsFromIMeta, type TrustedEvent} from "@welshman/util"
+	import {fromPairs} from "src/lib"
+	import {getTags, getTagValue, tagsFromIMeta, type TrustedEvent} from "src/util"
 	import NoteContentKind1 from "src/app/shared/NoteContentKind1.svelte"
 	import NoteContentLinks from "src/app/shared/NoteContentLinks.svelte"
 	import {getSetting} from "src/engine"

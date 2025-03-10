@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
 	import {get, writable} from "svelte/store"
-	import {identity} from "@welshman/lib"
+	import {identity} from "src/lib"
 
 	export const toast = writable(null)
 

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import cx from "classnames"
-	import {ctx, remove} from "@welshman/lib"
-	import {pubkey, repository} from "@welshman/app"
-	import {Address, getAddressTagValues, getListTags, NAMED_BOOKMARKS, toNostrURI} from "@welshman/util"
+	import {ctx, remove} from "src/lib"
+	import {pubkey, repository} from "src/app"
+	import {Address, getAddressTagValues, getListTags, NAMED_BOOKMARKS, toNostrURI} from "src/util"
 	import {slide} from "src/util/transition"
 	import {boolCtrl} from "src/partials/utils"
 	import FlexColumn from "src/partials/FlexColumn.svelte"

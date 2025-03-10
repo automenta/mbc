@@ -1,14 +1,14 @@
 <script lang="ts">
 	import {derived} from "svelte/store"
-	import {mute, session, signer, tagPubkey, unmute} from "@welshman/app"
+	import {mute, session, signer, tagPubkey, unmute} from "src/app"
 	import Popover from "src/partials/Popover.svelte"
 	import Anchor from "src/partials/Anchor.svelte"
 	import {loginWithPublicKey, userMutes} from "src/engine"
 	import {boot} from "src/app/state"
 	import {router} from "src/app/util/router"
-	import {toNostrURI} from "@welshman/util"
+	import {toNostrURI} from "src/util"
 	import {nip19} from "nostr-tools"
-	import {ctx} from "@welshman/lib"
+	import {ctx} from "src/lib"
 
 	export let pubkey
 

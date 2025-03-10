@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {identity} from "@welshman/lib"
+	import {identity} from "src/lib"
 	import {appName} from "src/partials/state"
 	import {showInfo} from "src/partials/Toast.svelte"
 	import Field from "src/partials/Field.svelte"

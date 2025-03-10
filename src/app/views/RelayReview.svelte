@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {onDestroy} from "svelte"
-	import {ctx} from "@welshman/lib"
+	import {ctx} from "src/lib"
 	import Anchor from "src/partials/Anchor.svelte"
 	import Content from "src/partials/Content.svelte"
 	import AltColor from "src/partials/AltColor.svelte"

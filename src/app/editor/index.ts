@@ -1,16 +1,16 @@
-import "@welshman/editor/index.css"
+import "src/editor/index.css"
 
 import type {Writable} from "svelte/store"
 import {get} from "svelte/store"
 import {Editor} from "@tiptap/core"
-import {ctx} from "@welshman/lib"
+import {ctx} from "src/lib"
 import type {UploadTask} from "nostr-editor"
-import type {StampedEvent} from "@welshman/util"
-import {profileSearch, signer} from "@welshman/app"
+import {profileSearch, signer} from "src/app"
 import {getSetting, userSettings} from "src/engine/state"
-import {MentionSuggestion, WelshmanExtension} from "@welshman/editor"
-import {MentionNodeView} from "./MentionNodeView"
+import {MentionSuggestion, WelshmanExtension} from "src/editor"
+import {MentionNodeView} from "./MentionNodeView.js"
 import ProfileSuggestion from "./ProfileSuggestion.svelte"
+import type {StampedEvent} from "src/util"
 
 export const getUploadType = () => getSetting("upload_type")
 

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import {init, launchPaymentModal, onModalClosed} from "@getalby/bitcoin-connect"
-	import {ctx, fetchJson, now, nth, sum, tryCatch} from "@welshman/lib"
-	import {createEvent, ZAP_REQUEST} from "@welshman/util"
-	import {Nip01Signer} from "@welshman/signer"
-	import {displayProfileByPubkey, loadProfile, loadZapper, signer} from "@welshman/app"
+	import {ctx, fetchJson, now, nth, sum, tryCatch} from "src/lib"
+	import {createEvent, ZAP_REQUEST} from "src/util"
+	import {Nip01Signer} from "src/signer"
+	import {displayProfileByPubkey, loadProfile, loadZapper, signer} from "src/app"
 	import Anchor from "src/partials/Anchor.svelte"
 	import FieldInline from "src/partials/FieldInline.svelte"
 	import Toggle from "src/partials/Toggle.svelte"

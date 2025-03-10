@@ -1,5 +1,5 @@
-import {fromPairs, randomId} from "@welshman/lib"
-import type {TrustedEvent} from "@welshman/util"
+import {fromPairs, randomId} from "src/lib"
+import type {TrustedEvent} from "src/util"
 import {
   BLOCKED_RELAYS,
   BOOKMARKS,
@@ -22,7 +22,7 @@ import {
   RELAYS,
   SEARCH_RELAYS,
   TOPICS,
-} from "@welshman/util"
+} from "src/util"
 import {SearchHelper} from "src/util/misc"
 import type {KindOption} from "src/domain/kind"
 

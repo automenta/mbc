@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {tagPubkey} from "@welshman/app"
+	import {tagPubkey} from "src/app"
 	import cx from "classnames"
 	import Anchor from "src/partials/Anchor.svelte"
 	import PersonCircle from "src/app/shared/PersonCircle.svelte"

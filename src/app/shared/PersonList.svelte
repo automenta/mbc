@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {onMount} from "svelte"
-	import {flatten, partition} from "@welshman/lib"
-	import {profileHasName} from "@welshman/util"
-	import {profilesByPubkey} from "@welshman/app"
+	import {flatten, partition} from "src/lib"
+	import {profileHasName} from "src/util"
+	import {profilesByPubkey} from "src/app"
 	import {createScroller} from "src/util/misc"
 	import Card from "src/partials/Card.svelte"
 	import FlexColumn from "src/partials/FlexColumn.svelte"

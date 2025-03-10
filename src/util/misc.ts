@@ -14,7 +14,7 @@ import {
   stripProtocol,
   sum,
   tryCatch,
-} from "@welshman/lib"
+} from "src/lib"
 import Fuse, {type IFuseOptions} from "fuse.js"
 import logger from "src/util/logger"
 

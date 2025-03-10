@@ -1,6 +1,6 @@
 <script lang="ts">
 	import cx from "classnames"
-	import {deriveHandleForPubkey, displayHandle} from "@welshman/app"
+	import {deriveHandleForPubkey, displayHandle} from "src/app"
 
 	export let pubkey
 

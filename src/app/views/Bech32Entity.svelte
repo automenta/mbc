@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {Address} from "@welshman/util"
-	import {loadHandle} from "@welshman/app"
-	import {ctx} from "@welshman/lib"
+	import {Address} from "src/util"
+	import {loadHandle} from "src/app"
+	import {ctx} from "src/lib"
 	import Content from "src/partials/Content.svelte"
 	import Spinner from "src/partials/Spinner.svelte"
 	import Redirect from "src/app/shared/Redirect.svelte"

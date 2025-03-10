@@ -1,5 +1,5 @@
-import {avg, last, nthEq} from "@welshman/lib"
-import type {TrustedEvent} from "@welshman/util"
+import {avg, last, nthEq} from "src/lib"
+import type {TrustedEvent} from "./"
 import {
   Address,
   BOOKMARKS,
@@ -36,8 +36,8 @@ import {
   REPOST,
   TOPICS,
   ZAP_RESPONSE,
-} from "@welshman/util"
-import {getPubkey} from "@welshman/signer"
+} from "./"
+import {getPubkey} from "src/signer"
 import {bytesToHex, hexToBytes} from "@noble/hashes/utils"
 import * as nip19 from "nostr-tools/nip19"
 import * as nip05 from "nostr-tools/nip05"

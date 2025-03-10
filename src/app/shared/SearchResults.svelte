@@ -2,7 +2,7 @@
 	import type {Writable} from "svelte/store"
 	import {derived} from "svelte/store"
 	import {throttle} from "throttle-debounce"
-	import {profileSearch, topicSearch} from "@welshman/app"
+	import {profileSearch, topicSearch} from "src/app"
 	import {parseAnything} from "src/util/nostr"
 	import {router} from "src/app/util/router"
 	import {createPeopleLoader} from "src/engine"

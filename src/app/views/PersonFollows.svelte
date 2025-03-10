@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {getListTags, getPubkeyTagValues} from "@welshman/util"
-	import {deriveFollows} from "@welshman/app"
+	import {getListTags, getPubkeyTagValues} from "src/util"
+	import {deriveFollows} from "src/app"
 	import PersonList from "src/app/shared/PersonList.svelte"
 
 	export let pubkey

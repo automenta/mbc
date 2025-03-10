@@ -1,6 +1,6 @@
 <script lang="ts">
 	import cx from "classnames"
-	import {displayRelayUrl} from "@welshman/util"
+	import {displayRelayUrl} from "src/util"
 	import {
 		deriveRelay,
 		getReadRelayUrls,
@@ -9,7 +9,7 @@
 		signer,
 		userInboxRelaySelections,
 		userRelaySelections
-	} from "@welshman/app"
+	} from "src/app"
 	import {derived} from "svelte/store"
 	import {displayUrl, quantify} from "src/util/misc"
 	import {getAvgRating} from "src/util/nostr"

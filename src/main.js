@@ -1,6 +1,6 @@
 import "src/app.css"
-import {addSession} from "@welshman/app"
-import {getPubkey, makeSecret, Nip46Broker} from "@welshman/signer"
+import {addSession} from "src/app"
+import {getPubkey, makeSecret, Nip46Broker} from "src/signer"
 import {App as CapacitorApp} from "@capacitor/app"
 import {nsecDecode} from "src/util/nostr"
 import {router} from "src/app/util"

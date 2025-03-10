@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {onMount} from "svelte"
 	import {derived} from "svelte/store"
-	import {groupBy, nthEq, pushToMapKey, sortBy, uniq} from "@welshman/lib"
+	import {groupBy, nthEq, pushToMapKey, sortBy, uniq} from "src/lib"
 	import {
 		deriveInboxRelaySelections,
 		deriveRelaySelections,
@@ -14,8 +14,8 @@
 		relays,
 		relaySearch,
 		relaySelectionsByPubkey
-	} from "@welshman/app"
-	import {isRelayUrl, isShareableRelayUrl, normalizeRelayUrl, profileHasName} from "@welshman/util"
+	} from "src/app"
+	import {isRelayUrl, isShareableRelayUrl, normalizeRelayUrl, profileHasName} from "src/util"
 	import {createScroller, displayList} from "src/util/misc"
 	import {showWarning} from "src/partials/Toast.svelte"
 	import Tabs from "src/partials/Tabs.svelte"

@@ -6,7 +6,7 @@
 		isShareableRelayUrl,
 		RELAYS,
 		SEARCH_RELAYS
-	} from "@welshman/util"
+	} from "src/util"
 	import FlexColumn from "src/partials/FlexColumn.svelte"
 	import RelayCard from "src/app/shared/RelayCard.svelte"
 

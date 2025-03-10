@@ -15,8 +15,8 @@
 <script lang="ts">
 	import cx from "classnames"
 	import {nip19} from "nostr-tools"
-	import {displayPubkey} from "@welshman/util"
-	import {deriveProfileDisplay, session} from "@welshman/app"
+	import {displayPubkey} from "src/util"
+	import {deriveProfileDisplay, session} from "src/app"
 	import PersonHandle from "src/app/shared/PersonHandle.svelte"
 	import CopyValueSimple from "src/partials/CopyValueSimple.svelte"
 	import WotPopover from "./WotPopover.svelte"

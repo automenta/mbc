@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {createSearch, formatTimestamp, type Thunk, thunks} from "@welshman/app"
-	import {ctx} from "@welshman/lib"
-	import {type Connection} from "@welshman/net"
+	import {createSearch, formatTimestamp, type Thunk, thunks} from "src/app"
+	import {ctx} from "src/lib"
+	import {type Connection} from "src/net"
 	import {get} from "svelte/store"
 	import {fly} from "svelte/transition"
 	import AltColor from "src/partials/AltColor.svelte"

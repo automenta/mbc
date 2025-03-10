@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {FeedType} from "@welshman/feeds"
-	import {omit} from "@welshman/lib"
+	import {FeedType} from "src/feeds"
+	import {omit} from "src/lib"
 	import {createLocalDate, dateToSeconds, formatTimestampAsDate} from "src/util/misc"
 	import DateInput from "src/partials/DateInput.svelte"
 

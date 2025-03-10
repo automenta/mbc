@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {makeTagFeed} from "@welshman/feeds"
+	import {makeTagFeed} from "src/feeds"
 	import Anchor from "src/partials/Anchor.svelte"
 	import {router} from "src/app/util/router"
 	import {makeFeed} from "src/domain"

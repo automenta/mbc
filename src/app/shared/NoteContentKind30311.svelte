@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {ctx, fromPairs} from "@welshman/lib"
-	import {Address} from "@welshman/util"
-	import {urlIsMedia} from "@welshman/content"
+	import {ctx, fromPairs} from "src/lib"
+
+	import {urlIsMedia} from "src/content"
 	import Card from "src/partials/Card.svelte"
 	import Chip from "src/partials/Chip.svelte"
 	import Anchor from "src/partials/Anchor.svelte"
@@ -9,6 +9,7 @@
 	import NoteContentLinks from "src/app/shared/NoteContentLinks.svelte"
 	import NoteContentTopics from "src/app/shared/NoteContentTopics.svelte"
 	import PersonBadge from "src/app/shared/PersonBadge.svelte"
+	import {Address} from "src/util"
 
 	export let note
 	export let showMedia = false

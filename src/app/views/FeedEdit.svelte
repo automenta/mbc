@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {NAMED_BOOKMARKS} from "@welshman/util"
+	import {NAMED_BOOKMARKS} from "src/util"
 	import FeedForm from "src/app/shared/FeedForm.svelte"
 	import {router} from "src/app/util"
 	import {mapListToFeed, readFeed, readUserList} from "src/domain"

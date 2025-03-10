@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {groupBy, identity, pluck, prop, spec, sum, uniq, uniqBy} from "@welshman/lib"
-	import type {TrustedEvent} from "@welshman/util"
-	import {REACTION, ZAP_RESPONSE} from "@welshman/util"
+	import {groupBy, identity, pluck, prop, spec, sum, uniq, uniqBy} from "src/lib"
+	import type {TrustedEvent} from "src/util"
+	import {REACTION, ZAP_RESPONSE} from "src/util"
 	import {repostKinds} from "src/util/nostr"
 	import Icon from "src/partials/Icon.svelte"
 	import Anchor from "src/partials/Anchor.svelte"

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {getAddress} from "@welshman/util"
+	import {getAddress} from "src/util"
 	import ListCard from "src/app/shared/ListCard.svelte"
 
 	export let note

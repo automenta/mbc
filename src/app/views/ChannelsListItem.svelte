@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {derived} from "svelte/store"
-	import {displayProfileByPubkey, profiles, pubkey} from "@welshman/app"
-	import {without} from "@welshman/lib"
+	import {displayProfileByPubkey, profiles, pubkey} from "src/app"
+	import {without} from "src/lib"
 	import PersonCircles from "src/app/shared/PersonCircles.svelte"
 	import Card from "src/partials/Card.svelte"
 	import {router} from "src/app/util/router"

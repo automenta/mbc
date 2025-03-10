@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {displayProfileByPubkey, pubkey, sessions, signer} from "@welshman/app"
+	import {displayProfileByPubkey, pubkey, sessions, signer} from "src/app"
 	import {installAsPWA, installPrompt, toggleTheme} from "src/partials/state"
 	import Anchor from "src/partials/Anchor.svelte"
 	import SliderMenu from "src/partials/SliderMenu.svelte"

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import cx from "classnames"
-	import {deriveIsDeletedByAddress} from "@welshman/store"
-	import {fromPairs} from "@welshman/lib"
-	import {getTagValue} from "@welshman/util"
-	import {repository} from "@welshman/app"
+	import {deriveIsDeletedByAddress} from "src/store"
+	import {fromPairs} from "src/lib"
+	import {getTagValue} from "src/util"
+	import {repository} from "src/app"
 	import FlexColumn from "src/partials/FlexColumn.svelte"
 	import CurrencySymbol from "src/partials/CurrencySymbol.svelte"
 	import Chip from "src/partials/Chip.svelte"

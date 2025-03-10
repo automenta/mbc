@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {ctx, identity} from "@welshman/lib"
+	import {ctx, identity} from "src/lib"
 	import {
 		displayRelayUrl,
 		getPubkeyTagValues,
@@ -9,8 +9,8 @@
 		NAMED_RELAYS,
 		NAMED_TOPICS,
 		normalizeRelayUrl
-	} from "@welshman/util"
-	import {relaySearch, tagPubkey, topicSearch} from "@welshman/app"
+	} from "src/util"
+	import {relaySearch, tagPubkey, topicSearch} from "src/app"
 	import {showInfo} from "src/partials/Toast.svelte"
 	import Field from "src/partials/Field.svelte"
 	import Modal from "src/partials/Modal.svelte"

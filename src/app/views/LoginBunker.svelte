@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {onDestroy, onMount} from "svelte"
-	import {makeSecret, Nip46Broker} from "@welshman/signer"
-	import {addSession, nip46Perms} from "@welshman/app"
+	import {makeSecret, Nip46Broker} from "src/signer"
+	import {addSession, nip46Perms} from "src/app"
 	import {isKeyValid} from "src/util/nostr"
 	import {showWarning} from "src/partials/Toast.svelte"
 	import Input from "src/partials/Input.svelte"

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {pubkey, signer} from "@welshman/app"
+	import {pubkey, signer} from "src/app"
 	import {fly, slide} from "src/util/transition"
 	import Input from "src/partials/Input.svelte"
 	import Anchor from "src/partials/Anchor.svelte"

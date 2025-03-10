@@ -1,7 +1,0 @@
-{
-  "name": "Welshman Docs",
-  "entryPoints": ["./*/"],
-  "entryPointStrategy": "packages",
-  "exclude": ["**/normalize-url/*"],
-  "hideGenerator": true
-}

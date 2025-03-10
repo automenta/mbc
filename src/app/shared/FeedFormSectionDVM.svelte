@@ -1,14 +1,14 @@
 <script lang="ts">
-	import {fromPairs, identity} from "@welshman/lib"
+	import {fromPairs, identity} from "src/lib"
 	import {
 		DVM_REQUEST_DISCOVER_CONTENT,
 		DVM_REQUEST_DISCOVER_PEOPLE,
 		DVM_REQUEST_SEARCH_CONTENT,
 		DVM_REQUEST_SEARCH_PEOPLE,
 		getAddress
-	} from "@welshman/util"
-	import type {DVMFeed} from "@welshman/feeds"
-	import {getFeedArgs, makeDVMFeed} from "@welshman/feeds"
+	} from "src/util"
+	import type {DVMFeed} from "src/feeds"
+	import {getFeedArgs, makeDVMFeed} from "src/feeds"
 	import SearchSelect from "src/partials/SearchSelect.svelte"
 	import Field from "src/partials/Field.svelte"
 	import Input from "src/partials/Input.svelte"

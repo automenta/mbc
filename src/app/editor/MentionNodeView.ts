@@ -1,5 +1,5 @@
 import type {NodeViewProps} from "@tiptap/core"
-import {deriveProfileDisplay} from "@welshman/app"
+import {deriveProfileDisplay} from "src/app"
 
 export const MentionNodeView = ({node}: NodeViewProps) => {
   const dom = document.createElement("span")

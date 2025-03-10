@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {relaysByUrl} from "@welshman/app"
-	import {addToMapKey, ctx} from "@welshman/lib"
-	import {displayRelayUrl} from "@welshman/util"
+	import {relaysByUrl} from "src/app"
+	import {addToMapKey, ctx} from "src/lib"
+	import {displayRelayUrl} from "src/util"
 	import {onMount} from "svelte"
 	import AltColor from "src/partials/AltColor.svelte"
 	import SelectButton from "src/partials/SelectButton.svelte"

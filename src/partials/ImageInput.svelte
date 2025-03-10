@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {getTagValue} from "@welshman/util"
+	import {getTagValue} from "src/util"
 	import {createEventDispatcher} from "svelte"
 	import Input from "src/partials/Input.svelte"
 	import Modal from "src/partials/Modal.svelte"

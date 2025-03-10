@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type {TrustedEvent} from "@welshman/util"
-	import {ensureNumber, fromPairs} from "@welshman/lib"
+	import type {TrustedEvent} from "src/util"
+	import {ensureNumber, fromPairs} from "src/lib"
 	import {formatTimestamp} from "src/util/misc"
 	import NoteContentKind1 from "src/app/shared/NoteContentKind1.svelte"
 

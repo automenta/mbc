@@ -1,5 +1,5 @@
-import {Address, fromNostrURI} from "@welshman/util"
-import {ctx, identity, last, tryCatch} from "@welshman/lib"
+import {Address, fromNostrURI} from "src/util"
+import {ctx, identity, last, tryCatch} from "src/lib"
 import {nip19} from "nostr-tools"
 import {Router} from "src/util/router"
 import {parseJson} from "src/util/misc"

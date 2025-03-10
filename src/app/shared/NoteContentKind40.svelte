@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {getTagValue} from "@welshman/util"
+	import {getTagValue} from "src/util"
 	import {nip19} from "nostr-tools"
 	import {parseJson} from "src/util/misc"
 	import Card from "src/partials/Card.svelte"

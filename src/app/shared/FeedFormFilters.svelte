@@ -17,7 +17,7 @@
 		makeRelayFeed,
 		makeSearchFeed,
 		makeTagFeed
-	} from "@welshman/feeds"
+	} from "src/feeds"
 	import {toSpliced, toTitle} from "src/util/misc"
 	import Card from "src/partials/Card.svelte"
 	import Menu from "src/partials/Menu.svelte"

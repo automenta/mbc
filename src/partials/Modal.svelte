@@ -2,7 +2,7 @@
 	// Disable ts errors in this file because on:swipe type declarations aren't working
 	// @ts-nocheck
 
-	import {randomId} from "@welshman/lib"
+	import {randomId} from "src/lib"
 	import {onMount} from "svelte"
 	import {tweened} from "svelte/motion"
 	import {fade, fly} from "src/util/transition"

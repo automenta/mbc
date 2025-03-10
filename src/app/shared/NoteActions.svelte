@@ -4,7 +4,7 @@
 	import {onMount} from "svelte"
 	import {tweened} from "svelte/motion"
 	import {derived} from "svelte/store"
-	import {ctx, last, nth, nthEq, pluck, prop, remove, sortBy, spec, sum, uniqBy} from "@welshman/lib"
+	import {ctx, last, nth, nthEq, pluck, prop, remove, sortBy, spec, sum, uniqBy} from "src/lib"
 	import {
 		deriveZapper,
 		deriveZapperForPubkey,
@@ -17,8 +17,8 @@
 		tagZapSplit,
 		unmute,
 		unpin
-	} from "@welshman/app"
-	import type {SignedEvent, TrustedEvent} from "@welshman/util"
+	} from "src/app"
+	import type {SignedEvent, TrustedEvent} from "src/util"
 	import {
 		asSignedEvent,
 		createEvent,
@@ -30,8 +30,8 @@
 		NOTE,
 		REACTION,
 		ZAP_RESPONSE
-	} from "@welshman/util"
-	import {deriveEvents} from "@welshman/store"
+	} from "src/util"
+	import {deriveEvents} from "src/store"
 	import {fly} from "src/util/transition"
 	import {isLike, noteKinds} from "src/util/nostr"
 	import {formatSats, pluralize} from "src/util/misc"

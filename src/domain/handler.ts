@@ -1,6 +1,6 @@
-import {fromPairs} from "@welshman/lib"
-import type {TrustedEvent} from "@welshman/util"
-import {getAddress, getTags, getTagValues} from "@welshman/util"
+import {fromPairs} from "src/lib"
+import type {TrustedEvent} from "src/util"
+import {getAddress, getTags, getTagValues} from "src/util"
 import {parseJson, SearchHelper} from "src/util/misc"
 
 export type Handler = {

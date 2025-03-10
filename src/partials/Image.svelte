@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {ensurePlural} from "@welshman/lib"
+	import {ensurePlural} from "src/lib"
 	import {imgproxy} from "src/engine"
 
 	export let src

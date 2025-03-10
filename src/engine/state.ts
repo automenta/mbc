@@ -2,7 +2,7 @@ import Fuse from "fuse.js"
 import {getPow} from "nostr-tools/nip13"
 import {derived, get, writable} from "svelte/store"
 
-import type {PartialSubscribeRequest} from "@welshman/app"
+import type {PartialSubscribeRequest} from "src/app"
 import {
   db,
   displayProfileByPubkey,
@@ -32,7 +32,7 @@ import {
   storageAdapters,
   subscribe as baseSubscribe,
   zappers,
-} from "@welshman/app"
+} from "src/app"
 import {
   ago,
   cached,
@@ -50,8 +50,8 @@ import {
   sortBy,
   take,
   uniq,
-} from "@welshman/lib"
-import type {Connection, PublishRequest, Target} from "@welshman/net"
+} from "src/lib"
+import type {Connection, PublishRequest, Target} from "src/net"
 import {
   AuthMode,
   ConnectionEvent,
@@ -60,9 +60,9 @@ import {
   Multi,
   Relays,
   SubscriptionEvent,
-} from "@welshman/net"
-import {Nip01Signer} from "@welshman/signer"
-import {deriveEvents, deriveEventsMapped, synced, withGetter} from "@welshman/store"
+} from "src/net"
+import {Nip01Signer} from "src/signer"
+import {deriveEvents, deriveEventsMapped, synced, withGetter} from "src/store"
 import type {
   EventContent,
   EventTemplate,
@@ -71,7 +71,7 @@ import type {
   SignedEvent,
   StampedEvent,
   TrustedEvent,
-} from "@welshman/util"
+} from "src/util"
 import {
   APP_DATA,
   asDecryptedEvent,
@@ -97,7 +97,7 @@ import {
   normalizeRelayUrl,
   readList,
   WRAP,
-} from "@welshman/util"
+} from "src/util"
 
 import type {PublishedFeed, PublishedListFeed, PublishedUserList} from "src/domain"
 import {

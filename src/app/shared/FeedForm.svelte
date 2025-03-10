@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {ctx} from "@welshman/lib"
-	import {getAddress} from "@welshman/util"
-	import {displayProfileByPubkey, pubkey, signer} from "@welshman/app"
+	import {ctx} from "src/lib"
+	import {getAddress} from "src/util"
+	import {displayProfileByPubkey, pubkey, signer} from "src/app"
 	import Field from "src/partials/Field.svelte"
 	import {showInfo} from "src/partials/Toast.svelte"
 	import Subheading from "src/partials/Subheading.svelte"

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {getTopicTagValues} from "@welshman/util"
+	import {getTopicTagValues} from "src/util"
 	import Anchor from "src/partials/Anchor.svelte"
 	import Chip from "src/partials/Chip.svelte"
 	import {router} from "src/app/util/router"

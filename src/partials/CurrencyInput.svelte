@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {prop} from "@welshman/lib"
+	import {prop} from "src/lib"
 	import {fuzzy} from "src/util/misc"
 	import {currencyOptions} from "src/util/i18n"
 	import SearchSelect from "src/partials/SearchSelect.svelte"

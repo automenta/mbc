@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {FOLLOWS, isRelayUrl, LOCAL_RELAY_URL, normalizeRelayUrl, PROFILE, RELAYS} from "@welshman/util"
-	import {deriveEvents} from "@welshman/store"
-	import {repository, session} from "@welshman/app"
+	import {FOLLOWS, isRelayUrl, LOCAL_RELAY_URL, normalizeRelayUrl, PROFILE, RELAYS} from "src/util"
+	import {deriveEvents} from "src/store"
+	import {repository, session} from "src/app"
 	import {showWarning} from "src/partials/Toast.svelte"
 	import Modal from "src/partials/Modal.svelte"
 	import Field from "src/partials/Field.svelte"
@@ -13,7 +13,7 @@
 	import {router} from "src/app/util/router"
 	import {env, load} from "src/engine"
 	import {loadUserData} from "src/app/state"
-	import {sleep} from "@welshman/lib"
+	import {sleep} from "src/lib"
 
 	const t = Date.now()
 

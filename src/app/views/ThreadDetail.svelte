@@ -1,9 +1,9 @@
 <script lang="ts">
 	import {onDestroy, onMount} from "svelte"
-	import {ctx, identity, sortBy, uniqBy} from "@welshman/lib"
-	import type {TrustedEvent} from "@welshman/util"
-	import {getIdAndAddress, getIdFilters, getReplyTagValues} from "@welshman/util"
-	import {load} from "@welshman/app"
+	import {ctx, identity, sortBy, uniqBy} from "src/lib"
+	import type {TrustedEvent} from "src/util"
+	import {getIdAndAddress, getIdFilters, getReplyTagValues} from "src/util"
+	import {load} from "src/app"
 	import Anchor from "src/partials/Anchor.svelte"
 	import Spinner from "src/partials/Spinner.svelte"
 	import FeedItem from "src/app/shared/FeedItem.svelte"

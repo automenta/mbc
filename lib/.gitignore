@@ -1,7 +1,0 @@
-node_modules
-docs
-dist
-build
-.vscode
-.svelte-kit
-.direnv

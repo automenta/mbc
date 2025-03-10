@@ -1,6 +1,6 @@
 <script lang="ts">
 	import cx from "classnames"
-	import {formatTimestamp} from "@welshman/app"
+	import {formatTimestamp} from "src/app"
 	import {messageAndColorFromStatus, type PublishNotice} from "src/domain/connection"
 
 	export let notice: PublishNotice

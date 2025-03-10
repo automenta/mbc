@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {derived} from "svelte/store"
-	import {MINUTE, now, omit} from "@welshman/lib"
-	import {LOCAL_RELAY_URL} from "@welshman/util"
-	import {PublishStatus} from "@welshman/net"
+	import {MINUTE, now, omit} from "src/lib"
+	import {LOCAL_RELAY_URL} from "src/util"
+	import {PublishStatus} from "src/net"
 	import {
 		deriveProfileDisplay,
 		displayProfileByPubkey,
@@ -11,7 +11,7 @@
 		signer,
 		type Thunk,
 		thunks
-	} from "@welshman/app"
+	} from "src/app"
 	import {toggleTheme} from "src/partials/state"
 	import MenuItem from "src/partials/MenuItem.svelte"
 	import FlexColumn from "src/partials/FlexColumn.svelte"

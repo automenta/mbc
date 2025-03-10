@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {getTagValue} from "@welshman/util"
+	import {getTagValue} from "src/util"
 	import NoteContentLinks from "src/app/shared/NoteContentLinks.svelte"
 	import NoteContentLabel from "src/app/shared/NoteContentLabel.svelte"
 	import NoteContentKind1 from "src/app/shared/NoteContentKind1.svelte"

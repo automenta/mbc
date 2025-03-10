@@ -1,4 +1,4 @@
-import type {TrustedEvent} from "@welshman/util"
+import type {TrustedEvent} from "src/util"
 
 function getTestTrustedEvent(overrides?: Partial<TrustedEvent>) {
   const event: TrustedEvent = {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {getTagValues} from "@welshman/util"
+	import {getTagValues} from "src/util"
 	import NoteContentLinks from "src/app/shared/NoteContentLinks.svelte"
 
 	export let note, showMedia

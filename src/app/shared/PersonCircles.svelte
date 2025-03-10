@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {uniq} from "@welshman/lib"
+	import {uniq} from "src/lib"
 	import cx from "classnames"
 	import PersonCircle from "src/app/shared/PersonCircle.svelte"
 

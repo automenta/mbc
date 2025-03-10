@@ -14,7 +14,7 @@
 
 <script lang="ts">
 	import cx from "classnames"
-	import {clamp} from "@welshman/lib"
+	import {clamp} from "src/lib"
 	import {themeColors} from "src/partials/state"
 
 	export let score

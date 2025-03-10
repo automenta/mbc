@@ -1,8 +1,8 @@
 <script lang="ts">
-	import {ne, omit} from "@welshman/lib"
-	import type {Thunk} from "@welshman/app"
-	import {PublishStatus} from "@welshman/net"
-	import {LOCAL_RELAY_URL} from "@welshman/util"
+	import {ne, omit} from "src/lib"
+	import type {Thunk} from "src/app"
+	import {PublishStatus} from "src/net"
+	import {LOCAL_RELAY_URL} from "src/util"
 	import Anchor from "src/partials/Anchor.svelte"
 
 	export let thunk: Thunk

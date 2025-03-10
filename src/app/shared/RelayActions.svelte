@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {last} from "@welshman/lib"
+	import {last} from "src/lib"
 	import {
 		deriveInboxRelaySelections,
 		deriveRelay,
@@ -7,7 +7,7 @@
 		getRelayUrls,
 		pubkey,
 		signer
-	} from "@welshman/app"
+	} from "src/app"
 	import OverflowMenu from "src/partials/OverflowMenu.svelte"
 	import {joinRelay, leaveRelay} from "src/engine"
 	import {router} from "src/app/util/router"

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import {type Thunk, thunks} from "@welshman/app"
-	import {assoc, DAY, MINUTE, now, omit, remove, sortBy} from "@welshman/lib"
-	import {PublishStatus} from "@welshman/net"
-	import {LOCAL_RELAY_URL} from "@welshman/util"
+	import {type Thunk, thunks} from "src/app"
+	import {assoc, DAY, MINUTE, now, omit, remove, sortBy} from "src/lib"
+	import {PublishStatus} from "src/net"
+	import {LOCAL_RELAY_URL} from "src/util"
 	import {derived} from "svelte/store"
 	import Tile from "src/partials/Tile.svelte"
 	import PublishCard from "src/app/shared/PublishCard.svelte"

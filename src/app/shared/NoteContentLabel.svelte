@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {getTagValues} from "@welshman/util"
+	import {getTagValues} from "src/util"
 	import Chip from "src/partials/Chip.svelte"
 
 	export let note

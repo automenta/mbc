@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {range} from "@welshman/lib"
+	import {range} from "src/lib"
 	import cx from "classnames"
 
 	export let inert = false

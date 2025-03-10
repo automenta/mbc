@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {deriveInboxRelaySelections, deriveRelaySelections, getRelayUrls, pubkey} from "@welshman/app"
+	import {deriveInboxRelaySelections, deriveRelaySelections, getRelayUrls, pubkey} from "src/app"
 	import {joinRelay, leaveRelay} from "src/engine"
 	import {router} from "../util"
 	import Popover from "src/partials/Popover.svelte"
