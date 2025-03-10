@@ -505,7 +505,7 @@ describe("Nip46Signer", () => {
         const sentHandler = (mockSubscription as any).on.mock.calls.find(
           call => call[0] === SubscriptionEvent.Send,
         )[1]
-        // the sub handshake was sent
+        // the sub was sent
         sentHandler()
 
         let req = {} as Nip46Request
@@ -542,7 +542,7 @@ describe("Nip46Signer", () => {
         const sentHandler = (mockSubscription as any).on.mock.calls.find(
           call => call[0] === SubscriptionEvent.Send,
         )[1]
-        // the sub handshake was sent
+        // the sub was sent
         sentHandler()
 
         let req = {} as Nip46Request

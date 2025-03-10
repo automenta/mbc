@@ -143,7 +143,7 @@ describe("commands", () => {
       })
     })
 
-    it.skip("should use existing mutes list if available", async () => {
+    it("should use existing mutes list if available", async () => {
       const publishThunkSpy = vi.spyOn(thunkModule, "publishThunk")
 
       await mute(["p", pubkey1])
@@ -207,7 +207,7 @@ describe("commands", () => {
       )
     })
 
-    it.skip("should use existing pins list if available", async () => {
+    it("should use existing pins list if available", async () => {
       const publishThunkSpy = vi.spyOn(thunkModule, "publishThunk")
 
       await pin(["e", event1])
