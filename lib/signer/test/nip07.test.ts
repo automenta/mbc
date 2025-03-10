@@ -1,14 +1,12 @@
 import {beforeEach, describe, expect, it, vi} from "vitest"
 import {Nip07Signer} from "../src/signers/nip07"
 import {testSigner} from "./common"
-import {SignedEvent} from "@welshman/util"
 
 describe("Nip07Signer", () => {
   beforeEach(() => {
-    // Mock window.nostr
     ;(window as any).nostr = {
       getPublicKey: vi.fn().mockResolvedValue("ee".repeat(32)),
-      signEvent: vi.fn().mockResolvedValue({sig: "ff".repeat(64)} as SignedEvent),
+      signEvent: vi.fn().mockResolvedValue({sig: "ff".repeat(64)}),
       nip04: {
         encrypt: vi.fn((pubkey, message) => "encrypted:" + message),
         decrypt: vi.fn((pubkey, encryptedMessage) => encryptedMessage.split("encrypted:")[1]),
