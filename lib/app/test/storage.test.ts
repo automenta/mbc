@@ -4,6 +4,26 @@ import {Repository} from "@welshman/util"
 import {Tracker} from "@welshman/net"
 import {clearStorage, dead, getAll, initStorage, storageAdapters} from "../src/storage"
 
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: (key: string) => store[key] || null,
+    setItem: (key: string, value: string) => {
+      store[key] = String(value);
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      store = {};
+    },
+  };
+})();
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+});
+
 describe("storage", () => {
   const DB_NAME = "test-db"
   const DB_VERSION = 1
@@ -17,7 +37,6 @@ describe("storage", () => {
   afterEach(async () => {
     vi.useRealTimers()
     await clearStorage()
-    // Clean up the test database
     await new Promise((resolve, reject) => {
       const req = indexedDB.deleteDatabase(DB_NAME)
       req.onsuccess = () => resolve(undefined)
@@ -33,7 +52,6 @@ describe("storage", () => {
       }
 
       initStorage(DB_NAME, DB_VERSION, adapters)
-
       await vi.runAllTimersAsync()
 
       store.set([
@@ -57,12 +75,9 @@ describe("storage", () => {
       }
 
       initStorage(DB_NAME, DB_VERSION, adapters)
-
       await vi.runAllTimersAsync()
 
-      // init storage with the first item
       store.set([{id: "1", value: "test1"}])
-
       store.update(items => [...items, {id: "2", value: "test2"}])
 
       const itemsPromise = getAll("items")
@@ -80,7 +95,6 @@ describe("storage", () => {
       }
 
       initStorage(DB_NAME, DB_VERSION, adapters)
-
       await vi.runAllTimersAsync()
 
       store.set([
@@ -89,7 +103,6 @@ describe("storage", () => {
       ])
 
       store.update(items => items.filter(item => item.id !== "1"))
-
       await vi.runAllTimersAsync()
 
       const itemsPromise = getAll("items")
@@ -110,7 +123,6 @@ describe("storage", () => {
       }
 
       initStorage(DB_NAME, DB_VERSION, adapters)
-
       await vi.runAllTimersAsync()
 
       const event = {
@@ -125,7 +137,6 @@ describe("storage", () => {
       repository.publish(event)
 
       const eventsPromise = getAll("events")
-
       await vi.runAllTimersAsync()
       const events = await eventsPromise
 
@@ -164,10 +175,8 @@ describe("storage", () => {
       }
 
       const rejectPromise = initStorage(DB_NAME, DB_VERSION, {bad: badAdapter})
-
       await vi.runAllTimersAsync()
 
-      // we can initialize storage with an undefined keypath
       expect(rejectPromise).to.not.rejects
     })
 
@@ -181,7 +190,6 @@ describe("storage", () => {
       }
 
       initStorage(DB_NAME, DB_VERSION, adapters)
-
       await vi.runAllTimersAsync()
 
       await expect(initStorage(DB_NAME, DB_VERSION, adapters)).rejects.toThrow(
