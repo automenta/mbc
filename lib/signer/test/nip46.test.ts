@@ -45,10 +45,15 @@ describe("Nip46Signer", () => {
       nip44Encrypt: vi.fn((pubkey, message) => "encrypted:" + message),
       nip44Decrypt: vi.fn((pubkey, encryptedMessage) => encryptedMessage.split("encrypted:")[1]),
     }
+
+    vi.spyOn(window, 'open').mockImplementation(() => {
+      return null
+    })
   })
 
   afterAll(() => {
     vi.useRealTimers()
+    vi.spyOn(window, 'open').mockRestore()
   })
 
   testSigner("Nip46Signer", () => new Nip46Signer(mockBroker))
@@ -370,13 +375,12 @@ describe("Nip46Signer", () => {
 
     describe("URL handling", () => {
       it("should parse bunker URL correctly", () => {
-        const url = `bunker://${pubkey}?relay=wss://relay1.test&relay=wss://relay2.test&secret=testsecret`
+        const url = `bunker://${signerPubkey}?relay=wss://relay1&relay=wss://relay2&secret=123`
         const result = Nip46Broker.parseBunkerUrl(url)
-
         expect(result).toEqual({
-          signerPubkey: pubkey,
-          relays: ["wss://relay1.test/", "wss://relay2.test/"],
-          connectSecret: "testsecret",
+          signerPubkey: signerPubkey,
+          relays: ["wss://relay1/", "wss://relay2/"],
+          connectSecret: "123",
         })
       })
 
@@ -664,7 +668,7 @@ describe("Nip46Signer", () => {
       const url = `bunker://${signerPubkey}?relay=wss://relay1&relay=wss://relay2&secret=123`
       const result = Nip46Broker.parseBunkerUrl(url)
       expect(result).toEqual({
-        signerPubkey,
+        signerPubkey: signerPubkey,
         relays: ["wss://relay1/", "wss://relay2/"],
         connectSecret: "123",
       })
