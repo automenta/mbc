@@ -21,7 +21,10 @@ describe("Subscription", () => {
       off: vi.fn(),
     }
     mockExecutor = {
-      subscribe: vi.fn().mockReturnValue(mockExecutorSub),
+      subscribe: vi.fn().mockImplementation(() => { // <--- Use mockImplementation
+        return mockExecutorSub; // Return the *same* mockExecutorSub
+      }),
+      // subscribe: vi.fn().mockReturnValue(mockExecutorSub), // <--- OLD: mockReturnValue creates new each time
       target: {
         connections: [mockConnection],
         cleanup: vi.fn(),

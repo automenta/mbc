@@ -873,7 +873,8 @@ export const chunk = <T>(chunkLength: number, xs: T[]) => {
     if (current.length < chunkLength) {
       current.push(item)
     } else {
-      result.push(current.splice(0))
+      result.push([...current]) // Create a copy of current
+      current.length = 0       // Clear current array
     }
   }
 
@@ -1183,7 +1184,7 @@ export const fetchJson = async (url: string, opts: FetchOpts = {}) => {
  * @param opts - Additional fetch options
  * @returns Promise of parsed JSON response
  */
-export const postJson = async <T>(url: string, data: T, opts: FetchOpts = {}) => {
+export const postJson = async <T>(url: string,  T, opts: FetchOpts = {}) => {
   if (!opts.method) {
     opts.method = "POST"
   }

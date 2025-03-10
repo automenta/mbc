@@ -44,10 +44,16 @@ export type SessionAnyMethod =
 
 export type Session = SessionAnyMethod & Record<string, any>
 
+const getLocalStorage = () => {
+  // Check if localStorage is available (e.g., in browser environment)
+  return typeof localStorage !== 'undefined' ? localStorage : undefined;
+};
 export const pubkey = withGetter(synced<string | null>("pubkey", null))
 
-export const sessions = withGetter(synced<Record<string, Session>>("sessions", {}))
-
+export const sessions = withGetter(
+  synced<Record<string, Session>>("sessions", {}, {
+    storage: getLocalStorage() // Pass the lazy localStorage getter to synced
+  }))
 export const session = withGetter(
   derived([pubkey, sessions], ([$pubkey, $sessions]) => ($pubkey ? $sessions[$pubkey] : null)),
 )
