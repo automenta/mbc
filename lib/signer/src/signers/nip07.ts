@@ -34,9 +34,10 @@ export class Nip07Signer implements ISigner {
   getPubkey = async () => this.#then<string>(ext => ext.getPublicKey() as string)
 
   sign = async (template: StampedEvent) => {
-    const event = hash(own(template, await this.getPubkey()))
+    const o = own(template, await this.getPubkey())
+    const event = hash(o)
 
-    return this.#then(ext => ext.signEvent(event))
+    return await this.#then(ext => ext.signEvent(event))
   }
 
   nip04 = {

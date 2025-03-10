@@ -45,3 +45,4 @@ bun.lockb
 .env
 
 tsconfig.tsbuildinfo
+.env

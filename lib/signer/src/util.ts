@@ -19,7 +19,8 @@ export const stamp = (event: EventTemplate, created_at = now()) => ({...event, c
 
 export const own = (event: StampedEvent, pubkey: string) => ({...event, pubkey})
 
-export const hash = (event: OwnedEvent) => ({...event, id: getHash(event)})
+export const hash = (event: OwnedEvent) =>
+  ({...event, id: getHash(event)})
 
 export const sign = (event: HashedEvent, secret: string) => ({...event, sig: getSig(event, secret)})
 
